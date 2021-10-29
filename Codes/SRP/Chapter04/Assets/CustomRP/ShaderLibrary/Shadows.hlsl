@@ -110,7 +110,7 @@ float FadedShadowStrength (float distance, float scale, float fade) {
 ShadowData GetShadowData (Surface surfaceWS) {
 	ShadowData data;
 	data.cascadeBlend = 1.0;
-	data.strength =FadedShadowStrength(surfaceWS.depth, _ShadowDistanceFade.x, _ShadowDistanceFade.y);
+	data.strength = FadedShadowStrength(surfaceWS.depth, _ShadowDistanceFade.x, _ShadowDistanceFade.y);
 	int i;
 	//如果物体表面到球心的平方距离小于球体半径的平方，就说明该物体在这层级联包围球中，得到合适的级联层级索引
 	for (i = 0; i < _CascadeCount; i++) {

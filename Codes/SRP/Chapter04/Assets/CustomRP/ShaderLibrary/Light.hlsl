@@ -43,7 +43,7 @@ Light GetDirectionalLight (int index,Surface surfaceWS, ShadowData shadowData) {
 	//得到阴影数据
 	DirectionalShadowData dirShadowData = GetDirectionalShadowData(index,shadowData);
 	//得到阴影衰减
-	light.attenuation = GetDirectionalShadowAttenuation(dirShadowData,shadowData, surfaceWS);
+	light.attenuation = GetDirectionalShadowAttenuation(dirShadowData, shadowData, surfaceWS);
 
 	return light;
 }
