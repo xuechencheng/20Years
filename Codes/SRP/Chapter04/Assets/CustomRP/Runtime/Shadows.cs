@@ -148,7 +148,7 @@ public class Shadows
         for (int i = 0;i < cascadeCount;i++)
         {
 			//计算视图和投影矩阵和裁剪空间的立方体
-			cullingResults.ComputeDirectionalShadowMatricesAndCullingPrimitives(light.visibleLightIndex, i, cascadeCount, ratios, tileSize, light.nearPlaneOffset,//阴影平坠
+			cullingResults.ComputeDirectionalShadowMatricesAndCullingPrimitives( light.visibleLightIndex, i, cascadeCount, ratios, tileSize, light.nearPlaneOffset,//阴影平坠
 				out Matrix4x4 viewMatrix, out Matrix4x4 projectionMatrix, out ShadowSplitData splitData);
 			//得到第一个光源的包围球数据
             if (index == 0)
