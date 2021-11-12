@@ -2,24 +2,24 @@
 #define UNITY_INSTANCING_INCLUDED
 
 #if SHADER_TARGET >= 35 && (defined(SHADER_API_D3D11) || defined(SHADER_API_GLES3) || defined(SHADER_API_GLCORE) || defined(SHADER_API_XBOXONE) || defined(SHADER_API_PSSL) || defined(SHADER_API_VULKAN) || defined(SHADER_API_METAL))
-    #define UNITY_SUPPORT_INSTANCING //Open
+    #define UNITY_SUPPORT_INSTANCING //阅
 #endif
 
 #if defined(SHADER_API_SWITCH)
-    #define UNITY_SUPPORT_INSTANCING
+    #define UNITY_SUPPORT_INSTANCING //阅
 #endif
 
 #if defined(SHADER_API_D3D11) || defined(SHADER_API_GLCORE) || defined(SHADER_API_GLES3) || defined(SHADER_API_VULKAN)
-    #define UNITY_SUPPORT_STEREO_INSTANCING //Open
+    #define UNITY_SUPPORT_STEREO_INSTANCING //阅
 #endif
 
 // These platforms support dynamically adjusting the instancing CB size according to the current batch.
 #if defined(SHADER_API_D3D11) || defined(SHADER_API_GLCORE) || defined(SHADER_API_GLES3) || defined(SHADER_API_METAL) || defined(SHADER_API_PSSL) || defined(SHADER_API_VULKAN) || defined(SHADER_API_SWITCH)
-    #define UNITY_INSTANCING_SUPPORT_FLEXIBLE_ARRAY_SIZE //Open
+    #define UNITY_INSTANCING_SUPPORT_FLEXIBLE_ARRAY_SIZE //阅
 #endif
 
 #if defined(SHADER_TARGET_SURFACE_ANALYSIS) && defined(UNITY_SUPPORT_INSTANCING)
-    #undef UNITY_SUPPORT_INSTANCING
+    #undef UNITY_SUPPORT_INSTANCING //阅
 #endif
 
 ////////////////////////////////////////////////////////
@@ -29,29 +29,29 @@
 // - UNITY_STEREO_INSTANCING_ENABLED        Defined if stereo instancing path is taken.
 // - UNITY_ANY_INSTANCING_ENABLED           Defined if any instancing path is taken
 #if defined(UNITY_SUPPORT_INSTANCING) && defined(INSTANCING_ON) //材质开启GPU Instancing
-    #define UNITY_INSTANCING_ENABLED
+    #define UNITY_INSTANCING_ENABLED //阅
 #endif
-#if defined(UNITY_SUPPORT_INSTANCING) && defined(PROCEDURAL_INSTANCING_ON)
-    #define UNITY_PROCEDURAL_INSTANCING_ENABLED
+#if defined(UNITY_SUPPORT_INSTANCING) && defined(PROCEDURAL_INSTANCING_ON) //Graphics.DrawMeshInstancedIndirect
+    #define UNITY_PROCEDURAL_INSTANCING_ENABLED //阅
 #endif
 #if defined(UNITY_SUPPORT_INSTANCING) && defined(DOTS_INSTANCING_ON)
-    #define UNITY_DOTS_INSTANCING_ENABLED
+    #define UNITY_DOTS_INSTANCING_ENABLED //阅
 #endif
 #if defined(UNITY_SUPPORT_STEREO_INSTANCING) && defined(STEREO_INSTANCING_ON)
-    #define UNITY_STEREO_INSTANCING_ENABLED
+    #define UNITY_STEREO_INSTANCING_ENABLED //阅
 #endif
 
 #if defined(UNITY_INSTANCING_ENABLED) || defined(UNITY_PROCEDURAL_INSTANCING_ENABLED) || defined(UNITY_DOTS_INSTANCING_ENABLED) || defined(UNITY_STEREO_INSTANCING_ENABLED)
-    #define UNITY_ANY_INSTANCING_ENABLED 1
+    #define UNITY_ANY_INSTANCING_ENABLED 1 //阅
 #else
-    #define UNITY_ANY_INSTANCING_ENABLED 0
+    #define UNITY_ANY_INSTANCING_ENABLED 0 //阅
 #endif
 
 #if defined(DOTS_INSTANCING_ON) && (SHADER_TARGET < 45)
-#error The DOTS_INSTANCING_ON keyword requires shader model 4.5 or greater ("#pragma target 4.5" or greater).
+#error The DOTS_INSTANCING_ON keyword requires shader model 4.5 or greater ("#pragma target 4.5" or greater). //阅
 #endif
 
-#if defined(SHADER_API_GLES3) || defined(SHADER_API_GLCORE) || defined(SHADER_API_METAL) || defined(SHADER_API_VULKAN)
+#if defined(SHADER_API_GLES3) || defined(SHADER_API_GLCORE) || defined(SHADER_API_METAL) || defined(SHADER_API_VULKAN) //阅
     // These platforms have constant buffers disabled normally, but not here (see CBUFFER_START/CBUFFER_END in HLSLSupport.cginc).
     #define UNITY_INSTANCING_CBUFFER_SCOPE_BEGIN(name)  cbuffer name {
     #define UNITY_INSTANCING_CBUFFER_SCOPE_END          }
@@ -77,7 +77,7 @@
             int unity_InstanceCount;
     #if !defined(SHADER_API_GLES3) && !defined(SHADER_API_GLCORE)
         UNITY_INSTANCING_CBUFFER_SCOPE_END
-    #endif
+    #endif //阅
 
     #ifdef SHADER_API_PSSL //PS4平台
         #define DEFAULT_UNITY_VERTEX_INPUT_INSTANCE_ID uint instanceID;
@@ -85,7 +85,7 @@
     #else
         #define DEFAULT_UNITY_VERTEX_INPUT_INSTANCE_ID uint instanceID : SV_InstanceID;
         #define UNITY_GET_INSTANCE_ID(input)    input.instanceID // Get input.instanceID
-    #endif
+    #endif //阅
 
 #else
     #define DEFAULT_UNITY_VERTEX_INPUT_INSTANCE_ID
@@ -143,7 +143,7 @@
     #define DEFAULT_UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output)
     #define DEFAULT_UNITY_TRANSFER_VERTEX_OUTPUT_STEREO(input, output)
     #define DEFAULT_UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input)
-#endif
+#endif //阅
 
 
 #if !defined(UNITY_VERTEX_OUTPUT_STEREO)
@@ -157,7 +157,7 @@
 #endif
 #if !defined(UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX)
 #   define UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input)      DEFAULT_UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input)
-#endif
+#endif //阅
 
 ////////////////////////////////////////////////////////
 // - UNITY_SETUP_INSTANCE_ID        Should be used at the very beginning of the vertex shader / fragment shader,
@@ -192,7 +192,7 @@
         #else
             unity_InstanceID = inputInstanceID + unity_BaseInstanceID;
         #endif
-    }
+    } //阅
 
     #ifdef UNITY_PROCEDURAL_INSTANCING_ENABLED
         #ifndef UNITY_INSTANCING_PROCEDURAL_FUNC
@@ -212,7 +212,7 @@
 
 #if !defined(UNITY_SETUP_INSTANCE_ID)//Set unity_InstanceID
 #   define UNITY_SETUP_INSTANCE_ID(input) DEFAULT_UNITY_SETUP_INSTANCE_ID(input)
-#endif
+#endif //阅
 
 ////////////////////////////////////////////////////////
 // instanced property arrays
@@ -230,7 +230,7 @@
         #else
             #define UNITY_INSTANCED_ARRAY_SIZE  500
         #endif
-    #endif
+    #endif //阅
 
 #if defined(UNITY_DOTS_INSTANCING_ENABLED)
     #define UNITY_INSTANCING_BUFFER_START(buf)      UNITY_INSTANCING_CBUFFER_SCOPE_BEGIN(UnityInstancing_##buf)
@@ -253,22 +253,22 @@
     #define UNITY_ACCESS_DOTS_INSTANCED_PROP(type, var) var
     #define UNITY_ACCESS_DOTS_INSTANCED_PROP_FROM_MACRO(type, metadata_underscore_var) This_macro_cannot_be_called_without_UNITY_DOTS_INSTANCING_ENABLED
     #define UNITY_ACCESS_DOTS_AND_TRADITIONAL_INSTANCED_PROP(type, arr, var) UNITY_ACCESS_INSTANCED_PROP(arr, var)
-#endif
+#endif //阅
 
     // Put worldToObject array to a separate CB if UNITY_ASSUME_UNIFORM_SCALING is defined. Most of the time it will not be used.
     #ifdef UNITY_ASSUME_UNIFORM_SCALING
         #define UNITY_WORLDTOOBJECTARRAY_CB 1
     #else
         #define UNITY_WORLDTOOBJECTARRAY_CB 0
-    #endif
+    #endif  //阅
 
     #if defined(UNITY_INSTANCED_LOD_FADE) && (defined(LOD_FADE_PERCENTAGE) || defined(LOD_FADE_CROSSFADE))
         #define UNITY_USE_LODFADE_ARRAY
-    #endif
+    #endif  //阅
 
     #if defined(UNITY_INSTANCED_RENDERING_LAYER)
         #define UNITY_USE_RENDERINGLAYER_ARRAY
-    #endif
+    #endif  //阅
 
     #ifdef UNITY_INSTANCED_LIGHTMAPSTS
         #ifdef LIGHTMAP_ON
@@ -277,7 +277,7 @@
         #ifdef DYNAMICLIGHTMAP_ON
             #define UNITY_USE_DYNAMICLIGHTMAPST_ARRAY
         #endif
-    #endif
+    #endif  //阅
 
     #if defined(UNITY_INSTANCED_SH) && !defined(LIGHTMAP_ON)
         #if !defined(DYNAMICLIGHTMAP_ON)
@@ -286,7 +286,7 @@
         #if defined(SHADOWS_SHADOWMASK)
             #define UNITY_USE_PROBESOCCLUSION_ARRAY
         #endif
-    #endif
+    #endif  //阅
 
     #if !defined(UNITY_DOTS_INSTANCING_ENABLED)
     UNITY_INSTANCING_BUFFER_START(PerDraw0)

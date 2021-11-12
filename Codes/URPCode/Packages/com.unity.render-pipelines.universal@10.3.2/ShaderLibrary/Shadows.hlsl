@@ -205,7 +205,7 @@ real SampleShadowmapFiltered(TEXTURE2D_SHADOW_PARAM(ShadowMap, sampler_ShadowMap
 
     return attenuation;
 }
-
+// Done
 real SampleShadowmap(TEXTURE2D_SHADOW_PARAM(ShadowMap, sampler_ShadowMap), float4 shadowCoord, ShadowSamplingData samplingData, half4 shadowParams, bool isPerspectiveProjection = true)
 {
     // Compiler will optimize this branch away as long as isPerspectiveProjection is known at compile time
@@ -229,7 +229,7 @@ real SampleShadowmap(TEXTURE2D_SHADOW_PARAM(ShadowMap, sampler_ShadowMap), float
     // TODO: We could use branch here to save some perf on some platforms.
     return BEYOND_SHADOW_FAR(shadowCoord) ? 1.0 : attenuation;
 }
-
+//Done
 half ComputeCascadeIndex(float3 positionWS)
 {
     float3 fromCenter0 = positionWS - _CascadeShadowSplitSpheres0.xyz;
@@ -239,11 +239,11 @@ half ComputeCascadeIndex(float3 positionWS)
     float4 distances2 = float4(dot(fromCenter0, fromCenter0), dot(fromCenter1, fromCenter1), dot(fromCenter2, fromCenter2), dot(fromCenter3, fromCenter3));
 
     half4 weights = half4(distances2 < _CascadeShadowSplitSphereRadii);
-    weights.yzw = saturate(weights.yzw - weights.xyz);
+    weights.yzw = saturate(weights.yzw - weights.xyz);//解决两个1的问题
 
     return 4 - dot(weights, half4(4, 3, 2, 1));
 }
-
+// Done
 float4 TransformWorldToShadowCoord(float3 positionWS)
 {
 #ifdef _MAIN_LIGHT_SHADOWS_CASCADE
@@ -257,6 +257,7 @@ float4 TransformWorldToShadowCoord(float3 positionWS)
     return float4(shadowCoord.xyz, cascadeIndex);
 }
 
+// Done
 half MainLightRealtimeShadow(float4 shadowCoord)
 {
 #if !defined(MAIN_LIGHT_CALCULATE_SHADOWS)
@@ -322,6 +323,7 @@ half BakedShadow(half4 shadowMask, half4 occlusionProbeChannels)
     return bakedShadow;
 }
 
+// To be Done
 half MainLightShadow(float4 shadowCoord, float3 positionWS, half4 shadowMask, half4 occlusionProbeChannels)
 {
     half realtimeShadow = MainLightRealtimeShadow(shadowCoord);
@@ -398,6 +400,7 @@ float ApplyShadowFade(float shadowAttenuation, float3 positionWS)
 }
 
 // Deprecated: Use GetMainLightShadowParams instead.
+// Done
 half GetMainLightShadowStrength()
 {
     return _MainLightShadowData.x;

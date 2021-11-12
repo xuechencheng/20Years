@@ -1,6 +1,6 @@
 #ifndef UNITY_SHADER_VARIABLES_FUNCTIONS_INCLUDED
 #define UNITY_SHADER_VARIABLES_FUNCTIONS_INCLUDED
-
+// Done
 VertexPositionInputs GetVertexPositionInputs(float3 positionOS)
 {
     VertexPositionInputs input;
@@ -23,7 +23,7 @@ VertexNormalInputs GetVertexNormalInputs(float3 normalOS)
     tbn.normalWS = TransformObjectToWorldNormal(normalOS);
     return tbn;
 }
-
+// Done
 VertexNormalInputs GetVertexNormalInputs(float3 normalOS, float4 tangentOS)
 {
     VertexNormalInputs tbn;
@@ -46,7 +46,7 @@ bool IsPerspectiveProjection()
 {
     return (unity_OrthoParams.w == 0);
 }
-
+// 阅
 float3 GetCameraPositionWS()
 {
     // Currently we do not support Camera Relative Rendering so
@@ -63,6 +63,7 @@ float3 GetCameraPositionWS()
 }
 
 // Could be e.g. the position of a primary camera or a shadow-casting light.
+// 阅
 float3 GetCurrentViewPosition()
 {
     // Currently we do not support Camera Relative Rendering so
@@ -82,6 +83,7 @@ float3 GetCurrentViewPosition()
 }
 
 // Returns the forward (central) direction of the current view in the world space.
+// 阅
 float3 GetViewForwardDir()
 {
     float4x4 viewMat = GetWorldToViewMatrix();
@@ -89,6 +91,7 @@ float3 GetViewForwardDir()
 }
 
 // Computes the world space view direction (pointing towards the viewer).
+// Done
 float3 GetWorldSpaceViewDir(float3 positionWS)
 {
     if (IsPerspectiveProjection())
@@ -180,7 +183,7 @@ float4 ComputeScreenPos(float4 positionCS)
     o.zw = positionCS.zw;
     return o;
 }
-
+// Done
 real ComputeFogFactor(float z)
 {
     float clipZ_01 = UNITY_Z_0_FAR_FROM_CLIPSPACE(z);

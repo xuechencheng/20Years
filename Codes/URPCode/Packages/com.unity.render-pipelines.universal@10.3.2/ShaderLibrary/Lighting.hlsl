@@ -64,7 +64,7 @@ float DistanceAttenuation(float distanceSqr, half2 distanceAttenuation)
 {
     // We use a shared distance attenuation for additional directional and puctual lights
     // for directional lights attenuation will be 1
-    float lightAtten = rcp(distanceSqr);
+    float lightAtten = rcp(distanceSqr);//倒数
 
 #if SHADER_HINT_NICE_QUALITY
     // Use the smoothing factor also used in the Unity lightmapper.
@@ -151,6 +151,7 @@ Light GetAdditionalPerObjectLight(int perObjectLightIndex, float3 positionWS)
     float distanceSqr = max(dot(lightVector, lightVector), HALF_MIN);
 
     half3 lightDirection = half3(lightVector * rsqrt(distanceSqr));
+    //To Be Done
     half attenuation = DistanceAttenuation(distanceSqr, distanceAndSpotAttenuation.xy) * AngleAttenuation(spotDirection.xyz, lightDirection, distanceAndSpotAttenuation.zw);
 
     Light light;
@@ -173,6 +174,7 @@ uint GetPerObjectLightIndexOffset()
 
 // Returns a per-object index given a loop index.
 // This abstract the underlying data implementation for storing lights/light indices
+// Done
 int GetPerObjectLightIndex(uint index)
 {
 /////////////////////////////////////////////////////////////////////////////////////////////
@@ -276,6 +278,7 @@ half ReflectivitySpecular(half3 specular)
 #endif
 }
 
+// Done
 half OneMinusReflectivityMetallic(half metallic)
 {
     // We'll need oneMinusReflectivity, so
@@ -283,10 +286,10 @@ half OneMinusReflectivityMetallic(half metallic)
     // store (1-dielectricSpec) in kDielectricSpec.a, then
     //   1-reflectivity = lerp(alpha, 0, metallic) = alpha + metallic*(0 - alpha) =
     //                  = alpha - metallic * alpha
-    half oneMinusDielectricSpec = kDielectricSpec.a;
+    half oneMinusDielectricSpec = kDielectricSpec.a; // 0.96
     return oneMinusDielectricSpec - metallic * oneMinusDielectricSpec;
 }
-
+// Done
 inline void InitializeBRDFDataDirect(half3 diffuse, half3 specular, half reflectivity, half oneMinusReflectivity, half smoothness, inout half alpha, out BRDFData outBRDFData)
 {
     outBRDFData.diffuse = diffuse;
@@ -306,6 +309,7 @@ inline void InitializeBRDFDataDirect(half3 diffuse, half3 specular, half reflect
 #endif
 }
 
+// Done
 inline void InitializeBRDFData(half3 albedo, half metallic, half3 specular, half smoothness, inout half alpha, out BRDFData outBRDFData)
 {
 #ifdef _SPECULAR_SETUP
@@ -368,12 +372,13 @@ inline void InitializeBRDFDataClearCoat(half clearCoatMask, half clearCoatSmooth
 }
 
 // Computes the specular term for EnvironmentBRDF
+// Done
 half3 EnvironmentBRDFSpecular(BRDFData brdfData, half fresnelTerm)
 {
     float surfaceReduction = 1.0 / (brdfData.roughness2 + 1.0);
     return surfaceReduction * lerp(brdfData.specular, brdfData.grazingTerm, fresnelTerm);
 }
-
+// Done
 half3 EnvironmentBRDF(BRDFData brdfData, half3 indirectDiffuse, half3 indirectSpecular, half fresnelTerm)
 {
     half3 c = indirectDiffuse * brdfData.diffuse;
@@ -506,6 +511,7 @@ half3 SampleSH(half3 normalWS)
 // SH Vertex Evaluation. Depending on target SH sampling might be
 // done completely per vertex or mixed with L2 term per vertex and L0, L1
 // per pixel. See SampleSHPixel
+// Done
 half3 SampleSHVertex(half3 normalWS)
 {
 #if defined(EVALUATE_SH_VERTEX)
@@ -586,19 +592,19 @@ half3 SampleLightmap(float2 lightmapUV, half3 normalWS)
 #else
 #define SAMPLE_GI(lmName, shName, normalWSName) SampleSHPixel(shName, normalWSName)
 #endif
-
+// Done
 half3 GlossyEnvironmentReflection(half3 reflectVector, half perceptualRoughness, half occlusion)
 {
 #if !defined(_ENVIRONMENTREFLECTIONS_OFF)
     half mip = PerceptualRoughnessToMipmapLevel(perceptualRoughness);
     half4 encodedIrradiance = SAMPLE_TEXTURECUBE_LOD(unity_SpecCube0, samplerunity_SpecCube0, reflectVector, mip);
 
-//TODO:DOTS - we need to port probes to live in c# so we can manage this manually.
-#if defined(UNITY_USE_NATIVE_HDR) || defined(UNITY_DOTS_INSTANCING_ENABLED)
-    half3 irradiance = encodedIrradiance.rgb;
-#else
-    half3 irradiance = DecodeHDREnvironment(encodedIrradiance, unity_SpecCube0_HDR);
-#endif
+    //TODO:DOTS - we need to port probes to live in c# so we can manage this manually.
+    #if defined(UNITY_USE_NATIVE_HDR) || defined(UNITY_DOTS_INSTANCING_ENABLED)
+        half3 irradiance = encodedIrradiance.rgb;
+    #else
+        half3 irradiance = DecodeHDREnvironment(encodedIrradiance, unity_SpecCube0_HDR);
+    #endif
 
     return irradiance * occlusion;
 #endif // GLOSSY_REFLECTIONS
@@ -685,6 +691,7 @@ void MixRealtimeAndBakedGI(inout Light light, half3 normalWS, inout half3 bakedG
 ///////////////////////////////////////////////////////////////////////////////
 //                      Lighting Functions                                   //
 ///////////////////////////////////////////////////////////////////////////////
+// Done
 half3 LightingLambert(half3 lightColor, half3 lightDir, half3 normal)
 {
     half NdotL = saturate(dot(normal, lightDir));
@@ -779,6 +786,7 @@ half3 LightingPhysicallyBased(BRDFData brdfData, half3 lightColor, half3 lightDi
 }
 
 //ADDITIONAL_VERTEX_LIGHTS
+//Done
 half3 VertexLighting(float3 positionWS, half3 normalWS)
 {
     half3 vertexLightColor = half3(0.0, 0.0, 0.0);
@@ -830,13 +838,13 @@ half4 UniversalFragmentPBR(InputData inputData, SurfaceData surfaceData)
 
     Light mainLight = GetMainLight(inputData.shadowCoord, inputData.positionWS, shadowMask);
 
-    #if defined(_SCREEN_SPACE_OCCLUSION)
+    #if defined(_SCREEN_SPACE_OCCLUSION) // To be Done
         AmbientOcclusionFactor aoFactor = GetScreenSpaceAmbientOcclusion(inputData.normalizedScreenSpaceUV);
         mainLight.color *= aoFactor.directAmbientOcclusion;
         surfaceData.occlusion = min(surfaceData.occlusion, aoFactor.indirectAmbientOcclusion);
     #endif
 
-    MixRealtimeAndBakedGI(mainLight, inputData.normalWS, inputData.bakedGI);
+    MixRealtimeAndBakedGI(mainLight, inputData.normalWS, inputData.bakedGI);//subtractive Mode
     half3 color = GlobalIllumination(brdfData, brdfDataClearCoat, surfaceData.clearCoatMask,
                                      inputData.bakedGI, surfaceData.occlusion,
                                      inputData.normalWS, inputData.viewDirectionWS);

@@ -4,28 +4,31 @@
 // Caution: For HDRP, adding a function in this file requires adding the appropriate #define in PickingSpaceTransforms.hlsl
 
 // Return the PreTranslated ObjectToWorld Matrix (i.e matrix with _WorldSpaceCameraPos apply to it if we use camera relative rendering)
+// 阅
 float4x4 GetObjectToWorldMatrix()
 {
     return UNITY_MATRIX_M;
 }
-
+// 阅
 float4x4 GetWorldToObjectMatrix()
 {
     return UNITY_MATRIX_I_M;
 }
-
+// 阅
 float4x4 GetWorldToViewMatrix()
 {
     return UNITY_MATRIX_V;
 }
 
-// Transform to homogenous clip space
+// Transform to homogenous clip space 阅
+// 阅
 float4x4 GetWorldToHClipMatrix()
 {
     return UNITY_MATRIX_VP;
 }
 
 // Transform to homogenous clip space
+// 阅
 float4x4 GetViewToHClipMatrix()
 {
     return UNITY_MATRIX_P;
@@ -56,7 +59,7 @@ real GetOddNegativeScale()
     // we can revert back to the former implementation.
     return unity_WorldTransformParams.w >= 0.0 ? 1.0 : -1.0;
 }
-
+// 阅
 float3 TransformObjectToWorld(float3 positionOS)
 {
     #if defined(SHADER_STAGE_RAY_TRACING)
@@ -81,6 +84,7 @@ float3 TransformWorldToView(float3 positionWS)
 }
 
 // Transforms position from object space to homogenous space
+// 阅
 float4 TransformObjectToHClip(float3 positionOS)
 {
     // More efficient than computing M*VP matrix product
@@ -100,12 +104,13 @@ float4 TransformWViewToHClip(float3 positionVS)
 }
 
 // Normalize to support uniform scaling
+// Done
 float3 TransformObjectToWorldDir(float3 dirOS, bool doNormalize = true)
 {
     #ifndef SHADER_STAGE_RAY_TRACING
-    float3 dirWS = mul((float3x3)GetObjectToWorldMatrix(), dirOS);
+        float3 dirWS = mul((float3x3)GetObjectToWorldMatrix(), dirOS);
     #else
-    float3 dirWS = mul((float3x3)ObjectToWorld3x4(), dirOS);
+        float3 dirWS = mul((float3x3)ObjectToWorld3x4(), dirOS);
     #endif
     if (doNormalize)
         return SafeNormalize(dirWS);
@@ -148,6 +153,7 @@ real3 TransformWorldToHClipDir(real3 directionWS, bool doNormalize = false)
 }
 
 // Transforms normal from object to world space
+// Done
 float3 TransformObjectToWorldNormal(float3 normalOS, bool doNormalize = true)
 {
 #ifdef UNITY_ASSUME_UNIFORM_SCALING
