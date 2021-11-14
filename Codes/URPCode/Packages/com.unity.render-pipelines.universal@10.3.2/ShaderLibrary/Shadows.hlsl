@@ -374,14 +374,15 @@ float4 GetShadowCoord(VertexPositionInputs vertexInput)
     return TransformWorldToShadowCoord(vertexInput.positionWS);
 }
 
+// Done
 float3 ApplyShadowBias(float3 positionWS, float3 normalWS, float3 lightDirection)
 {
-    float invNdotL = 1.0 - saturate(dot(lightDirection, normalWS));
+    float invNdotL = 1.0 - saturate(dot(lightDirection, normalWS));//光照方向与法线垂直时候，该值为1；平行时，该值为0。
     float scale = invNdotL * _ShadowBias.y;
 
     // normal bias is negative since we want to apply an inset normal offset
-    positionWS = lightDirection * _ShadowBias.xxx + positionWS;
-    positionWS = normalWS * scale.xxx + positionWS;
+    positionWS = lightDirection * _ShadowBias.xxx + positionWS; //沿着光照方向移动相同距离
+    positionWS = normalWS * scale.xxx + positionWS;//沿着法线方向移动一个与夹角有关的距离
     return positionWS;
 }
 

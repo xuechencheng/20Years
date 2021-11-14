@@ -162,11 +162,11 @@ half3 SampleNormalTS(float2 uv, float3 blendUv, TEXTURE2D_PARAM(bumpMap, sampler
 half4 GetParticleColor(half4 color)
 {
 #if defined(UNITY_PARTICLE_INSTANCING_ENABLED)
-#if !defined(UNITY_PARTICLE_INSTANCE_DATA_NO_COLOR)
-    UNITY_PARTICLE_INSTANCE_DATA data = unity_ParticleInstanceData[unity_InstanceID];
-    color = lerp(half4(1.0, 1.0, 1.0, 1.0), color, unity_ParticleUseMeshColors);
-    color *= UnpackFromR8G8B8A8(data.color);
-#endif
+    #if !defined(UNITY_PARTICLE_INSTANCE_DATA_NO_COLOR)
+        UNITY_PARTICLE_INSTANCE_DATA data = unity_ParticleInstanceData[unity_InstanceID];
+        color = lerp(half4(1.0, 1.0, 1.0, 1.0), color, unity_ParticleUseMeshColors);
+        color *= UnpackFromR8G8B8A8(data.color);
+    #endif
 #endif
     return color;
 }
@@ -180,11 +180,11 @@ void GetParticleTexcoords(out float2 outputTexcoord, out float3 outputTexcoord2A
 
         float numTilesX = unity_ParticleUVShiftData.y;
         float2 animScale = unity_ParticleUVShiftData.zw;
-#ifdef UNITY_PARTICLE_INSTANCE_DATA_NO_ANIM_FRAME
-        float sheetIndex = 0.0;
-#else
-        float sheetIndex = data.animFrame;
-#endif
+        #ifdef UNITY_PARTICLE_INSTANCE_DATA_NO_ANIM_FRAME
+                float sheetIndex = 0.0;
+        #else
+                float sheetIndex = data.animFrame;
+        #endif
 
         float index0 = floor(sheetIndex);
         float vIdx0 = floor(index0 / numTilesX);
@@ -193,15 +193,15 @@ void GetParticleTexcoords(out float2 outputTexcoord, out float3 outputTexcoord2A
 
         outputTexcoord = inputTexcoords.xy * animScale.xy + offset0.xy;
 
-#ifdef _FLIPBOOKBLENDING_ON
-        float index1 = floor(sheetIndex + 1.0);
-        float vIdx1 = floor(index1 / numTilesX);
-        float uIdx1 = floor(index1 - vIdx1 * numTilesX);
-        float2 offset1 = float2(uIdx1 * animScale.x, (1.0 - animScale.y) - vIdx1 * animScale.y);
+        #ifdef _FLIPBOOKBLENDING_ON
+                float index1 = floor(sheetIndex + 1.0);
+                float vIdx1 = floor(index1 / numTilesX);
+                float uIdx1 = floor(index1 - vIdx1 * numTilesX);
+                float2 offset1 = float2(uIdx1 * animScale.x, (1.0 - animScale.y) - vIdx1 * animScale.y);
 
-        outputTexcoord2AndBlend.xy = inputTexcoords.xy * animScale.xy + offset1.xy;
-        outputTexcoord2AndBlend.z = frac(sheetIndex);
-#endif
+                outputTexcoord2AndBlend.xy = inputTexcoords.xy * animScale.xy + offset1.xy;
+                outputTexcoord2AndBlend.z = frac(sheetIndex);
+        #endif
     }
     else
 #endif

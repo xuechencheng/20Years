@@ -903,21 +903,16 @@ half4 UniversalFragmentBlinnPhong(InputData inputData, half3 diffuse, half4 spec
 #else
     half4 shadowMask = half4(1, 1, 1, 1);
 #endif
-
     Light mainLight = GetMainLight(inputData.shadowCoord, inputData.positionWS, shadowMask);
-
     #if defined(_SCREEN_SPACE_OCCLUSION)
         AmbientOcclusionFactor aoFactor = GetScreenSpaceAmbientOcclusion(inputData.normalizedScreenSpaceUV);
         mainLight.color *= aoFactor.directAmbientOcclusion;
         inputData.bakedGI *= aoFactor.indirectAmbientOcclusion;
     #endif
-
     MixRealtimeAndBakedGI(mainLight, inputData.normalWS, inputData.bakedGI);
-
     half3 attenuatedLightColor = mainLight.color * (mainLight.distanceAttenuation * mainLight.shadowAttenuation);
     half3 diffuseColor = inputData.bakedGI + LightingLambert(attenuatedLightColor, mainLight.direction, inputData.normalWS);
     half3 specularColor = LightingSpecular(attenuatedLightColor, mainLight.direction, inputData.normalWS, inputData.viewDirectionWS, specularGloss, smoothness);
-
 #ifdef _ADDITIONAL_LIGHTS
     uint pixelLightCount = GetAdditionalLightsCount();
     for (uint lightIndex = 0u; lightIndex < pixelLightCount; ++lightIndex)
@@ -931,17 +926,13 @@ half4 UniversalFragmentBlinnPhong(InputData inputData, half3 diffuse, half4 spec
         specularColor += LightingSpecular(attenuatedLightColor, light.direction, inputData.normalWS, inputData.viewDirectionWS, specularGloss, smoothness);
     }
 #endif
-
 #ifdef _ADDITIONAL_LIGHTS_VERTEX
     diffuseColor += inputData.vertexLighting;
 #endif
-
     half3 finalColor = diffuseColor * diffuse + emission;
-
 #if defined(_SPECGLOSSMAP) || defined(_SPECULAR_COLOR)
     finalColor += specularColor;
 #endif
-
     return half4(finalColor, alpha);
 }
 
