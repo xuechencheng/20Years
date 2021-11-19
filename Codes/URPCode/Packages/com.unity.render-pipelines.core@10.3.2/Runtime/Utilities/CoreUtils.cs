@@ -767,6 +767,7 @@ namespace UnityEngine.Rendering
         /// </summary>
         /// <param name="color">Input color.</param>
         /// <returns>Linear color if the active color space is ColorSpace.Linear, the original input otherwise.</returns>
+        /// Done
         public static Color ConvertSRGBToActiveColorSpace(Color color)
         {
             return (QualitySettings.activeColorSpace == ColorSpace.Linear) ? color.linear : color;
@@ -777,6 +778,7 @@ namespace UnityEngine.Rendering
         /// </summary>
         /// <param name="color">Input color.</param>
         /// <returns>sRGB color if the active color space is ColorSpace.Gamma, the original input otherwise.</returns>
+        /// Done
         public static Color ConvertLinearToActiveColorSpace(Color color)
         {
             return (QualitySettings.activeColorSpace == ColorSpace.Linear) ? color : color.gamma;

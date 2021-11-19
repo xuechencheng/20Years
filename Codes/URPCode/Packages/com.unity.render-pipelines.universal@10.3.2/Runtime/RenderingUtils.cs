@@ -278,6 +278,7 @@ namespace UnityEngine.Rendering.Universal
         /// <param name="format">The format to look up.</param>
         /// <param name="usage">The format usage to look up.</param>
         /// <returns>Returns true if the graphics card supports the given <c>GraphicsFormat</c></returns>
+        /// Done
         public static bool SupportsGraphicsFormat(GraphicsFormat format, FormatUsage usage)
         {
             bool support = false;
@@ -296,7 +297,6 @@ namespace UnityEngine.Rendering.Universal
                     uses.Add(usage, support);
                 }
             }
-
             return support;
         }
 

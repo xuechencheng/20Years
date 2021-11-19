@@ -370,6 +370,7 @@ namespace UnityEngine.Rendering.Universal
         /// </summary>
         /// <param name="camera">Camera to check state from.</param>
         /// <returns>true if given camera is a game camera, false otherwise.</returns>
+        /// Done
         public static bool IsGameCamera(Camera camera)
         {
             if (camera == null)
@@ -396,6 +397,7 @@ namespace UnityEngine.Rendering.Universal
         /// Returns the current render pipeline asset for the current quality setting.
         /// If no render pipeline asset is assigned in QualitySettings, then returns the one assigned in GraphicsSettings.
         /// </summary>
+        /// Done
         public static UniversalRenderPipelineAsset asset
         {
             get => GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;
@@ -423,26 +425,24 @@ namespace UnityEngine.Rendering.Universal
                 cameras.Sort(cameraComparison);
         }
 #else
+        //Done
         void SortCameras(Camera[] cameras)
         {
             if (cameras.Length > 1)
                 Array.Sort(cameras, cameraComparison);
         }
 #endif
-
+        //Done
         static RenderTextureDescriptor CreateRenderTextureDescriptor(Camera camera, float renderScale,
             bool isHdrEnabled, int msaaSamples, bool needsAlpha)
         {
             RenderTextureDescriptor desc;
             GraphicsFormat renderTextureFormatDefault = SystemInfo.GetGraphicsFormat(DefaultFormat.LDR);
-
             if (camera.targetTexture == null)
             {
                 desc = new RenderTextureDescriptor(camera.pixelWidth, camera.pixelHeight);
                 desc.width = (int)((float)desc.width * renderScale);
                 desc.height = (int)((float)desc.height * renderScale);
-
-
                 GraphicsFormat hdrFormat;
                 if (!needsAlpha && RenderingUtils.SupportsGraphicsFormat(GraphicsFormat.B10G11R11_UFloatPack32, FormatUsage.Linear | FormatUsage.Render))
                     hdrFormat = GraphicsFormat.B10G11R11_UFloatPack32;
@@ -450,7 +450,6 @@ namespace UnityEngine.Rendering.Universal
                     hdrFormat = GraphicsFormat.R16G16B16A16_SFloat;
                 else
                     hdrFormat = SystemInfo.GetGraphicsFormat(DefaultFormat.HDR); // This might actually be a LDR format on old devices.
-
                 desc.graphicsFormat = isHdrEnabled ? hdrFormat : renderTextureFormatDefault;
                 desc.depthBufferBits = 32;
                 desc.msaaSamples = msaaSamples;
@@ -472,11 +471,9 @@ namespace UnityEngine.Rendering.Universal
             desc.enableRandomWrite = false;
             desc.bindMS = false;
             desc.useDynamicScale = camera.allowDynamicResolution;
-
             // check that the requested MSAA samples count is supported by the current platform. If it's not supported,
             // replace the requested desc.msaaSamples value with the actual value the engine falls back to
             desc.msaaSamples = SystemInfo.GetRenderTextureSupportedMSAASampleCount(desc);
-
             return desc;
         }
 
