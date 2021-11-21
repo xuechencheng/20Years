@@ -241,6 +241,7 @@ namespace UnityEngine.Rendering.Universal
         }
 
         /// <inheritdoc />
+        /// Pause
         public override void Setup(ScriptableRenderContext context, ref RenderingData renderingData)
         {
 #if ADAPTIVE_PERFORMANCE_2_1_0_OR_NEWER
@@ -566,6 +567,7 @@ namespace UnityEngine.Rendering.Universal
         }
 
         /// <inheritdoc />
+        /// Done
         public override void SetupCullingParameters(ref ScriptableCullingParameters cullingParameters,
             ref CameraData cameraData)
         {

@@ -648,7 +648,7 @@ namespace UnityEngine.Rendering.Universal.Internal
 
             Profiler.EndSample();
         }
-
+        // Done
         public void ResolveMixedLightingMode(ref RenderingData renderingData)
         {
             // Find the mixed lighting mode. This is the same logic as ForwardLights.

@@ -1,0 +1,605 @@
+Using pre-set license
+Built from '2020.3/china_unity/release' branch; Version is '2020.3.1f1c1 (3e9f4b065a9d) revision 4104011'; Using compiler version '192528614'; Build Type 'Release'
+OS: 'Windows 10 Home China; OS build 19042.1348; Version 2009; 64bit' Language: 'zh' Physical Memory: 65249 MB
+BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1, IsPro: 0
+
+ COMMAND LINE ARGUMENTS:
+C:\Program Files\Unity\Hub\Editor\2020.3.1f1c1\Editor\Unity.exe
+-adb2
+-batchMode
+-noUpm
+-name
+AssetImportWorker0
+-projectPath
+D:/20Years/Codes/URPCode
+-logFile
+Logs/AssetImportWorker0.log
+-srvPort
+53222
+Successfully changed project path to: D:/20Years/Codes/URPCode
+D:/20Years/Codes/URPCode
+Using Asset Import Pipeline V2.
+Refreshing native plugins compatible for Editor in 31.51 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Initialize engine version: 2020.3.1f1c1 (3e9f4b065a9d)
+[Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/2020.3.1f1c1/Editor/Data/Resources/UnitySubsystems
+[Subsystems] Discovering subsystems at path D:/20Years/Codes/URPCode/Assets
+GfxDevice: creating device client; threaded=0
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.1]
+    Renderer: NVIDIA GeForce RTX 2060 (ID=0x1f08)
+    Vendor:   
+    VRAM:     5980 MB
+    Driver:   27.21.14.6172
+Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
+Initialize mono
+Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/2020.3.1f1c1/Editor/Data/Managed'
+Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/2020.3.1f1c1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit'
+Mono config path = 'C:/Program Files/Unity/Hub/Editor/2020.3.1f1c1/Editor/Data/MonoBleedingEdge/etc'
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56788
+Begin MonoManager ReloadAssembly
+Registering precompiled unity dll's ...
+Register platform support module: C:/Program Files/Unity/Hub/Editor/2020.3.1f1c1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
+Registered in 0.001501 seconds.
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 32.18 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Invoked RoslynAnalysisRunner static constructor.
+RoslynAnalysisRunner will not be running.
+RoslynAnalysisRunner has terminated.
+Mono: successfully reloaded assembly
+- Completed reload, in  1.517 seconds
+Platform modules already initialized, skipping
+Registering precompiled user dll's ...
+Registered in 0.000811 seconds.
+Begin MonoManager ReloadAssembly
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 33.18 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Invoked RoslynAnalysisRunner static constructor.
+RoslynAnalysisRunner will not be running.
+RoslynAnalysisRunner has terminated.
+Mono: successfully reloaded assembly
+- Completed reload, in  0.745 seconds
+Platform modules already initialized, skipping
+========================================================================
+Worker process is ready to serve import requests
+Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.03 seconds
+Refreshing native plugins compatible for Editor in 0.33 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 2413 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 111.4 MB.
+System memory in use after: 111.6 MB.
+
+Unloading 10 unused Assets to reduce memory usage. Loaded Objects now: 2854.
+Total: 1.796200 ms (FindLiveObjects: 0.267100 ms CreateObjectMapping: 0.108100 ms MarkObjects: 1.369000 ms  DeleteObjects: 0.051100 ms)
+
+========================================================================
+Received Import Request.
+  path: Packages/com.unity.render-pipelines.universal/Runtime/ForwardLights.cs
+  artifactKey: Guid(54d9cfe23e3274c689c539ee0ee17dcf) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Runtime/ForwardLights.cs using Guid(54d9cfe23e3274c689c539ee0ee17dcf) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '9b0bdcb11001a381d4b06c085193292e') in 0.021216 seconds
+  Import took 0.024026 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000145 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Runtime/SampleCount.cs
+  artifactKey: Guid(2cdbafc04e2383e4ca5c05e7f873e1fa) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Runtime/SampleCount.cs using Guid(2cdbafc04e2383e4ca5c05e7f873e1fa) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '9bff6db33596d70a6757c218200d8a9b') in 0.002511 seconds
+  Import took 0.004749 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.226059 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Runtime/DeferredLights.cs
+  artifactKey: Guid(f8a1318f0ebaa394fbc8d104806092b4) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Runtime/DeferredLights.cs using Guid(f8a1318f0ebaa394fbc8d104806092b4) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '895e54ac6f34fae962b614617449ca22') in 0.002699 seconds
+  Import took 0.005572 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 1.269932 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Runtime/AssemblyInfo.cs
+  artifactKey: Guid(61ba514d93f94d14a8638d884815c8c0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Runtime/AssemblyInfo.cs using Guid(61ba514d93f94d14a8638d884815c8c0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'e3b02aa469073b8e44b8eb8cd6f3b0d8') in 0.002848 seconds
+  Import took 0.005672 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 1.379555 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Runtime/ComponentUtility.cs
+  artifactKey: Guid(06368c8598883e74380014e9a7db3e7c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Runtime/ComponentUtility.cs using Guid(06368c8598883e74380014e9a7db3e7c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'f033b18e14e48bfe710f47e626466818') in 0.002549 seconds
+  Import took 0.005448 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 2.422562 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Runtime/ForwardRenderer.cs
+  artifactKey: Guid(819a1532a6d186b4cb1272f8d6e80293) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Runtime/ForwardRenderer.cs using Guid(819a1532a6d186b4cb1272f8d6e80293) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '28aeaa6d9b8df5c51fd9d8f19c96b252') in 0.002743 seconds
+  Import took 0.005564 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 1.152134 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Runtime/PostProcessUtils.cs
+  artifactKey: Guid(f2a793e0b6312e9449cf44973fd6acb0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Runtime/PostProcessUtils.cs using Guid(f2a793e0b6312e9449cf44973fd6acb0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'a6dcd9477008b002dd835c3203a0ae58') in 0.002594 seconds
+  Import took 0.005353 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 1.144732 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Runtime/RenderTargetHandle.cs
+  artifactKey: Guid(d7a47b64c248a9448845c28f15c6ca10) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Runtime/RenderTargetHandle.cs using Guid(d7a47b64c248a9448845c28f15c6ca10) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '378a8c827ae87638ffa8b57ffa631bed') in 0.002822 seconds
+  Import took 0.005680 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 2.394464 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Runtime/ScriptableRendererData.cs
+  artifactKey: Guid(56aa82b8bdef84972bf84cf772d3c550) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Runtime/ScriptableRendererData.cs using Guid(56aa82b8bdef84972bf84cf772d3c550) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'a2f53eab404e14785043769187bac1e7') in 0.002514 seconds
+  Import took 0.005305 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 1.321375 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Runtime/ShaderData.cs
+  artifactKey: Guid(a6c561a6ea5b9c7438624a404f703912) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Runtime/ShaderData.cs using Guid(a6c561a6ea5b9c7438624a404f703912) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '2b711f03b68210cb0b3375ff9e8f6741') in 0.002653 seconds
+  Import took 0.005603 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 5.209948 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Runtime/Deprecated.cs
+  artifactKey: Guid(0cc0cb6442378495eb09b7fa31891834) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Runtime/Deprecated.cs using Guid(0cc0cb6442378495eb09b7fa31891834) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '0210dbbd7fae5cd36f560e0936df43f9') in 0.002621 seconds
+  Import took 0.005601 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 61.488708 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Runtime/Passes
+  artifactKey: Guid(c2a16f045b3148e4f9d0d62614a81a61) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Runtime/Passes using Guid(c2a16f045b3148e4f9d0d62614a81a61) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '96382d30f584ba96870db3010dbaab00') in 0.002607 seconds
+  Import took 0.005667 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.614485 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Runtime/Materials
+  artifactKey: Guid(7f10efc5458aa44a2928a72c38807544) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Runtime/Materials using Guid(7f10efc5458aa44a2928a72c38807544) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '8d02c73949ecdf56a777e118e37be62d') in 0.002744 seconds
+  Import took 0.005589 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.502406 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Runtime/External
+  artifactKey: Guid(a16d3f5cc558b4b45937e84b914b6de0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Runtime/External using Guid(a16d3f5cc558b4b45937e84b914b6de0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'abdabe8c2ee5ec4e2d5a520de105fd6c') in 0.002936 seconds
+  Import took 0.006045 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.530722 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Runtime/Data
+  artifactKey: Guid(d59f1663563e245fabce035da7cecd75) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Runtime/Data using Guid(d59f1663563e245fabce035da7cecd75) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'ce4d5a02b5b60a7a323fdbe440fa527c') in 0.002680 seconds
+  Import took 0.005681 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.615967 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Runtime/2D
+  artifactKey: Guid(5fbe43a4058e69f4ca1ac77ea6e1bda6) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Runtime/2D using Guid(5fbe43a4058e69f4ca1ac77ea6e1bda6) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '6b30926f7df41d14c2f610f5e50bbafc') in 0.002514 seconds
+  Import took 0.005368 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 11.014782 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Runtime/Data/XRSystemData.cs
+  artifactKey: Guid(307a736764ebbce44b54d72f8467b6fd) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Runtime/Data/XRSystemData.cs using Guid(307a736764ebbce44b54d72f8467b6fd) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '4890df884335bedc17121a43832c2665') in 0.002752 seconds
+  Import took 0.005688 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.538899 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Runtime/Data/UniversalRenderPipelineEditorResources.asset
+  artifactKey: Guid(a3d8d823eedde654bb4c11a1cfaf1abb) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Runtime/Data/UniversalRenderPipelineEditorResources.asset using Guid(a3d8d823eedde654bb4c11a1cfaf1abb) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '3976935c3a47203cf7f8587b128eb9e0') in 0.017014 seconds
+  Import took 0.020273 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.455244 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Runtime/Data/RenderStateData.cs
+  artifactKey: Guid(682abd313990845aabd60612b4828970) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Runtime/Data/RenderStateData.cs using Guid(682abd313990845aabd60612b4828970) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '057a5c7ab56c00d6c0810c4fd6437aec') in 0.002448 seconds
+  Import took 0.005239 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.531931 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Runtime/Data/PostProcessData.cs
+  artifactKey: Guid(572910c10080c0945a0ef731ccedc739) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Runtime/Data/PostProcessData.cs using Guid(572910c10080c0945a0ef731ccedc739) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '13c0c374a8432049df73608da3e5f31a') in 0.002836 seconds
+  Import took 0.005671 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.464754 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Runtime/Data/PostProcessData.asset
+  artifactKey: Guid(41439944d30ece34e96484bdb6645b55) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Runtime/Data/PostProcessData.asset using Guid(41439944d30ece34e96484bdb6645b55) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '0adc8d4cba5ade9824fef7040951f7f3') in 0.002410 seconds
+  Import took 0.005306 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.802331 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Runtime/Data/ForwardRendererData.asset
+  artifactKey: Guid(618d298269e66c542b306de85db1faea) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Runtime/Data/ForwardRendererData.asset using Guid(618d298269e66c542b306de85db1faea) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'af1049b2e5989ad991d10c7dde9d13a4') in 0.004381 seconds
+  Import took 0.007198 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 2.222123 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Runtime/Data/UniversalRenderPipelineAsset.cs
+  artifactKey: Guid(bf2edee5c58d82540a51f03df9d42094) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Runtime/Data/UniversalRenderPipelineAsset.cs using Guid(bf2edee5c58d82540a51f03df9d42094) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '4f8273a01eb9af0ebd68f8c1c5cfdd81') in 0.002573 seconds
+  Import took 0.005286 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 1.050464 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Runtime/Data/UniversalRenderPipelineEditorResources.cs
+  artifactKey: Guid(76e49a5b88430df478c504fe5a5c1a62) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Runtime/Data/UniversalRenderPipelineEditorResources.cs using Guid(76e49a5b88430df478c504fe5a5c1a62) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '237af92b571e7c4eab1af9440c0e3e3a') in 0.001897 seconds
+  Import took 0.004623 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.527753 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Runtime/Data/XRSystemData.asset
+  artifactKey: Guid(60e1133243b97e347b653163a8c01b64) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Runtime/Data/XRSystemData.asset using Guid(60e1133243b97e347b653163a8c01b64) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'f83f67704da0148c7a3dfab23d3520bb') in 0.002371 seconds
+  Import took 0.005227 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 80.734255 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Editor/Deprecated.cs
+  artifactKey: Guid(24e4e1fbc830f374faaaf6376d26e711) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Editor/Deprecated.cs using Guid(24e4e1fbc830f374faaaf6376d26e711) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '005a803acef5196acec5c0b169448801') in 0.002080 seconds
+  Import took 0.005365 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.461013 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Editor/AssemblyInfo.cs
+  artifactKey: Guid(ee81cfba546d646ca9b7a9394f78b66b) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Editor/AssemblyInfo.cs using Guid(ee81cfba546d646ca9b7a9394f78b66b) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '205a6b96a713adf15f219901a00af7b3') in 0.001920 seconds
+  Import took 0.004879 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.494232 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph
+  artifactKey: Guid(ae1e56b12b01f3b4d9c9bb9d7154d97f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph using Guid(ae1e56b12b01f3b4d9c9bb9d7154d97f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '698bb4881656ef1f6ca8a15192683967') in 0.004590 seconds
+  Import took 0.007428 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.474879 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Editor/Overrides
+  artifactKey: Guid(ad2bd79f2c9e81640b75c0a7edbe7970) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Editor/Overrides using Guid(ad2bd79f2c9e81640b75c0a7edbe7970) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '86da0c4a8b1cc2e903bf10c135e5f6b2') in 0.002853 seconds
+  Import took 0.005705 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.426163 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Editor/DefaultScene
+  artifactKey: Guid(0660d0bf211d87048b02c8eca725dee2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Editor/DefaultScene using Guid(0660d0bf211d87048b02c8eca725dee2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '758e4ab521dbb69319a5d1833b6fe4c0') in 0.002577 seconds
+  Import took 0.005428 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.579234 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Editor/2D
+  artifactKey: Guid(b3fb8b56aca55544ca9b8d53bc19e031) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Editor/2D using Guid(b3fb8b56aca55544ca9b8d53bc19e031) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '2169e337ac7466e17513d834bb3913c3') in 0.002191 seconds
+  Import took 0.005054 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.441988 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Editor/AssetPostProcessors
+  artifactKey: Guid(80a17677e8c9b3040a01d400cf19819f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Editor/AssetPostProcessors using Guid(80a17677e8c9b3040a01d400cf19819f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '6bd024a47f268ec371cd30003579e180') in 0.002738 seconds
+  Import took 0.005646 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.892627 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Editor/AssetVersion.cs
+  artifactKey: Guid(d0353a89b1f911e48b9e16bdc9f2e058) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Editor/AssetVersion.cs using Guid(d0353a89b1f911e48b9e16bdc9f2e058) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'd5d9f71cbb9828dad27aa31fcbb993d3') in 0.002699 seconds
+  Import took 0.005609 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.407873 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Editor/ForwardRendererDataEditor.cs
+  artifactKey: Guid(83bc10a7c2ad648febccee3b43d25f20) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Editor/ForwardRendererDataEditor.cs using Guid(83bc10a7c2ad648febccee3b43d25f20) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'b81fc88f79f078b72f52dd89a218ef87') in 0.002579 seconds
+  Import took 0.005306 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.527560 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Editor/SavedParameter.cs
+  artifactKey: Guid(f334589a3e8ed644fa711158935ddabd) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Editor/SavedParameter.cs using Guid(f334589a3e8ed644fa711158935ddabd) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'b1a0f81d1f892c698b589db30ee5f882') in 0.002659 seconds
+  Import took 0.005479 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.455931 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Editor/ShaderPreprocessor.cs
+  artifactKey: Guid(9f7bf504ded5bcb48835f194831914c8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Editor/ShaderPreprocessor.cs using Guid(9f7bf504ded5bcb48835f194831914c8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '35d85746295de6803d8c42085447202d') in 0.003178 seconds
+  Import took 0.006075 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.548001 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Editor/UniversalAdditionalCameraDataEditor.cs
+  artifactKey: Guid(b34d70112ee5152438161d88c5f21082) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Editor/UniversalAdditionalCameraDataEditor.cs using Guid(b34d70112ee5152438161d88c5f21082) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'eabd2e5cc97137e562b4a5102d4f77de') in 0.002785 seconds
+  Import took 0.005497 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.452354 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Editor/UniversalAnalytics.cs
+  artifactKey: Guid(faf8a17ca9820a74d92f339faeb2abc6) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Editor/UniversalAnalytics.cs using Guid(faf8a17ca9820a74d92f339faeb2abc6) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '5b300bd7f1324d68bf66489d95f78a88') in 0.002742 seconds
+  Import took 0.005444 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.503229 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Editor/UniversalRenderPipelineCameraEditor.cs
+  artifactKey: Guid(d569aa2a3d2a1a74aaf68c388f2e0798) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Editor/UniversalRenderPipelineCameraEditor.cs using Guid(d569aa2a3d2a1a74aaf68c388f2e0798) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '621cd89e8d5646dc6fab0cfd76bf77c8') in 0.002706 seconds
+  Import took 0.005445 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.465718 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Editor/UniversalRenderPipelineLightEditor.cs
+  artifactKey: Guid(aecdbe497ecdc4e498e66886c0b963cd) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Editor/UniversalRenderPipelineLightEditor.cs using Guid(aecdbe497ecdc4e498e66886c0b963cd) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'a64542295f073401cb876d53eab2b6be') in 0.002848 seconds
+  Import took 0.005644 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.454158 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Editor/UniversalRenderPipelineMaterialUpgrader.cs
+  artifactKey: Guid(aec5479bdc442cb4d96b1de3f5e5c818) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Editor/UniversalRenderPipelineMaterialUpgrader.cs using Guid(aec5479bdc442cb4d96b1de3f5e5c818) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '2b0882d7eaa4a2adb1f929e8f4b0e0c1') in 0.002543 seconds
+  Import took 0.005411 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.427423 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Editor/UpgradeCommon.cs
+  artifactKey: Guid(8fe5351dffe46e648adb2abd7a167ce7) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Editor/UpgradeCommon.cs using Guid(8fe5351dffe46e648adb2abd7a167ce7) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '1daa2cce37e0f7354164438ee1ef58a1') in 0.002585 seconds
+  Import took 0.005530 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.949407 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Editor/UniversalRenderPipelineAssetEditor.cs
+  artifactKey: Guid(81f58d95eba277541b76ad69cb7e3cc7) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Editor/UniversalRenderPipelineAssetEditor.cs using Guid(81f58d95eba277541b76ad69cb7e3cc7) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '8c70d6d8a1e647b7ad9c105a3a196bbb') in 0.002661 seconds
+  Import took 0.005486 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 1.700796 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Editor/LightExplorer.cs
+  artifactKey: Guid(dc4f14b5fb9db4e99a705e5f81c13cf5) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Editor/LightExplorer.cs using Guid(dc4f14b5fb9db4e99a705e5f81c13cf5) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '3dc7582ecde3217d6433b451cd639719') in 0.002563 seconds
+  Import took 0.005354 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.439470 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Editor/EditorUtils.cs
+  artifactKey: Guid(6da1e646299b347c0895ca5f21f8c47c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Editor/EditorUtils.cs using Guid(6da1e646299b347c0895ca5f21f8c47c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '136951165ff34bb27404c449e8cd2a6c') in 0.002597 seconds
+  Import took 0.005341 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 4.068171 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Editor/ScriptableRendererFeatureEditor.cs
+  artifactKey: Guid(105429ad202549b4840ad53f285c3e94) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Editor/ScriptableRendererFeatureEditor.cs using Guid(105429ad202549b4840ad53f285c3e94) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '95206ae352e2a496d852096e773ca1ad') in 0.004673 seconds
+  Import took 0.007582 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 2.665841 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Editor/ScriptableRendererDataEditor.cs
+  artifactKey: Guid(b2edbde2868724290bf284ad89ced590) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Editor/ScriptableRendererDataEditor.cs using Guid(b2edbde2868724290bf284ad89ced590) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '4590344f7af5b76323465ababc327e6c') in 0.002597 seconds
+  Import took 0.005324 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 1.375474 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Editor/Shadow
+  artifactKey: Guid(79381f0a1a24d284cb7d726fde8b3cca) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Editor/Shadow using Guid(79381f0a1a24d284cb7d726fde8b3cca) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'e69331f99ccc8b422f0638416cab7a29') in 0.002708 seconds
+  Import took 0.005634 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 1.912476 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Editor/TrackballUIDrawer.cs
+  artifactKey: Guid(b81c1a435d4bc9e40a19e0326117db7c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Editor/TrackballUIDrawer.cs using Guid(b81c1a435d4bc9e40a19e0326117db7c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'adf149bff06651b436485932465f9f17') in 0.002710 seconds
+  Import took 0.005445 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 2.510852 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Editor/PostProcessDataEditor.cs
+  artifactKey: Guid(aaa0f30bef36d854a9c4918b2bc186e0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Editor/PostProcessDataEditor.cs using Guid(aaa0f30bef36d854a9c4918b2bc186e0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '40089ce4a80dfa37e8454eb695f76ece') in 0.003191 seconds
+  Import took 0.006119 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 2.613484 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Editor/UniversalAdditionalLightDataEditor.cs
+  artifactKey: Guid(89a44a55ca94af242b02a0f02edb0ae7) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Editor/UniversalAdditionalLightDataEditor.cs using Guid(89a44a55ca94af242b02a0f02edb0ae7) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '525591a2fe4ab084c927c777b1042c42') in 0.002570 seconds
+  Import took 0.005482 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 2.002368 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Editor/Unity.RenderPipelines.Universal.Editor.asmdef
+  artifactKey: Guid(c579267770062bf448e75eb160330b7f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Editor/Unity.RenderPipelines.Universal.Editor.asmdef using Guid(c579267770062bf448e75eb160330b7f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'eac6e64ef981bc9299d7ca08800e7c77') in 0.003552 seconds
+  Import took 0.006311 seconds .
+
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.000947 seconds.
+Begin MonoManager ReloadAssembly
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 0.59 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Invoked RoslynAnalysisRunner static constructor.
+RoslynAnalysisRunner will not be running.
+RoslynAnalysisRunner has terminated.
+Mono: successfully reloaded assembly
+- Completed reload, in  0.766 seconds
+Platform modules already initialized, skipping
+Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
+Refreshing native plugins compatible for Editor in 0.36 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 2304 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 105.6 MB.
+System memory in use after: 105.8 MB.
+
+Unloading 5 unused Assets to reduce memory usage. Loaded Objects now: 2857.
+Total: 1.708000 ms (FindLiveObjects: 0.223300 ms CreateObjectMapping: 0.106400 ms MarkObjects: 1.363100 ms  DeleteObjects: 0.014200 ms)
+
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.000927 seconds.
+Begin MonoManager ReloadAssembly
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 0.34 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Invoked RoslynAnalysisRunner static constructor.
+RoslynAnalysisRunner will not be running.
+RoslynAnalysisRunner has terminated.
+Mono: successfully reloaded assembly
+- Completed reload, in  0.778 seconds
+Platform modules already initialized, skipping
+Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
+Refreshing native plugins compatible for Editor in 0.34 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 2304 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 105.6 MB.
+System memory in use after: 105.8 MB.
+
+Unloading 5 unused Assets to reduce memory usage. Loaded Objects now: 2860.
+Total: 1.830100 ms (FindLiveObjects: 0.328300 ms CreateObjectMapping: 0.125100 ms MarkObjects: 1.360200 ms  DeleteObjects: 0.015000 ms)
+
+========================================================================
+Received Import Request.
+  Time since last request: 5171.762343 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Runtime/UniversalRenderPipeline.cs
+  artifactKey: Guid(ae13646e45aa3634da32df7c7da1c380) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Runtime/UniversalRenderPipeline.cs using Guid(ae13646e45aa3634da32df7c7da1c380) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '7e9637abce4a371b1633a20cfe28bec7') in 0.004573 seconds
+  Import took 0.008175 seconds .
+
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.000951 seconds.
+Begin MonoManager ReloadAssembly
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 0.34 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Invoked RoslynAnalysisRunner static constructor.
+RoslynAnalysisRunner will not be running.
+RoslynAnalysisRunner has terminated.
+Mono: successfully reloaded assembly
+- Completed reload, in  0.705 seconds
+Platform modules already initialized, skipping
+Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
+Refreshing native plugins compatible for Editor in 0.34 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 2304 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 105.6 MB.
+System memory in use after: 105.9 MB.
+
+Unloading 5 unused Assets to reduce memory usage. Loaded Objects now: 2863.
+Total: 1.670800 ms (FindLiveObjects: 0.238400 ms CreateObjectMapping: 0.108100 ms MarkObjects: 1.310000 ms  DeleteObjects: 0.013100 ms)
+
+========================================================================
+Received Import Request.
+  Time since last request: 14301.062797 seconds.
+  path: Assets/UniversalRenderPipelineAsset.asset
+  artifactKey: Guid(5736a266364636a4aa88179f9de2e82a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/UniversalRenderPipelineAsset.asset using Guid(5736a266364636a4aa88179f9de2e82a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '348d90e6161c65e875f44ae8d942a209') in 0.015637 seconds
+  Import took 0.019164 seconds .
+
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.000911 seconds.
+Begin MonoManager ReloadAssembly
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 0.33 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Invoked RoslynAnalysisRunner static constructor.
+RoslynAnalysisRunner will not be running.
+RoslynAnalysisRunner has terminated.
+Mono: successfully reloaded assembly
+- Completed reload, in  0.719 seconds
+Platform modules already initialized, skipping
+Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
+Refreshing native plugins compatible for Editor in 0.35 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 2305 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 105.7 MB.
+System memory in use after: 105.9 MB.
+
+Unloading 5 unused Assets to reduce memory usage. Loaded Objects now: 2867.
+Total: 1.614900 ms (FindLiveObjects: 0.214600 ms CreateObjectMapping: 0.096200 ms MarkObjects: 1.290100 ms  DeleteObjects: 0.013300 ms)
+
+AssetImportWorkerClient::OnTransportError - code=2 error=End of file

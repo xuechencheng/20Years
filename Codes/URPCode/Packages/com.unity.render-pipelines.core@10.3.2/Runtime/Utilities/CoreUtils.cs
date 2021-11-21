@@ -1012,6 +1012,7 @@ namespace UnityEngine.Rendering
         /// </summary>
         /// <param name="camera">Input camera.</param>
         /// <returns>True if "Post Processes" are enabled for the view associated with the given camera.</returns>
+        /// Done
         public static bool ArePostProcessesEnabled(Camera camera)
         {
             bool enabled = true;

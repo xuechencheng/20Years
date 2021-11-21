@@ -32,6 +32,7 @@ namespace UnityEngine.Rendering.Universal
             private static Dictionary<int, ProfilingSampler> s_HashSamplerCache = new Dictionary<int, ProfilingSampler>();
             public static readonly ProfilingSampler unknownSampler = new ProfilingSampler("Unknown");
 
+            // Done
             // Specialization for camera loop to avoid allocations.
             public static ProfilingSampler TryGetOrAddCameraSampler(Camera camera)
             {
@@ -126,6 +127,7 @@ namespace UnityEngine.Rendering.Universal
         const int k_MaxVisibleAdditionalLightsMobileShaderLevelLessThan45 = 16;
         const int k_MaxVisibleAdditionalLightsMobile    = 32;
         const int k_MaxVisibleAdditionalLightsNonMobile = 256;
+
         public static int maxVisibleAdditionalLights
         {
             get
@@ -200,6 +202,7 @@ namespace UnityEngine.Rendering.Universal
 #if UNITY_2021_1_OR_NEWER
         protected override void Render(ScriptableRenderContext renderContext, List<Camera> cameras)
 #else
+        // Start Point
         protected override void Render(ScriptableRenderContext renderContext, Camera[] cameras)
 #endif
         {
@@ -295,7 +298,7 @@ namespace UnityEngine.Rendering.Universal
 #endif
             RenderSingleCamera(context, cameraData, cameraData.postProcessEnabled);
         }
-
+        //Done
         static bool TryGetCullingParameters(CameraData cameraData, out ScriptableCullingParameters cullingParams)
         {
 #if ENABLE_VR && ENABLE_XR_MODULE
@@ -320,6 +323,7 @@ namespace UnityEngine.Rendering.Universal
         /// <param name="context">Render context used to record commands during execution.</param>
         /// <param name="cameraData">Camera rendering data. This might contain data inherited from a base camera.</param>
         /// <param name="anyPostProcessingEnabled">True if at least one camera has post-processing enabled in the stack, false otherwise.</param>
+        /// Pause
         static void RenderSingleCamera(ScriptableRenderContext context, CameraData cameraData, bool anyPostProcessingEnabled)
         {
             Camera camera = cameraData.camera;
@@ -335,7 +339,6 @@ namespace UnityEngine.Rendering.Universal
 
             ScriptableRenderer.current = renderer;
             bool isSceneViewCamera = cameraData.isSceneViewCamera;
-
             // NOTE: Do NOT mix ProfilingScope with named CommandBuffers i.e. CommandBufferPool.Get("name").
             // Currently there's an issue which results in mismatched markers.
             // The named CommandBuffer will close its "profiling scope" on execution.
@@ -487,7 +490,7 @@ namespace UnityEngine.Rendering.Universal
                 //It should be called before culling to prepare material. When there isn't any VisualEffect component, this method has no effect.
                 VFX.VFXManager.PrepareCamera(baseCamera);
 #endif
-                UpdateVolumeFramework(baseCamera, baseCameraAdditionalData);
+                UpdateVolumeFramework(baseCamera, baseCameraAdditionalData);//´ýÐø
 #if ADAPTIVE_PERFORMANCE_2_0_0_OR_NEWER
                 if (asset.useAdaptivePerformance)
                     ApplyAdaptivePerformance(ref baseCameraData);
@@ -589,7 +592,7 @@ namespace UnityEngine.Rendering.Universal
 
             VolumeManager.instance.Update(trigger, layerMask);
         }
-
+        //Done
         static bool CheckPostProcessForDepth(in CameraData cameraData)
         {
             if (!cameraData.postProcessEnabled)
@@ -628,7 +631,7 @@ namespace UnityEngine.Rendering.Universal
             SceneViewDrawMode.SetupDrawMode();
 #endif
         }
-
+        //Done
         static void InitializeCameraData(Camera camera, UniversalAdditionalCameraData additionalCameraData, bool resolveFinalTarget, out CameraData cameraData)
         {
             using var profScope = new ProfilingScope(null, Profiling.Pipeline.initializeCameraData);
@@ -741,7 +744,7 @@ namespace UnityEngine.Rendering.Universal
         /// <param name="additionalCameraData">Additional camera data component to initialize settings from.</param>
         /// <param name="resolveFinalTarget">True if this is the last camera in the stack and rendering should resolve to camera target.</param>
         /// <param name="cameraData">Settings to be initilized.</param>
-        /// Pause
+        /// Done
         static void InitializeAdditionalCameraData(Camera camera, UniversalAdditionalCameraData additionalCameraData, bool resolveFinalTarget, ref CameraData cameraData)
         {
             using var profScope = new ProfilingScope(null, Profiling.Pipeline.initializeAdditionalCameraData);
@@ -815,7 +818,7 @@ namespace UnityEngine.Rendering.Universal
 
             cameraData.SetViewAndProjectionMatrix(camera.worldToCameraMatrix, projectionMatrix);
         }
-
+        //Done
         static void InitializeRenderingData(UniversalRenderPipelineAsset settings, ref CameraData cameraData, ref CullingResults cullResults,
             bool anyPostProcessingEnabled, out RenderingData renderingData)
         {
@@ -861,7 +864,7 @@ namespace UnityEngine.Rendering.Universal
             renderingData.perObjectData = GetPerObjectLightFlags(renderingData.lightData.additionalLightsCount);
             renderingData.postProcessingEnabled = anyPostProcessingEnabled;
         }
-
+        // Done
         static void InitializeShadowData(UniversalRenderPipelineAsset settings, NativeArray<VisibleLight> visibleLights, bool mainLightCastShadows, bool additionalLightsCastShadows, out ShadowData shadowData)
         {
             using var profScope = new ProfilingScope(null, Profiling.Pipeline.initializeShadowData);
@@ -876,24 +879,19 @@ namespace UnityEngine.Rendering.Universal
                 {
                     light.gameObject.TryGetComponent(out data);
                 }
-
                 if (data && !data.usePipelineSettings)
                     m_ShadowBiasData.Add(new Vector4(light.shadowBias, light.shadowNormalBias, 0.0f, 0.0f));
                 else
                     m_ShadowBiasData.Add(new Vector4(settings.shadowDepthBias, settings.shadowNormalBias, 0.0f, 0.0f));
             }
-
             shadowData.bias = m_ShadowBiasData;
             shadowData.supportsMainLightShadows = SystemInfo.supportsShadows && settings.supportsMainLightShadows && mainLightCastShadows;
-
             // We no longer use screen space shadows in URP.
             // This change allows us to have particles & transparent objects receive shadows.
             shadowData.requiresScreenSpaceShadowResolve = false;
-
             shadowData.mainLightShadowCascadesCount = settings.shadowCascadeCount;
             shadowData.mainLightShadowmapWidth = settings.mainLightShadowmapResolution;
             shadowData.mainLightShadowmapHeight = settings.mainLightShadowmapResolution;
-
             switch (shadowData.mainLightShadowCascadesCount)
             {
                 case 1:
@@ -918,7 +916,7 @@ namespace UnityEngine.Rendering.Universal
             shadowData.supportsSoftShadows = settings.supportsSoftShadows && (shadowData.supportsMainLightShadows || shadowData.supportsAdditionalLightShadows);
             shadowData.shadowmapDepthBufferBits = 16;
         }
-
+        //Done
         static void InitializePostProcessingData(UniversalRenderPipelineAsset settings, out PostProcessingData postProcessingData)
         {
             postProcessingData.gradingMode = settings.supportsHDR
@@ -927,7 +925,7 @@ namespace UnityEngine.Rendering.Universal
 
             postProcessingData.lutSize = settings.colorGradingLutSize;
         }
-
+        // Done
         static void InitializeLightData(UniversalRenderPipelineAsset settings, NativeArray<VisibleLight> visibleLights, int mainLightIndex, out LightData lightData)
         {
             using var profScope = new ProfilingScope(null, Profiling.Pipeline.initializeLightData);
@@ -954,7 +952,7 @@ namespace UnityEngine.Rendering.Universal
             lightData.visibleLights = visibleLights;
             lightData.supportsMixedLighting = settings.supportsMixedLighting;
         }
-
+        //Done
         static PerObjectData GetPerObjectLightFlags(int additionalLightsCount)
         {
             using var profScope = new ProfilingScope(null, Profiling.Pipeline.getPerObjectLightFlags);
@@ -974,6 +972,7 @@ namespace UnityEngine.Rendering.Universal
         }
 
         // Main Light is always a directional light
+        // Done
         static int GetMainLightIndex(UniversalRenderPipelineAsset settings, NativeArray<VisibleLight> visibleLights)
         {
             using var profScope = new ProfilingScope(null, Profiling.Pipeline.getMainLightIndex);
@@ -1015,10 +1014,10 @@ namespace UnityEngine.Rendering.Universal
             return brightestDirectionalLightIndex;
         }
 
+        //Done
         static void SetupPerFrameShaderConstants()
         {
             using var profScope = new ProfilingScope(null, Profiling.Pipeline.setupPerFrameShaderConstants);
-
             // When glossy reflections are OFF in the shader we set a constant color to use as indirect specular
             SphericalHarmonicsL2 ambientSH = RenderSettings.ambientProbe;
             Color linearGlossyEnvColor = new Color(ambientSH[0, 0], ambientSH[1, 0], ambientSH[2, 0]) * RenderSettings.reflectionIntensity;
