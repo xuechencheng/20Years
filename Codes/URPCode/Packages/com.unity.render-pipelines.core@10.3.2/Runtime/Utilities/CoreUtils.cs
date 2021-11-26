@@ -185,6 +185,7 @@ namespace UnityEngine.Rendering
         /// <param name="cmd">CommandBuffer used for rendering commands.</param>
         /// <param name="clearFlag">Specify how the render texture should be cleared.</param>
         /// <param name="clearColor">Specify with which color the render texture should be cleared.</param>
+        /// Done
         public static void ClearRenderTarget(CommandBuffer cmd, ClearFlag clearFlag, Color clearColor)
         {
             if (clearFlag != ClearFlag.None)
@@ -333,6 +334,7 @@ namespace UnityEngine.Rendering
         /// <param name="storeAction">Store action.</param>
         /// <param name="clearFlag">If not set to ClearFlag.None, specifies how to clear the render target after setup.</param>
         /// <param name="clearColor">If applicable, color with which to clear the render texture after setup.</param>
+        /// Done
         public static void SetRenderTarget(CommandBuffer cmd, RenderTargetIdentifier buffer, RenderBufferLoadAction loadAction, RenderBufferStoreAction storeAction, ClearFlag clearFlag, Color clearColor)
         {
             cmd.SetRenderTarget(buffer, loadAction, storeAction);
@@ -364,6 +366,7 @@ namespace UnityEngine.Rendering
         /// <param name="depthStoreAction">Depth buffer store action.</param>
         /// <param name="clearFlag">If not set to ClearFlag.None, specifies how to clear the render target after setup.</param>
         /// <param name="clearColor">If applicable, color with which to clear the render texture after setup.</param>
+        /// Done
         public static void SetRenderTarget(CommandBuffer cmd, RenderTargetIdentifier colorBuffer, RenderBufferLoadAction colorLoadAction, RenderBufferStoreAction colorStoreAction,
             RenderTargetIdentifier depthBuffer, RenderBufferLoadAction depthLoadAction, RenderBufferStoreAction depthStoreAction,
             ClearFlag clearFlag, Color clearColor)
@@ -1016,21 +1019,17 @@ namespace UnityEngine.Rendering
         public static bool ArePostProcessesEnabled(Camera camera)
         {
             bool enabled = true;
-
         #if UNITY_EDITOR
             if (camera.cameraType == CameraType.SceneView)
             {
                 enabled = false;
-
                 // Determine whether the "Post Processes" checkbox is checked for the current view.
                 for (int i = 0; i < UnityEditor.SceneView.sceneViews.Count; i++)
                 {
                     var sv = UnityEditor.SceneView.sceneViews[i] as UnityEditor.SceneView;
-
                     // Post-processing is disabled in scene view if either showImageEffects is disabled or we are
                     // rendering in wireframe mode.
-                    if (sv.camera == camera &&
-                        (sv.sceneViewState.imageEffectsEnabled && sv.cameraMode.drawMode != UnityEditor.DrawCameraMode.Wireframe))
+                    if (sv.camera == camera && (sv.sceneViewState.imageEffectsEnabled && sv.cameraMode.drawMode != UnityEditor.DrawCameraMode.Wireframe))
                     {
                         enabled = true;
                         break;
@@ -1038,7 +1037,6 @@ namespace UnityEngine.Rendering
                 }
             }
         #endif
-
             return enabled;
         }
 

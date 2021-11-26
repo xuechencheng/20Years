@@ -3,15 +3,13 @@ namespace UnityEngine.Rendering.Universal
     /// <summary>
     /// Applies relevant settings before rendering transparent objects
     /// </summary>
-
+    /// Done
     internal class TransparentSettingsPass : ScriptableRenderPass
     {
         bool m_shouldReceiveShadows;
 
         const string m_ProfilerTag = "Transparent Settings Pass";
         private static readonly ProfilingSampler m_ProfilingSampler = new ProfilingSampler(m_ProfilerTag);
-
-
         public TransparentSettingsPass(RenderPassEvent evt, bool shadowReceiveSupported)
         {
             base.profilingSampler = new ProfilingSampler(nameof(TransparentSettingsPass));
@@ -32,14 +30,11 @@ namespace UnityEngine.Rendering.Universal
             CommandBuffer cmd = CommandBufferPool.Get();
             using (new ProfilingScope(cmd, m_ProfilingSampler))
             {
-
                 // Toggle light shadows enabled based on the renderer setting set in the constructor
                 CoreUtils.SetKeyword(cmd, ShaderKeywordStrings.MainLightShadows, m_shouldReceiveShadows);
                 CoreUtils.SetKeyword(cmd, ShaderKeywordStrings.MainLightShadowCascades, m_shouldReceiveShadows);
                 CoreUtils.SetKeyword(cmd, ShaderKeywordStrings.AdditionalLightShadows, m_shouldReceiveShadows);
-
             }
-
             // Execute and release the command buffer...
             context.ExecuteCommandBuffer(cmd);
             CommandBufferPool.Release(cmd);

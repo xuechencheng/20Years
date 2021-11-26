@@ -91,6 +91,7 @@ namespace UnityEngine.Rendering.Universal
         /// <param name="cmd">CommandBuffer to submit data to GPU.</param>
         /// <param name="cameraData">CameraData containing camera matrices information.</param>
         /// <param name="setInverseMatrices">Set this to true if you also need to set inverse camera matrices.</param>
+        /// Done
         public static void SetCameraMatrices(CommandBuffer cmd, ref CameraData cameraData, bool setInverseMatrices)
         {
 #if ENABLE_VR && ENABLE_XR_MODULE
@@ -100,15 +101,12 @@ namespace UnityEngine.Rendering.Universal
                 return;
             }
 #endif
-
             Matrix4x4 viewMatrix = cameraData.GetViewMatrix();
             Matrix4x4 projectionMatrix = cameraData.GetProjectionMatrix();
-
             // TODO: Investigate why SetViewAndProjectionMatrices is causing y-flip / winding order issue
             // for now using cmd.SetViewProjecionMatrices
             //SetViewAndProjectionMatrices(cmd, viewMatrix, cameraData.GetDeviceProjectionMatrix(), setInverseMatrices);
             cmd.SetViewProjectionMatrices(viewMatrix, projectionMatrix);
-
             if (setInverseMatrices)
             {
                 Matrix4x4 gpuProjectionMatrix = cameraData.GetGPUProjectionMatrix();
@@ -116,7 +114,6 @@ namespace UnityEngine.Rendering.Universal
                 Matrix4x4 inverseViewMatrix = Matrix4x4.Inverse(viewMatrix);
                 Matrix4x4 inverseProjectionMatrix = Matrix4x4.Inverse(gpuProjectionMatrix);
                 Matrix4x4 inverseViewProjection = inverseViewMatrix * inverseProjectionMatrix;
-
                 // There's an inconsistency in handedness between unity_matrixV and unity_WorldToCamera
                 // Unity changes the handedness of unity_WorldToCamera (see Camera::CalculateMatrixShaderProps)
                 // we will also change it here to avoid breaking existing shaders. (case 1257518)
@@ -124,12 +121,10 @@ namespace UnityEngine.Rendering.Universal
                 Matrix4x4 cameraToWorldMatrix = worldToCameraMatrix.inverse;
                 cmd.SetGlobalMatrix(ShaderPropertyId.worldToCameraMatrix, worldToCameraMatrix);
                 cmd.SetGlobalMatrix(ShaderPropertyId.cameraToWorldMatrix, cameraToWorldMatrix);
-
                 cmd.SetGlobalMatrix(ShaderPropertyId.inverseViewMatrix, inverseViewMatrix);
                 cmd.SetGlobalMatrix(ShaderPropertyId.inverseProjectionMatrix, inverseProjectionMatrix);
                 cmd.SetGlobalMatrix(ShaderPropertyId.inverseViewAndProjectionMatrix, inverseViewProjection);
             }
-
             // TODO: missing unity_CameraWorldClipPlanes[6], currently set by context.SetupCameraProperties
         }
 
@@ -141,16 +136,13 @@ namespace UnityEngine.Rendering.Universal
         void SetPerCameraShaderVariables(CommandBuffer cmd, ref CameraData cameraData)
         {
             using var profScope = new ProfilingScope(cmd, Profiling.setPerCameraShaderVariables);
-
             Camera camera = cameraData.camera;
-
             Rect pixelRect = cameraData.pixelRect;
             float renderScale = cameraData.isSceneViewCamera ? 1f : cameraData.renderScale;
             float scaledCameraWidth = (float)pixelRect.width * renderScale;
             float scaledCameraHeight = (float)pixelRect.height * renderScale;
             float cameraWidth = (float)pixelRect.width;
             float cameraHeight = (float)pixelRect.height;
-
             // Use eye texture's width and height as screen params when XR is enabled
             if(cameraData.xr.enabled)
             {
@@ -159,19 +151,16 @@ namespace UnityEngine.Rendering.Universal
                 cameraWidth = (float)cameraData.cameraTargetDescriptor.width;
                 cameraHeight = (float)cameraData.cameraTargetDescriptor.height;
             }
-
             if (camera.allowDynamicResolution)
             {
                 scaledCameraWidth *= ScalableBufferManager.widthScaleFactor;
                 scaledCameraHeight *= ScalableBufferManager.heightScaleFactor;
             }
-
             float near = camera.nearClipPlane;
             float far = camera.farClipPlane;
             float invNear = Mathf.Approximately(near, 0.0f) ? 0.0f : 1.0f / near;
             float invFar = Mathf.Approximately(far, 0.0f) ? 0.0f : 1.0f / far;
             float isOrthographic = camera.orthographic ? 1.0f : 0.0f;
-
             // From http://www.humus.name/temp/Linearize%20depth.txt
             // But as depth component textures on OpenGL always return in 0..1 range (as in D3D), we have to use
             // the same constants for both D3D and OpenGL here.
@@ -181,9 +170,7 @@ namespace UnityEngine.Rendering.Universal
             // D3D is this:
             float zc0 = 1.0f - far * invNear;
             float zc1 = far * invNear;
-
-            Vector4 zBufferParams = new Vector4(zc0, zc1, zc0 * invFar, zc1 * invFar);
-
+            Vector4 zBufferParams = new Vector4(zc0, zc1, zc0 * invFar, zc1 * invFar);//Pause
             if (SystemInfo.usesReversedZBuffer)
             {
                 zBufferParams.y += zBufferParams.x;
@@ -191,16 +178,13 @@ namespace UnityEngine.Rendering.Universal
                 zBufferParams.w += zBufferParams.z;
                 zBufferParams.z = -zBufferParams.z;
             }
-
             // Projection flip sign logic is very deep in GfxDevice::SetInvertProjectionMatrix
             // For now we don't deal with _ProjectionParams.x and let SetupCameraProperties handle it.
             // We need to enable this when we remove SetupCameraProperties
             // float projectionFlipSign = ???
             // Vector4 projectionParams = new Vector4(projectionFlipSign, near, far, 1.0f * invFar);
             // cmd.SetGlobalVector(ShaderPropertyId.projectionParams, projectionParams);
-
             Vector4 orthoParams = new Vector4(camera.orthographicSize * cameraData.aspectRatio, camera.orthographicSize, 0.0f, isOrthographic);
-
             // Camera and Screen variables as described in https://docs.unity3d.com/Manual/SL-UnityShaderVariables.html
             cmd.SetGlobalVector(ShaderPropertyId.worldSpaceCameraPos, camera.transform.position);
             cmd.SetGlobalVector(ShaderPropertyId.screenParams, new Vector4(cameraWidth, cameraHeight, 1.0f + 1.0f / cameraWidth, 1.0f + 1.0f / cameraHeight));
@@ -383,6 +367,7 @@ namespace UnityEngine.Rendering.Universal
             m_ActiveRenderPassQueue.Clear();
         }
 
+        // Done
         public void Dispose()
         {
             // Dispose all renderer features...
@@ -390,10 +375,8 @@ namespace UnityEngine.Rendering.Universal
             {
                 if (rendererFeatures[i] == null)
                     continue;
-
                 rendererFeatures[i].Dispose();
             }
-
             Dispose(true);
             GC.SuppressFinalize(this);
         }
@@ -407,6 +390,7 @@ namespace UnityEngine.Rendering.Universal
         /// </summary>
         /// <param name="colorTarget">Camera color target. Pass BuiltinRenderTextureType.CameraTarget if rendering to backbuffer.</param>
         /// <param name="depthTarget">Camera depth target. Pass BuiltinRenderTextureType.CameraTarget if color has depth or rendering to backbuffer.</param>
+        /// Done
         public void ConfigureCameraTarget(RenderTargetIdentifier colorTarget, RenderTargetIdentifier depthTarget)
         {
             m_CameraColorTarget = colorTarget;
@@ -414,6 +398,7 @@ namespace UnityEngine.Rendering.Universal
         }
 
         // This should be removed when early camera color target assignment is removed.
+        // Done
         internal void ConfigureCameraColorTarget(RenderTargetIdentifier colorTarget)
         {
             m_CameraColorTarget = colorTarget;
@@ -582,6 +567,7 @@ namespace UnityEngine.Rendering.Universal
         /// Enqueues a render pass for execution.
         /// </summary>
         /// <param name="pass">Render pass to be enqueued.</param>
+        /// Done
         public void EnqueuePass(ScriptableRenderPass pass)
         {
             m_ActiveRenderPassQueue.Add(pass);
@@ -636,10 +622,10 @@ namespace UnityEngine.Rendering.Universal
         /// <seealso cref="ScriptableRendererFeature.AddRenderPasses(ScriptableRenderer, ref RenderingData)"/>
         /// </summary>
         /// <param name="renderingData"></param>
+        /// Done
         protected void AddRenderPasses(ref RenderingData renderingData)
         {
             using var profScope = new ProfilingScope(null, Profiling.addRenderPasses);
-
             // Add render passes from custom renderer features
             for (int i = 0; i < rendererFeatures.Count; ++i)
             {
@@ -649,7 +635,6 @@ namespace UnityEngine.Rendering.Universal
                 }
                 rendererFeatures[i].AddRenderPasses(this, ref renderingData);
             }
-
             // Remove any null render pass that might have been added by user by mistake
             int count = activeRenderPassQueue.Count;
             for (int i = count - 1; i >= 0; i--)
@@ -681,12 +666,9 @@ namespace UnityEngine.Rendering.Universal
             m_ActiveColorAttachments[0] = BuiltinRenderTextureType.CameraTarget;
             for (int i = 1; i < m_ActiveColorAttachments.Length; ++i)
                 m_ActiveColorAttachments[i] = 0;
-
             m_ActiveDepthAttachment = BuiltinRenderTextureType.CameraTarget;
-
             m_FirstTimeCameraColorTargetIsBound = cameraType == CameraRenderType.Base;
             m_FirstTimeCameraDepthTargetIsBound = true;
-
             m_CameraColorTarget = BuiltinRenderTextureType.CameraTarget;
             m_CameraDepthTarget = BuiltinRenderTextureType.CameraTarget;
         }
@@ -939,25 +921,22 @@ namespace UnityEngine.Rendering.Universal
             }
 #endif
         }
-
+        // Done
         internal static void SetRenderTarget(CommandBuffer cmd, RenderTargetIdentifier colorAttachment, RenderTargetIdentifier depthAttachment, ClearFlag clearFlag, Color clearColor)
         {
             m_ActiveColorAttachments[0] = colorAttachment;
             for (int i = 1; i < m_ActiveColorAttachments.Length; ++i)
                 m_ActiveColorAttachments[i] = 0;
-
             m_ActiveDepthAttachment = depthAttachment;
-
             RenderBufferLoadAction colorLoadAction = ((uint)clearFlag & (uint)ClearFlag.Color) != 0 ?
                 RenderBufferLoadAction.DontCare : RenderBufferLoadAction.Load;
-
             RenderBufferLoadAction depthLoadAction = ((uint)clearFlag & (uint)ClearFlag.Depth) != 0 ?
                 RenderBufferLoadAction.DontCare : RenderBufferLoadAction.Load;
-
             SetRenderTarget(cmd, colorAttachment, colorLoadAction, RenderBufferStoreAction.Store,
                 depthAttachment, depthLoadAction, RenderBufferStoreAction.Store, clearFlag, clearColor);
         }
 
+        // Done
         static void SetRenderTarget(
             CommandBuffer cmd,
             RenderTargetIdentifier colorAttachment,
@@ -968,7 +947,7 @@ namespace UnityEngine.Rendering.Universal
         {
             CoreUtils.SetRenderTarget(cmd, colorAttachment, colorLoadAction, colorStoreAction, clearFlags, clearColor);
         }
-
+        // Done
         static void SetRenderTarget(
             CommandBuffer cmd,
             RenderTargetIdentifier colorAttachment,

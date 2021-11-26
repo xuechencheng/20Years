@@ -88,7 +88,7 @@ namespace UnityEngine.Experimental.Rendering.Universal
                     settings.stencilSettings.stencilCompareFunction, settings.stencilSettings.passOperation,
                     settings.stencilSettings.failOperation, settings.stencilSettings.zFailOperation);
         }
-
+        // Done
         public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
         {
             renderer.EnqueuePass(renderObjectsPass);

@@ -7,6 +7,7 @@ namespace UnityEngine.Rendering.Universal.Internal
     /// the camera target. The pass takes the screen viewport into
     /// consideration.
     /// </summary>
+    /// Done
     public class FinalBlitPass : ScriptableRenderPass
     {
         RenderTargetHandle m_Source;
@@ -38,29 +39,22 @@ namespace UnityEngine.Rendering.Universal.Internal
                 Debug.LogErrorFormat("Missing {0}. {1} render pass will not execute. Check for missing reference in the renderer resources.", m_BlitMaterial, GetType().Name);
                 return;
             }
-
             // Note: We need to get the cameraData.targetTexture as this will get the targetTexture of the camera stack.
             // Overlay cameras need to output to the target described in the base camera while doing camera stack.
             ref CameraData cameraData = ref renderingData.cameraData;
             RenderTargetIdentifier cameraTarget = (cameraData.targetTexture != null) ? new RenderTargetIdentifier(cameraData.targetTexture) : BuiltinRenderTextureType.CameraTarget;
-
             bool isSceneViewCamera = cameraData.isSceneViewCamera;
             CommandBuffer cmd = CommandBufferPool.Get();
             using (new ProfilingScope(cmd, ProfilingSampler.Get(URPProfileId.FinalBlit)))
             {
-
-                CoreUtils.SetKeyword(cmd, ShaderKeywordStrings.LinearToSRGBConversion,
-                    cameraData.requireSrgbConversion);
-
+                CoreUtils.SetKeyword(cmd, ShaderKeywordStrings.LinearToSRGBConversion, cameraData.requireSrgbConversion);
                 cmd.SetGlobalTexture(ShaderPropertyId.sourceTex, m_Source.Identifier());
-
 #if ENABLE_VR && ENABLE_XR_MODULE
                 if (cameraData.xr.enabled)
                 {
                     int depthSlice = cameraData.xr.singlePassEnabled ? -1 : cameraData.xr.GetTextureArraySlice();
                     cameraTarget =
                         new RenderTargetIdentifier(cameraData.xr.renderTarget, 0, CubemapFace.Unknown, depthSlice);
-
                     CoreUtils.SetRenderTarget(
                         cmd,
                         cameraTarget,
@@ -68,16 +62,13 @@ namespace UnityEngine.Rendering.Universal.Internal
                         RenderBufferStoreAction.Store,
                         ClearFlag.None,
                         Color.black);
-
                     cmd.SetViewport(cameraData.pixelRect);
-
                     // We y-flip if
                     // 1) we are bliting from render texture to back buffer(UV starts at bottom) and
                     // 2) renderTexture starts UV at top
                     bool yflip = !cameraData.xr.renderTargetIsRenderTexture && SystemInfo.graphicsUVStartsAtTop;
                     Vector4 scaleBias = yflip ? new Vector4(1, -1, 0, 1) : new Vector4(1, 1, 0, 0);
                     cmd.SetGlobalVector(ShaderPropertyId.scaleBias, scaleBias);
-
                     cmd.DrawProcedural(Matrix4x4.identity, m_BlitMaterial, 0, MeshTopology.Quads, 4);
                 }
                 else
@@ -110,7 +101,6 @@ namespace UnityEngine.Rendering.Universal.Internal
                     cmd.SetViewProjectionMatrices(camera.worldToCameraMatrix, camera.projectionMatrix);
                 }
             }
-
             context.ExecuteCommandBuffer(cmd);
             CommandBufferPool.Release(cmd);
         }

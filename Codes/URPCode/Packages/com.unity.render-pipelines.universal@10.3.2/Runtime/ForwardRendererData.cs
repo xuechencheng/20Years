@@ -8,11 +8,13 @@ using System.ComponentModel;
 
 namespace UnityEngine.Rendering.Universal
 {
+    // Done
     [Serializable, ReloadGroup, ExcludeFromPreset]
     [MovedFrom("UnityEngine.Rendering.LWRP")]
     public class ForwardRendererData : ScriptableRendererData
     {
 #if UNITY_EDITOR
+        // Done
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1812")]
         internal class CreateForwardRendererAsset : EndNameEditAction
         {
@@ -24,7 +26,7 @@ namespace UnityEngine.Rendering.Universal
                 Selection.activeObject = instance;
             }
         }
-
+        // Done
         [MenuItem("Assets/Create/Rendering/Universal Render Pipeline/Forward Renderer", priority = CoreUtils.assetCreateMenuPriority2)]
         static void CreateForwardRendererData()
         {
@@ -82,7 +84,7 @@ namespace UnityEngine.Rendering.Universal
         [SerializeField] RenderingMode m_RenderingMode = RenderingMode.Forward;
         [SerializeField] bool m_AccurateGbufferNormals = false;
         //[SerializeField] bool m_TiledDeferredShading = false;
-
+        // Done
         protected override ScriptableRenderer Create()
         {
 #if UNITY_EDITOR

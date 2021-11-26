@@ -2,6 +2,7 @@ using System;
 
 namespace UnityEngine.Rendering.Universal.Internal
 {
+    // Done
     public class DepthNormalOnlyPass : ScriptableRenderPass
     {
         internal RenderTextureDescriptor normalDescriptor { get; private set; }
@@ -56,6 +57,7 @@ namespace UnityEngine.Rendering.Universal.Internal
         }
 
         /// <inheritdoc/>
+        /// Done
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {
             // NOTE: Do NOT mix ProfilingScope with named CommandBuffers i.e. CommandBufferPool.Get("name").
@@ -72,9 +74,7 @@ namespace UnityEngine.Rendering.Universal.Internal
 
                 ref CameraData cameraData = ref renderingData.cameraData;
                 Camera camera = cameraData.camera;
-
                 context.DrawRenderers(renderingData.cullResults, ref drawSettings, ref m_FilteringSettings);
-
             }
             context.ExecuteCommandBuffer(cmd);
             CommandBufferPool.Release(cmd);

@@ -311,6 +311,7 @@ namespace UnityEngine.Rendering.Universal
                 DestroyRenderer(ref m_Renderers[i]);
         }
 
+        // Done
         void DestroyRenderer(ref ScriptableRenderer renderer)
         {
             if (renderer != null)
@@ -337,7 +338,7 @@ namespace UnityEngine.Rendering.Universal
             // assign pipeline asset reference to null
             base.OnDisable();
         }
-
+        // Done
         void CreateRenderers()
         {
             DestroyRenderers();
@@ -410,6 +411,7 @@ namespace UnityEngine.Rendering.Universal
         /// </summary>
         /// <param name="index">Index to the renderer. If invalid index is passed, the default renderer is returned instead.</param>
         /// <returns></returns>
+        /// Done
         public ScriptableRenderer GetRenderer(int index)
         {
             if (index == -1)
@@ -434,7 +436,6 @@ namespace UnityEngine.Rendering.Universal
                 DestroyRenderer(ref m_Renderers[index]);
                 m_Renderers[index] = m_RendererDataList[index].InternalCreateRenderer();
             }
-
             return m_Renderers[index];
         }
 

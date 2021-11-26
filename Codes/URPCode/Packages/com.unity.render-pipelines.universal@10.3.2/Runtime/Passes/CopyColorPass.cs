@@ -9,6 +9,7 @@ namespace UnityEngine.Rendering.Universal.Internal
     /// so you can use it later in rendering. For example, you can copy
     /// the opaque texture to use it for distortion effects.
     /// </summary>
+    /// Done
     public class CopyColorPass : ScriptableRenderPass
     {
         int m_SampleOffsetShaderHandle;
@@ -60,11 +61,11 @@ namespace UnityEngine.Rendering.Universal.Internal
                 descriptor.width /= 4;
                 descriptor.height /= 4;
             }
-
             cmd.GetTemporaryRT(destination.id, descriptor, m_DownsamplingMethod == Downsampling.None ? FilterMode.Point : FilterMode.Bilinear);
         }
 
         /// <inheritdoc/>
+        /// Done
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {
             if (m_SamplingMaterial == null)
@@ -72,15 +73,11 @@ namespace UnityEngine.Rendering.Universal.Internal
                 Debug.LogErrorFormat("Missing {0}. {1} render pass will not execute. Check for missing reference in the renderer resources.", m_SamplingMaterial, GetType().Name);
                 return;
             }
-
             CommandBuffer cmd = CommandBufferPool.Get();
             using (new ProfilingScope(cmd, ProfilingSampler.Get(URPProfileId.CopyColor)))
             {
                 RenderTargetIdentifier opaqueColorRT = destination.Identifier();
-
-                ScriptableRenderer.SetRenderTarget(cmd, opaqueColorRT, BuiltinRenderTextureType.CameraTarget, clearFlag,
-                    clearColor);
-
+                ScriptableRenderer.SetRenderTarget(cmd, opaqueColorRT, BuiltinRenderTextureType.CameraTarget, clearFlag, clearColor);
                 bool useDrawProceduleBlit = renderingData.cameraData.xr.enabled;
                 switch (m_DownsamplingMethod)
                 {
@@ -99,7 +96,6 @@ namespace UnityEngine.Rendering.Universal.Internal
                         break;
                 }
             }
-
             context.ExecuteCommandBuffer(cmd);
             CommandBufferPool.Release(cmd);
         }

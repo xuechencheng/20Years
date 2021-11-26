@@ -29,13 +29,12 @@ struct Varyings
     float2 uv         : TEXCOORD0;
     UNITY_VERTEX_OUTPUT_STEREO
 };
-
+// Done
 Varyings FullscreenVert(Attributes input)
 {
     Varyings output;
     UNITY_SETUP_INSTANCE_ID(input);
     UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
-
 #if _USE_DRAW_PROCEDURAL
     output.positionCS = GetQuadVertexPosition(input.vertexID);
     output.positionCS.xy = output.positionCS.xy * float2(2.0f, -2.0f) + float2(-1.0f, 1.0f); //convert to -1..1
@@ -44,7 +43,6 @@ Varyings FullscreenVert(Attributes input)
     output.positionCS = TransformObjectToHClip(input.positionOS.xyz);
     output.uv = input.uv;
 #endif
-
     return output;
 }
 

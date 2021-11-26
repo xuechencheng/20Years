@@ -12,7 +12,7 @@
 #else
     #define MSAA_SAMPLES 1
 #endif
-
+// Done
 struct Attributes
 {
 #if _USE_DRAW_PROCEDURAL
@@ -64,15 +64,15 @@ Varyings vert(Attributes input)
 }
 
 #if defined(UNITY_STEREO_INSTANCING_ENABLED) || defined(UNITY_STEREO_MULTIVIEW_ENABLED)
-#define DEPTH_TEXTURE_MS(name, samples) Texture2DMSArray<float, samples> name
-#define DEPTH_TEXTURE(name) TEXTURE2D_ARRAY_FLOAT(name)
-#define LOAD(uv, sampleIndex) LOAD_TEXTURE2D_ARRAY_MSAA(_CameraDepthAttachment, uv, unity_StereoEyeIndex, sampleIndex)
-#define SAMPLE(uv) SAMPLE_TEXTURE2D_ARRAY(_CameraDepthAttachment, sampler_CameraDepthAttachment, uv, unity_StereoEyeIndex).r
+    #define DEPTH_TEXTURE_MS(name, samples) Texture2DMSArray<float, samples> name
+    #define DEPTH_TEXTURE(name) TEXTURE2D_ARRAY_FLOAT(name)
+    #define LOAD(uv, sampleIndex) LOAD_TEXTURE2D_ARRAY_MSAA(_CameraDepthAttachment, uv, unity_StereoEyeIndex, sampleIndex)
+    #define SAMPLE(uv) SAMPLE_TEXTURE2D_ARRAY(_CameraDepthAttachment, sampler_CameraDepthAttachment, uv, unity_StereoEyeIndex).r
 #else
-#define DEPTH_TEXTURE_MS(name, samples) Texture2DMS<float, samples> name
-#define DEPTH_TEXTURE(name) TEXTURE2D_FLOAT(name)
-#define LOAD(uv, sampleIndex) LOAD_TEXTURE2D_MSAA(_CameraDepthAttachment, uv, sampleIndex)
-#define SAMPLE(uv) SAMPLE_DEPTH_TEXTURE(_CameraDepthAttachment, sampler_CameraDepthAttachment, uv)
+    #define DEPTH_TEXTURE_MS(name, samples) Texture2DMS<float, samples> name
+    #define DEPTH_TEXTURE(name) TEXTURE2D_FLOAT(name)
+    #define LOAD(uv, sampleIndex) LOAD_TEXTURE2D_MSAA(_CameraDepthAttachment, uv, sampleIndex)
+    #define SAMPLE(uv) SAMPLE_DEPTH_TEXTURE(_CameraDepthAttachment, sampler_CameraDepthAttachment, uv)
 #endif
 
 #if MSAA_SAMPLES == 1
@@ -80,7 +80,7 @@ Varyings vert(Attributes input)
     SAMPLER(sampler_CameraDepthAttachment);
 #else
     DEPTH_TEXTURE_MS(_CameraDepthAttachment, MSAA_SAMPLES);
-    float4 _CameraDepthAttachment_TexelSize;
+    float4 _CameraDepthAttachment_TexelSize; //Vector4(1 / width, 1 / height, width, height)
 #endif
 
 #if UNITY_REVERSED_Z
@@ -98,7 +98,6 @@ float SampleDepth(float2 uv)
 #else
     int2 coord = int2(uv * _CameraDepthAttachment_TexelSize.zw);
     float outDepth = DEPTH_DEFAULT_VALUE;
-
     UNITY_UNROLL
     for (int i = 0; i < MSAA_SAMPLES; ++i)
         outDepth = DEPTH_OP(LOAD(coord, i), outDepth);

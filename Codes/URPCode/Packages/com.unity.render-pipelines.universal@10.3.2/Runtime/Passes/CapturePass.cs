@@ -37,7 +37,6 @@ namespace UnityEngine.Rendering.Universal
                 for (captureActions.Reset(); captureActions.MoveNext();)
                     captureActions.Current(colorAttachmentIdentifier, cmdBuf);
             }
-
             context.ExecuteCommandBuffer(cmdBuf);
             CommandBufferPool.Release(cmdBuf);
         }

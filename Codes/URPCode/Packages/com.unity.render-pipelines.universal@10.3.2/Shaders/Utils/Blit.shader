@@ -23,17 +23,14 @@ Shader "Hidden/Universal Render Pipeline/Blit"
 
             TEXTURE2D_X(_SourceTex);
             SAMPLER(sampler_SourceTex);
-
+            // Done
             half4 Fragment(Varyings input) : SV_Target
             {
                 UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
-
                 half4 col = SAMPLE_TEXTURE2D_X(_SourceTex, sampler_SourceTex, input.uv);
-
              #ifdef _LINEAR_TO_SRGB_CONVERSION
                 col = LinearToSRGB(col);
              #endif
-
                 return col;
             }
             ENDHLSL

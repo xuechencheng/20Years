@@ -5,6 +5,7 @@ namespace UnityEngine.Rendering.Universal
     ///
     /// This pass renders the standard Unity skybox.
     /// </summary>
+    /// Done
     public class DrawSkyboxPass : ScriptableRenderPass
     {
         public DrawSkyboxPass(RenderPassEvent evt)
@@ -13,7 +14,6 @@ namespace UnityEngine.Rendering.Universal
 
             renderPassEvent = evt;
         }
-
         /// <inheritdoc/>
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {

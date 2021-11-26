@@ -11,6 +11,7 @@ namespace UnityEngine.Rendering.Universal.Internal
     /// does not have MSAA enabled, the pass uses a Blit or a Copy Texture
     /// operation, depending on what the current platform supports.
     /// </summary>
+    /// Done
     public class CopyDepthPass : ScriptableRenderPass
     {
         private RenderTargetHandle source { get; set; }
@@ -24,7 +25,6 @@ namespace UnityEngine.Rendering.Universal.Internal
             m_CopyDepthMaterial = copyDepthMaterial;
             renderPassEvent = evt;
         }
-
         /// <summary>
         /// Configure the pass with the source and destination to execute on.
         /// </summary>
@@ -45,7 +45,6 @@ namespace UnityEngine.Rendering.Universal.Internal
             descriptor.msaaSamples = 1;
             if (this.AllocateRT)
                 cmd.GetTemporaryRT(destination.id, descriptor, FilterMode.Point);
-
             // On Metal iOS, prevent camera attachments to be bound and cleared during this pass.
             ConfigureTarget(new RenderTargetIdentifier(destination.Identifier(), 0, CubemapFace.Unknown, -1));
             ConfigureClear(ClearFlag.None, Color.black);
@@ -64,9 +63,7 @@ namespace UnityEngine.Rendering.Universal.Internal
             {
                 RenderTextureDescriptor descriptor = renderingData.cameraData.cameraTargetDescriptor;
                 int cameraSamples = descriptor.msaaSamples;
-
                 CameraData cameraData = renderingData.cameraData;
-
                 switch (cameraSamples)
                 {
                     case 8:
@@ -74,19 +71,16 @@ namespace UnityEngine.Rendering.Universal.Internal
                         cmd.DisableShaderKeyword(ShaderKeywordStrings.DepthMsaa4);
                         cmd.EnableShaderKeyword(ShaderKeywordStrings.DepthMsaa8);
                         break;
-
                     case 4:
                         cmd.DisableShaderKeyword(ShaderKeywordStrings.DepthMsaa2);
                         cmd.EnableShaderKeyword(ShaderKeywordStrings.DepthMsaa4);
                         cmd.DisableShaderKeyword(ShaderKeywordStrings.DepthMsaa8);
                         break;
-
                     case 2:
                         cmd.EnableShaderKeyword(ShaderKeywordStrings.DepthMsaa2);
                         cmd.DisableShaderKeyword(ShaderKeywordStrings.DepthMsaa4);
                         cmd.DisableShaderKeyword(ShaderKeywordStrings.DepthMsaa8);
                         break;
-
                     // MSAA disabled
                     default:
                         cmd.DisableShaderKeyword(ShaderKeywordStrings.DepthMsaa2);
@@ -94,10 +88,7 @@ namespace UnityEngine.Rendering.Universal.Internal
                         cmd.DisableShaderKeyword(ShaderKeywordStrings.DepthMsaa8);
                         break;
                 }
-
                 cmd.SetGlobalTexture("_CameraDepthAttachment", source.Identifier());
-
-
 #if ENABLE_VR && ENABLE_XR_MODULE
                 // XR uses procedural draw instead of cmd.blit or cmd.DrawFullScreenMesh
                 if (renderingData.cameraData.xr.enabled)
@@ -115,7 +106,6 @@ namespace UnityEngine.Rendering.Universal.Internal
                         ? new Vector4(flipSign, 1.0f, -1.0f, 1.0f)
                         : new Vector4(flipSign, 0.0f, 1.0f, 1.0f);
                     cmd.SetGlobalVector(ShaderPropertyId.scaleBiasRt, scaleBiasRt);
-
                     cmd.DrawProcedural(Matrix4x4.identity, m_CopyDepthMaterial, 0, MeshTopology.Quads, 4);
                 }
                 else
@@ -130,15 +120,12 @@ namespace UnityEngine.Rendering.Universal.Internal
                     // scaleBias.z = bias
                     // scaleBias.w = unused
                     float flipSign = (cameraData.IsCameraProjectionMatrixFlipped()) ? -1.0f : 1.0f;
-                    Vector4 scaleBiasRt = (flipSign < 0.0f)
-                        ? new Vector4(flipSign, 1.0f, -1.0f, 1.0f)
+                    Vector4 scaleBiasRt = (flipSign < 0.0f) ? new Vector4(flipSign, 1.0f, -1.0f, 1.0f)
                         : new Vector4(flipSign, 0.0f, 1.0f, 1.0f);
                     cmd.SetGlobalVector(ShaderPropertyId.scaleBiasRt, scaleBiasRt);
-
                     cmd.DrawMesh(RenderingUtils.fullscreenMesh, Matrix4x4.identity, m_CopyDepthMaterial);
                 }
             }
-
             context.ExecuteCommandBuffer(cmd);
             CommandBufferPool.Release(cmd);
         }
@@ -148,7 +135,6 @@ namespace UnityEngine.Rendering.Universal.Internal
         {
             if (cmd == null)
                 throw new ArgumentNullException("cmd");
-
             if (this.AllocateRT)
                 cmd.ReleaseTemporaryRT(destination.id);
             destination = RenderTargetHandle.CameraTarget;

@@ -52,6 +52,7 @@ namespace UnityEngine.Rendering.Universal
         /// <summary>
         /// Disposable pattern implementation.
         /// </summary>
+        /// Done
         public void Dispose()
         {
             Dispose(true);

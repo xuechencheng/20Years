@@ -653,20 +653,15 @@ namespace UnityEngine.Rendering.Universal.Internal
         {
             // Find the mixed lighting mode. This is the same logic as ForwardLights.
             this.MixedLightingSetup = MixedLightingSetup.None;
-
             if (!renderingData.lightData.supportsMixedLighting)
                 return;
-
             NativeArray<VisibleLight> visibleLights = renderingData.lightData.visibleLights;
             for (int lightIndex = 0; lightIndex < renderingData.lightData.visibleLights.Length; ++lightIndex)
             {
                 Light light = visibleLights[lightIndex].light;
-
                 // TODO: Add support to shadow mask
-                if (light != null
-                 && light.bakingOutput.mixedLightingMode == MixedLightingMode.Subtractive
-                 && light.bakingOutput.lightmapBakeType == LightmapBakeType.Mixed
-                 && light.shadows != LightShadows.None)
+                if (light != null && light.bakingOutput.mixedLightingMode == MixedLightingMode.Subtractive
+                 && light.bakingOutput.lightmapBakeType == LightmapBakeType.Mixed && light.shadows != LightShadows.None)
                 {
                     this.MixedLightingSetup = MixedLightingSetup.Subtractive;
                     break;

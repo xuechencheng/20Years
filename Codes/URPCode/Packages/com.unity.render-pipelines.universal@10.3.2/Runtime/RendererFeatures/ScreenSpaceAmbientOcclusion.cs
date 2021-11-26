@@ -66,6 +66,7 @@ namespace UnityEngine.Rendering.Universal
         }
 
         /// <inheritdoc/>
+        /// Done
         public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
         {
             if (!GetMaterial())
@@ -75,7 +76,6 @@ namespace UnityEngine.Rendering.Universal
                     GetType().Name, m_SSAOPass.profilerTag);
                 return;
             }
-
             bool shouldAdd = m_SSAOPass.Setup(m_Settings);
             if (shouldAdd)
             {
@@ -88,7 +88,7 @@ namespace UnityEngine.Rendering.Universal
         {
             CoreUtils.Destroy(m_Material);
         }
-
+        // Done
         private bool GetMaterial()
         {
             if (m_Material != null)
@@ -104,7 +104,6 @@ namespace UnityEngine.Rendering.Universal
                     return false;
                 }
             }
-
             m_Material = CoreUtils.CreateEngineMaterial(m_Shader);
             m_SSAOPass.material = m_Material;
             return m_Material != null;

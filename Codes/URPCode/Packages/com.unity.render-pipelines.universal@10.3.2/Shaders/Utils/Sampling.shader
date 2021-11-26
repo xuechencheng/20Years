@@ -16,29 +16,22 @@ Shader "Hidden/Universal Render Pipeline/Sampling"
             HLSLPROGRAM
             #pragma vertex FullscreenVert
             #pragma fragment FragBoxDownsample
-
             #pragma multi_compile _ _USE_DRAW_PROCEDURAL
-
             #include "Packages/com.unity.render-pipelines.universal/Shaders/Utils/Fullscreen.hlsl"
-
             TEXTURE2D_X(_SourceTex);
             SAMPLER(sampler_SourceTex);
             float4 _SourceTex_TexelSize;
-
             float _SampleOffset;
-
+            // Done
             half4 FragBoxDownsample(Varyings input) : SV_Target
             {
                 UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
-
                 float4 d = _SourceTex_TexelSize.xyxy * float4(-_SampleOffset, -_SampleOffset, _SampleOffset, _SampleOffset);
-
                 half4 s;
                 s =  SAMPLE_TEXTURE2D_X(_SourceTex, sampler_SourceTex, input.uv + d.xy);
                 s += SAMPLE_TEXTURE2D_X(_SourceTex, sampler_SourceTex, input.uv + d.zy);
                 s += SAMPLE_TEXTURE2D_X(_SourceTex, sampler_SourceTex, input.uv + d.xw);
                 s += SAMPLE_TEXTURE2D_X(_SourceTex, sampler_SourceTex, input.uv + d.zw);
-
                 return s * 0.25h;
             }
             ENDHLSL

@@ -8,6 +8,7 @@ namespace UnityEngine.Rendering.Universal.Internal
     /// You can use this pass to prime a depth buffer for subsequent rendering.
     /// Use it as a z-prepass, or use it to generate a depth buffer.
     /// </summary>
+    /// Done
     public class DepthOnlyPass : ScriptableRenderPass
     {
         int kDepthBufferBits = 32;
@@ -65,9 +66,7 @@ namespace UnityEngine.Rendering.Universal.Internal
                 var sortFlags = renderingData.cameraData.defaultOpaqueSortFlags;
                 var drawSettings = CreateDrawingSettings(m_ShaderTagId, ref renderingData, sortFlags);
                 drawSettings.perObjectData = PerObjectData.None;
-
                 context.DrawRenderers(renderingData.cullResults, ref drawSettings, ref m_FilteringSettings);
-
             }
             context.ExecuteCommandBuffer(cmd);
             CommandBufferPool.Release(cmd);

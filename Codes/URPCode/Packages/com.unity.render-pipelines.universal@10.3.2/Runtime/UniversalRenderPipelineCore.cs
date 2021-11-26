@@ -538,14 +538,13 @@ namespace UnityEngine.Rendering.Universal
         };
 
         // called from DeferredLights.cs too
+        // Done
         public static void GetLightAttenuationAndSpotDirection(
             LightType lightType, float lightRange, Matrix4x4 lightLocalToWorldMatrix,
-            float spotAngle, float? innerSpotAngle,
-            out Vector4 lightAttenuation, out Vector4 lightSpotDir)
+            float spotAngle, float? innerSpotAngle, out Vector4 lightAttenuation, out Vector4 lightSpotDir)
         {
             lightAttenuation = k_DefaultLightAttenuation;
             lightSpotDir = k_DefaultLightSpotDirection;
-
             // Directional Light attenuation is initialize so distance attenuation always be 1.0
             if (lightType != LightType.Directional)
             {
@@ -562,24 +561,21 @@ namespace UnityEngine.Rendering.Universal
 
                 // The other smoothing factor matches the one used in the Unity lightmapper but is slower than the linear one.
                 // smoothFactor = (1.0 - saturate((distanceSqr * 1.0 / lightrangeSqr)^2))^2
-                float lightRangeSqr = lightRange * lightRange;
-                float fadeStartDistanceSqr = 0.8f * 0.8f * lightRangeSqr;
-                float fadeRangeSqr = (fadeStartDistanceSqr - lightRangeSqr);
+                float lightRangeSqr = lightRange * lightRange;// X2
+                float fadeStartDistanceSqr = 0.8f * 0.8f * lightRangeSqr; // 0.64X2
+                float fadeRangeSqr = (fadeStartDistanceSqr - lightRangeSqr);// -0.36X2
                 float oneOverFadeRangeSqr = 1.0f / fadeRangeSqr;
                 float lightRangeSqrOverFadeRangeSqr = -lightRangeSqr / fadeRangeSqr;
                 float oneOverLightRangeSqr = 1.0f / Mathf.Max(0.0001f, lightRange * lightRange);
-
                 // On mobile and Nintendo Switch: Use the faster linear smoothing factor (SHADER_HINT_NICE_QUALITY).
                 // On other devices: Use the smoothing factor that matches the GI.
                 lightAttenuation.x = Application.isMobilePlatform || SystemInfo.graphicsDeviceType == GraphicsDeviceType.Switch ? oneOverFadeRangeSqr : oneOverLightRangeSqr;
                 lightAttenuation.y = lightRangeSqrOverFadeRangeSqr;
             }
-
             if (lightType == LightType.Spot)
             {
                 Vector4 dir = lightLocalToWorldMatrix.GetColumn(2);
                 lightSpotDir = new Vector4(-dir.x, -dir.y, -dir.z, 0.0f);
-
                 // Spot Attenuation with a linear falloff can be defined as
                 // (SdotL - cosOuterAngle) / (cosInnerAngle - cosOuterAngle)
                 // This can be rewritten as
@@ -603,6 +599,7 @@ namespace UnityEngine.Rendering.Universal
             }
         }
 
+        // Done
         public static void InitializeLightConstants_Common(NativeArray<VisibleLight> lights, int lightIndex, out Vector4 lightPos, out Vector4 lightColor, out Vector4 lightAttenuation, out Vector4 lightSpotDir, out Vector4 lightOcclusionProbeChannel)
         {
             lightPos = k_DefaultLightPosition;
@@ -610,12 +607,10 @@ namespace UnityEngine.Rendering.Universal
             lightOcclusionProbeChannel = k_DefaultLightsProbeChannel;
             lightAttenuation = k_DefaultLightAttenuation;
             lightSpotDir = k_DefaultLightSpotDirection;
-
             // When no lights are visible, main light will be set to -1.
             // In this case we initialize it to default values and return
             if (lightIndex < 0)
                 return;
-
             VisibleLight lightData = lights[lightIndex];
             if (lightData.lightType == LightType.Directional)
             {
@@ -627,20 +622,14 @@ namespace UnityEngine.Rendering.Universal
                 Vector4 pos = lightData.localToWorldMatrix.GetColumn(3);
                 lightPos = new Vector4(pos.x, pos.y, pos.z, 1.0f);
             }
-
             // VisibleLight.finalColor already returns color in active color space
             lightColor = lightData.finalColor;
-
-            GetLightAttenuationAndSpotDirection(
-                lightData.lightType, lightData.range, lightData.localToWorldMatrix,
-                lightData.spotAngle, lightData.light?.innerSpotAngle,
-                out lightAttenuation, out lightSpotDir);
+            GetLightAttenuationAndSpotDirection(lightData.lightType, lightData.range, lightData.localToWorldMatrix,
+                lightData.spotAngle, lightData.light?.innerSpotAngle, out lightAttenuation, out lightSpotDir);
 
             Light light = lightData.light;
-
             if (light != null && light.bakingOutput.lightmapBakeType == LightmapBakeType.Mixed &&
-                0 <= light.bakingOutput.occlusionMaskChannel &&
-                light.bakingOutput.occlusionMaskChannel < 4)
+                0 <= light.bakingOutput.occlusionMaskChannel && light.bakingOutput.occlusionMaskChannel < 4)
             {
                 lightOcclusionProbeChannel[light.bakingOutput.occlusionMaskChannel] = 1.0f;
             }

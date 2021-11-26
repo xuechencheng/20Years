@@ -9,6 +9,7 @@ namespace UnityEngine.Rendering.Universal
     /// <summary>
     /// Contains properties and helper functions that you can use when rendering.
     /// </summary>
+    /// Done
     [MovedFrom("UnityEngine.Rendering.LWRP")] public static class RenderingUtils
     {
         static List<ShaderTagId> m_LegacyShaderPassNames = new List<ShaderTagId>()
@@ -26,16 +27,15 @@ namespace UnityEngine.Rendering.Universal
         /// <summary>
         /// Returns a mesh that you can use with <see cref="CommandBuffer.DrawMesh(Mesh, Matrix4x4, Material)"/> to render full-screen effects.
         /// </summary>
+        /// Done
         public static Mesh fullscreenMesh
         {
             get
             {
                 if (s_FullscreenMesh != null)
                     return s_FullscreenMesh;
-
                 float topV = 1.0f;
                 float bottomV = 0.0f;
-
                 s_FullscreenMesh = new Mesh { name = "Fullscreen Quad" };
                 s_FullscreenMesh.SetVertices(new List<Vector3>
                 {
@@ -44,7 +44,6 @@ namespace UnityEngine.Rendering.Universal
                     new Vector3(1.0f, -1.0f, 0.0f),
                     new Vector3(1.0f,  1.0f, 0.0f)
                 });
-
                 s_FullscreenMesh.SetUVs(0, new List<Vector2>
                 {
                     new Vector2(0.0f, bottomV),
@@ -52,13 +51,12 @@ namespace UnityEngine.Rendering.Universal
                     new Vector2(1.0f, bottomV),
                     new Vector2(1.0f, topV)
                 });
-
                 s_FullscreenMesh.SetIndices(new[] { 0, 1, 2, 2, 1, 3 }, MeshTopology.Triangles, 0, false);
                 s_FullscreenMesh.UploadMeshData(true);
                 return s_FullscreenMesh;
             }
         }
-
+        // Done
         internal static bool useStructuredBuffer
         {
             // There are some performance issues with StructuredBuffers in some platforms.
@@ -78,6 +76,7 @@ namespace UnityEngine.Rendering.Universal
         }
 
         static Material s_ErrorMaterial;
+        // Done
         static Material errorMaterial
         {
             get
@@ -93,7 +92,6 @@ namespace UnityEngine.Rendering.Universal
                     }
                     catch { }
                 }
-
                 return s_ErrorMaterial;
             }
         }
@@ -107,6 +105,7 @@ namespace UnityEngine.Rendering.Universal
         /// <param name="viewMatrix">View matrix to be set.</param>
         /// <param name="projectionMatrix">Projection matrix to be set.</param>
         /// <param name="setInverseMatrices">Set this to true if you also need to set inverse camera matrices.</param>
+        /// Done
         public static void SetViewAndProjectionMatrices(CommandBuffer cmd, Matrix4x4 viewMatrix, Matrix4x4 projectionMatrix, bool setInverseMatrices)
         {
             Matrix4x4 viewAndProjectionMatrix = projectionMatrix * viewMatrix;
@@ -190,7 +189,7 @@ namespace UnityEngine.Rendering.Universal
             cmd.SetGlobalVectorArray(UNITY_STEREO_VECTOR_CAMPOS, stereoConstants.worldSpaceCameraPos);
         }
 #endif
-
+        // Done
         internal static void Blit(CommandBuffer cmd,
             RenderTargetIdentifier source,
             RenderTargetIdentifier destination,
@@ -222,6 +221,7 @@ namespace UnityEngine.Rendering.Universal
 
         // This is used to render materials that contain built-in shader passes not compatible with URP.
         // It will render those legacy passes with error/pink shader.
+        // Done
         [Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
         internal static void RenderObjectsWithError(ScriptableRenderContext context, ref CullingResults cullResults, Camera camera, FilteringSettings filterSettings, SortingCriteria sortFlags)
         {
@@ -230,7 +230,6 @@ namespace UnityEngine.Rendering.Universal
             // Proper fix is to add a fence on asset import.
             if (errorMaterial == null)
                 return;
-
             SortingSettings sortingSettings = new SortingSettings(camera) { criteria = sortFlags };
             DrawingSettings errorSettings = new DrawingSettings(m_LegacyShaderPassNames[0], sortingSettings)
             {
@@ -240,7 +239,6 @@ namespace UnityEngine.Rendering.Universal
             };
             for (int i = 1; i < m_LegacyShaderPassNames.Count; ++i)
                 errorSettings.SetShaderPassName(i, m_LegacyShaderPassNames[i]);
-
             context.DrawRenderers(cullResults, ref errorSettings, ref filterSettings);
         }
 
@@ -260,6 +258,7 @@ namespace UnityEngine.Rendering.Universal
         /// </summary>
         /// <param name="format">The format to look up.</param>
         /// <returns>Returns true if the graphics card supports the given <c>RenderTextureFormat</c></returns>
+        /// Done
         public static bool SupportsRenderTextureFormat(RenderTextureFormat format)
         {
             if (!m_RenderTextureFormatSupport.TryGetValue(format, out var support))
@@ -267,7 +266,6 @@ namespace UnityEngine.Rendering.Universal
                 support = SystemInfo.SupportsRenderTextureFormat(format);
                 m_RenderTextureFormatSupport.Add(format, support);
             }
-
             return support;
         }
 
@@ -305,6 +303,7 @@ namespace UnityEngine.Rendering.Universal
         /// </summary>
         /// <param name="colorBuffers"></param>
         /// <returns></returns>
+        /// Done
         internal static int GetLastValidColorBufferIndex(RenderTargetIdentifier[] colorBuffers)
         {
             int i = colorBuffers.Length - 1;
@@ -321,6 +320,7 @@ namespace UnityEngine.Rendering.Universal
         /// </summary>
         /// <param name="colorBuffers"></param>
         /// <returns></returns>
+        /// Done
         internal static uint GetValidColorBufferCount(RenderTargetIdentifier[] colorBuffers)
         {
             uint nonNullColorBuffers = 0;
@@ -334,12 +334,12 @@ namespace UnityEngine.Rendering.Universal
             }
             return nonNullColorBuffers;
         }
-
         /// <summary>
         /// Return true if colorBuffers is an actual MRT setup
         /// </summary>
         /// <param name="colorBuffers"></param>
         /// <returns></returns>
+        /// Done
         internal static bool IsMRT(RenderTargetIdentifier[] colorBuffers)
         {
             return GetValidColorBufferCount(colorBuffers) > 1;
@@ -351,6 +351,7 @@ namespace UnityEngine.Rendering.Universal
         /// <param name="source"></param>
         /// <param name="value"></param>
         /// <returns></returns>
+        /// Done
         internal static bool Contains(RenderTargetIdentifier[] source, RenderTargetIdentifier value)
         {
             foreach (var identifier in source)
@@ -367,6 +368,7 @@ namespace UnityEngine.Rendering.Universal
         /// <param name="source"></param>
         /// <param name="value"></param>
         /// <returns></returns>
+        /// Done
         internal static int IndexOf(RenderTargetIdentifier[] source, RenderTargetIdentifier value)
         {
             for (int i = 0; i < source.Length; ++i)
@@ -383,6 +385,7 @@ namespace UnityEngine.Rendering.Universal
         /// <param name="source"></param>
         /// <param name="value"></param>
         /// <returns></returns>
+        /// Done
         internal static uint CountDistinct(RenderTargetIdentifier[] source, RenderTargetIdentifier value)
         {
             uint count = 0;
@@ -399,6 +402,7 @@ namespace UnityEngine.Rendering.Universal
         /// </summary>
         /// <param name="source"></param>
         /// <returns></returns>
+        /// Done
         internal static int LastValid(RenderTargetIdentifier[] source)
         {
             for (int i = source.Length-1; i >= 0; --i)
@@ -415,6 +419,7 @@ namespace UnityEngine.Rendering.Universal
         /// <param name="a"></param>
         /// <param name="b"></param>
         /// <returns></returns>
+        /// Done
         internal static bool Contains(ClearFlag a, ClearFlag b)
         {
             return (a & b) == b;
@@ -426,6 +431,7 @@ namespace UnityEngine.Rendering.Universal
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
+        /// Done
         internal static bool SequenceEqual(RenderTargetIdentifier[] left, RenderTargetIdentifier[] right)
         {
             if (left.Length != right.Length)
