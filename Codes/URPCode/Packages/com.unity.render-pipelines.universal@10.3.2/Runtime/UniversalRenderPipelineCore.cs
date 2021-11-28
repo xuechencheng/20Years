@@ -6,7 +6,7 @@ using UnityEngine.Scripting.APIUpdating;
 using UnityEngine.Experimental.GlobalIllumination;
 using UnityEngine.Experimental.Rendering;
 using Lightmapping = UnityEngine.Experimental.GlobalIllumination.Lightmapping;
-
+// Done
 namespace UnityEngine.Rendering.Universal
 {
     [MovedFrom("UnityEngine.Rendering.LWRP")] public enum MixedLightingSetup
@@ -365,17 +365,10 @@ namespace UnityEngine.Rendering.Universal
 
         static List<Vector4> m_ShadowBiasData = new List<Vector4>();
 
-        /// <summary>
-        /// Checks if a camera is a game camera.
-        /// </summary>
-        /// <param name="camera">Camera to check state from.</param>
-        /// <returns>true if given camera is a game camera, false otherwise.</returns>
-        /// Done
         public static bool IsGameCamera(Camera camera)
         {
             if (camera == null)
                 throw new ArgumentNullException("camera");
-
             return camera.cameraType == CameraType.Game || camera.cameraType == CameraType.VR;
         }
 
@@ -425,14 +418,17 @@ namespace UnityEngine.Rendering.Universal
                 cameras.Sort(cameraComparison);
         }
 #else
-        //Done
+        /// <summary>
+        /// …„œÒª˙∞¥depth≈≈–Ú
+        /// </summary>
+        /// <param name="cameras"></param>
         void SortCameras(Camera[] cameras)
         {
             if (cameras.Length > 1)
                 Array.Sort(cameras, cameraComparison);
         }
 #endif
-        //Done
+        //First Done
         static RenderTextureDescriptor CreateRenderTextureDescriptor(Camera camera, float renderScale,
             bool isHdrEnabled, int msaaSamples, bool needsAlpha)
         {
@@ -477,6 +473,7 @@ namespace UnityEngine.Rendering.Universal
             return desc;
         }
 
+        // Done
         static Lightmapping.RequestLightsDelegate lightsDelegate = (Light[] requests, NativeArray<LightDataGI> lightsOutput) =>
         {
             // Editor only.

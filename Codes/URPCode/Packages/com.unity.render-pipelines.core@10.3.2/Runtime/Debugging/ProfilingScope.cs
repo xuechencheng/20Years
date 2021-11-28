@@ -23,7 +23,9 @@ namespace UnityEngine.Rendering
 #else
         internal static Dictionary<TEnum, TProfilingSampler<TEnum>> samples = new Dictionary<TEnum, TProfilingSampler<TEnum>>();
 #endif
-        //Done
+        /// <summary>
+        /// 使用枚举的类型和用值创建的TProfilingSampler填充samples Dict。
+        /// </summary>
         static TProfilingSampler()
         {
             var names = Enum.GetNames(typeof(TEnum));
@@ -43,50 +45,33 @@ namespace UnityEngine.Rendering
 #endif
             }
         }
-        //Done
+        
         public TProfilingSampler(string name): base(name)
         {
         }
     }
 
-    /// <summary>
-    /// Wrapper around CPU and GPU profiling samplers.
-    /// Use this along ProfilingScope to profile a piece of code.
-    /// </summary>
+    // Done
     public class ProfilingSampler
     {
-        /// <summary>
-        /// Get the sampler for the corresponding enumeration value.
-        /// </summary>
-        /// <typeparam name="TEnum">Type of the enumeration.</typeparam>
-        /// <param name="marker">Enumeration value.</param>
-        /// <returns>The profiling sampler for the given enumeration value.</returns>
-        /// Done
-        public static ProfilingSampler Get<TEnum>(TEnum marker)
-            where TEnum : Enum
+        public static ProfilingSampler Get<TEnum>(TEnum marker) where TEnum : Enum
         {
 #if USE_UNSAFE
             return TProfilingSampler<TEnum>.samples[Unsafe.As<TEnum, int>(ref marker)];
 #else
-            TProfilingSampler<TEnum>.samples.TryGetValue(marker, out var sampler);
+            TProfilingSampler<TEnum>.samples.TryGetValue( marker, out var sampler);
             return sampler;
 #endif
         }
-
         /// <summary>
-        /// Constructor.
+        /// 创建name和Inl_{name}的CustomSampler
         /// </summary>
-        /// <param name="name">Name of the profiling sampler.</param>
-        /// Done
+        /// <param name="name"></param>
         public ProfilingSampler(string name)
         {
-            // Caution: Name of sampler MUST not match name provide to cmd.BeginSample(), otherwise
-            // we get a mismatch of marker when enabling the profiler.
 #if UNITY_USE_RECORDER
             sampler = CustomSampler.Create(name, true); // Event markers, command buffer CPU profiling and GPU profiling
 #else
-            // In this case, we need to use the BeginSample(string) API, since it creates a new sampler by that name under the hood,
-            // we need rename this sampler to not clash with the implicit one (it won't be used in this case)
             sampler = CustomSampler.Create($"Dummy_{name}");
 #endif
             inlineSampler = CustomSampler.Create($"Inl_{name}"); // Profiles code "immediately"
@@ -99,10 +84,9 @@ namespace UnityEngine.Rendering
 #endif
         }
         /// <summary>
-        /// Begin the profiling block.
+        /// 开始sampler和inlineSampler的采样
         /// </summary>
-        /// <param name="cmd">Command buffer used by the profiling block.</param>
-        /// Done
+        /// <param name="cmd"></param>
         public void Begin(CommandBuffer cmd)
         {
             if (cmd != null)
@@ -117,10 +101,9 @@ namespace UnityEngine.Rendering
             inlineSampler?.Begin();
         }
         /// <summary>
-        /// End the profiling block.
+        /// 结束sampler和inlineSampler的采样
         /// </summary>
-        /// <param name="cmd">Command buffer used by the profiling block.</param>
-        /// Done
+        /// <param name="cmd"></param>
         public void End(CommandBuffer cmd)
         {
             if (cmd != null)
@@ -138,18 +121,11 @@ namespace UnityEngine.Rendering
         internal bool IsValid() { return (sampler != null && inlineSampler != null); }
         internal CustomSampler sampler { get; private set; }
         internal CustomSampler inlineSampler { get; private set; }
-        /// <summary>
-        /// Name of the Profiling Sampler
-        /// </summary>
         public string name { get; private set; }
-
 #if UNITY_USE_RECORDER
         Recorder m_Recorder;
         Recorder m_InlineRecorder;
 #endif
-        /// <summary>
-        /// Set to true to enable recording of profiling sampler timings.
-        /// </summary>
         public bool enableRecording
         {
             set
@@ -163,32 +139,22 @@ namespace UnityEngine.Rendering
 
 #if UNITY_USE_RECORDER
         /// <summary>
-        /// GPU Elapsed time in milliseconds.
+        /// 获取三帧前的一帧累积GPU时间，单位为纳秒。记录器有三帧延迟。
         /// </summary>
-        /// 获取一帧的累积GPU时间，单位为纳秒。记录器有三帧延迟，所以这给出了在你访问这个属性之前的三帧的时间。(只读）。
         public float gpuElapsedTime => m_Recorder.enabled ? m_Recorder.gpuElapsedNanoseconds / 1000000.0f : 0.0f;
         /// <summary>
-        /// Number of times the Profiling Sampler has hit on the GPU
+        /// 获取GPU在一帧(三帧前)中执行的开始/结束时间对的数量。
         /// </summary>
-        /// 获取GPU在一帧中执行的开始/结束时间对的数量。记录器有三帧延迟，所以这给出了在你访问这个属性之前的三帧的时间。(只读）。
         public int gpuSampleCount => m_Recorder.enabled ? m_Recorder.gpuSampleBlockCount : 0;
         /// <summary>
-        /// CPU Elapsed time in milliseconds (Command Buffer execution).
+        /// 前一帧的 Begin/End 对的累积时间（以纳秒为单位）。
         /// </summary>
-        /// 前一帧的 Begin/End 对的累积时间（以纳秒为单位）。（只读）
         public float cpuElapsedTime => m_Recorder.enabled ? m_Recorder.elapsedNanoseconds / 1000000.0f : 0.0f;
         /// <summary>
-        /// Number of times the Profiling Sampler has hit on the CPU in the command buffer.
+        /// 在前一帧中调用 Begin/End 对的次数。
         /// </summary>
-        /// 在前一帧中调用 Begin/End 对的次数。（只读）
         public int cpuSampleCount => m_Recorder.enabled ? m_Recorder.sampleBlockCount : 0;
-        /// <summary>
-        /// CPU Elapsed time in milliseconds (Direct execution).
-        /// </summary>
         public float inlineCpuElapsedTime => m_InlineRecorder.enabled ? m_InlineRecorder.elapsedNanoseconds / 1000000.0f : 0.0f;
-        /// <summary>
-        /// Number of times the Profiling Sampler has hit on the CPU.
-        /// </summary>
         public int inlineCpuSampleCount => m_InlineRecorder.enabled ? m_InlineRecorder.sampleBlockCount : 0;
 #else
         /// <summary>
@@ -222,7 +188,7 @@ namespace UnityEngine.Rendering
 
 #if DEVELOPMENT_BUILD || UNITY_EDITOR
     /// <summary>
-    /// Scoped Profiling markers
+    /// Done
     /// </summary>
     public struct ProfilingScope : IDisposable
     {
@@ -231,20 +197,12 @@ namespace UnityEngine.Rendering
         ProfilingSampler    m_Sampler;
 
         /// <summary>
-        /// Profiling Scope constructor
+        /// 设置参数并开始采样
         /// </summary>
-        /// <param name="cmd">Command buffer used to add markers and compute execution timings.</param>
-        /// <param name="sampler">Profiling Sampler to be used for this scope.</param>
-        /// Done
+        /// <param name="cmd"></param>
+        /// <param name="sampler"></param>
         public ProfilingScope(CommandBuffer cmd, ProfilingSampler sampler)
         {
-            // NOTE: Do not mix with named CommandBuffers.
-            // Currently there's an issue which results in mismatched markers.
-            // The named CommandBuffer will close its "profiling scope" on execution.
-            // That will orphan ProfilingScope markers as the named CommandBuffer marker
-            // is their "parent".
-            // Resulting in following pattern:
-            // exec(cmd.start, scope.start, cmd.end) and exec(cmd.start, scope.end, cmd.end)
             m_Cmd = cmd;
             m_Disposed = false;
             m_Sampler = sampler;
@@ -252,22 +210,21 @@ namespace UnityEngine.Rendering
         }
 
         /// <summary>
-        ///  Dispose pattern implementation
+        ///  停止性能采样
         /// </summary>
         public void Dispose()
         {
             Dispose(true);
         }
 
-        // Protected implementation of Dispose pattern.
-        // Done
+        /// <summary>
+        /// 停止性能采样
+        /// </summary>
+        /// <param name="disposing"></param>
         void Dispose(bool disposing)
         {
             if (m_Disposed)
                 return;
-            // As this is a struct, it could have been initialized using an empty constructor so we
-            // need to make sure `cmd` isn't null to avoid a crash. Switching to a class would fix
-            // this but will generate garbage on every frame (and this struct is used quite a lot).
             if (disposing)
             {
                 m_Sampler?.End(m_Cmd);

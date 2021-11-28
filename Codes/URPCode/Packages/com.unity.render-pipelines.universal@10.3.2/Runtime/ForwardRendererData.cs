@@ -84,7 +84,10 @@ namespace UnityEngine.Rendering.Universal
         [SerializeField] RenderingMode m_RenderingMode = RenderingMode.Forward;
         [SerializeField] bool m_AccurateGbufferNormals = false;
         //[SerializeField] bool m_TiledDeferredShading = false;
-        // Done
+        /// <summary>
+        /// 加载Reload标签数据，并创建ForwardRenderer类
+        /// </summary>
+        /// <returns></returns>
         protected override ScriptableRenderer Create()
         {
 #if UNITY_EDITOR

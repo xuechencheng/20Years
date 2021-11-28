@@ -301,17 +301,17 @@ namespace UnityEngine.Rendering.Universal
             CreateRenderers();
             return new UniversalRenderPipeline(this);
         }
-
+        /// <summary>
+        /// Destroy ScriptableRenderer[]
+        /// </summary>
         void DestroyRenderers()
         {
             if (m_Renderers == null)
                 return;
-
             for (int i = 0; i < m_Renderers.Length; i++)
                 DestroyRenderer(ref m_Renderers[i]);
         }
 
-        // Done
         void DestroyRenderer(ref ScriptableRenderer renderer)
         {
             if (renderer != null)
@@ -338,14 +338,14 @@ namespace UnityEngine.Rendering.Universal
             // assign pipeline asset reference to null
             base.OnDisable();
         }
-        // Done
+        /// <summary>
+        /// 根据ScriptableRendererData[]创建ScriptableRenderer[]
+        /// </summary>
         void CreateRenderers()
         {
             DestroyRenderers();
-
             if (m_Renderers == null || m_Renderers.Length != m_RendererDataList.Length)
                 m_Renderers = new ScriptableRenderer[m_RendererDataList.Length];
-
             for (int i = 0; i < m_RendererDataList.Length; ++i)
             {
                 if (m_RendererDataList[i] != null)
@@ -407,30 +407,19 @@ namespace UnityEngine.Rendering.Universal
         }
 
         /// <summary>
-        /// Returns a renderer from the current pipeline asset
+        /// 获取Renderer
         /// </summary>
-        /// <param name="index">Index to the renderer. If invalid index is passed, the default renderer is returned instead.</param>
-        /// <returns></returns>
-        /// Done
         public ScriptableRenderer GetRenderer(int index)
         {
             if (index == -1)
                 index = m_DefaultRendererIndex;
-
             if (index >= m_RendererDataList.Length || index < 0 || m_RendererDataList[index] == null)
             {
-                Debug.LogWarning(
-                    $"Renderer at index {index.ToString()} is missing, falling back to Default Renderer {m_RendererDataList[m_DefaultRendererIndex].name}",
-                    this);
+                Debug.LogWarning($"Renderer at index {index.ToString()} is missing, falling back to Default Renderer {m_RendererDataList[m_DefaultRendererIndex].name}",this);
                 index = m_DefaultRendererIndex;
             }
-
-            // RendererData list differs from RendererList. Create RendererList.
             if (m_Renderers == null || m_Renderers.Length < m_RendererDataList.Length)
                 CreateRenderers();
-
-            // This renderer data is outdated or invalid, we recreate the renderer
-            // so we construct all render passes with the updated data
             if (m_RendererDataList[index].isInvalidated || m_Renderers[index] == null)
             {
                 DestroyRenderer(ref m_Renderers[index]);
@@ -919,7 +908,11 @@ namespace UnityEngine.Rendering.Universal
                 return emptyEntries == 0;
             return emptyEntries != m_RendererDataList.Length;
         }
-
+        /// <summary>
+        /// 判断索引在ScriptableRendererData[]中是否合法
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
         internal bool ValidateRendererData(int index)
         {
             // Check to see if you are asking for the default renderer

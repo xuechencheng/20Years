@@ -56,7 +56,7 @@ namespace UnityEngine.Rendering.Universal
                 return s_FullscreenMesh;
             }
         }
-        // Done
+        // First Done
         internal static bool useStructuredBuffer
         {
             // There are some performance issues with StructuredBuffers in some platforms.

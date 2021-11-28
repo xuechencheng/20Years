@@ -243,7 +243,7 @@ namespace UnityEngine.Rendering.Universal
                 return m_Cameras;
             }
         }
-        //Done
+        //First Done
         internal void UpdateCameraStack()
         {
 #if UNITY_EDITOR
@@ -310,6 +310,7 @@ namespace UnityEngine.Rendering.Universal
         /// <summary>
         /// Returns the <see cref="ScriptableRenderer"/> that is used to render this camera.
         /// </summary>
+        /// First Done
         public ScriptableRenderer scriptableRenderer
         {
             get
@@ -320,8 +321,7 @@ namespace UnityEngine.Rendering.Universal
                 {
                     int defaultIndex = UniversalRenderPipeline.asset.m_DefaultRendererIndex;
                     Debug.LogWarning(
-                        $"Renderer at <b>index {m_RendererIndex.ToString()}</b> is missing for camera <b>{camera.name}</b>, falling back to Default Renderer. <b>{UniversalRenderPipeline.asset.m_RendererDataList[defaultIndex].name}</b>",
-                        UniversalRenderPipeline.asset);
+                        $"Renderer at <b>index {m_RendererIndex.ToString()}</b> is missing for camera <b>{camera.name}</b>, falling back to Default Renderer. <b>{UniversalRenderPipeline.asset.m_RendererDataList[defaultIndex].name}</b>",UniversalRenderPipeline.asset);
                     return UniversalRenderPipeline.asset.GetRenderer(defaultIndex);
                 }
                 return UniversalRenderPipeline.asset.GetRenderer(m_RendererIndex);

@@ -9,6 +9,7 @@ namespace UnityEngine.Rendering
     /// <see cref="VolumeManager.CreateStack"/> if you need to update the manager with specific
     /// settings and store the results for later use.
     /// </summary>
+    /// First Done
     public sealed class VolumeStack : IDisposable
     {
         // Holds the state of _all_ component types you can possibly add on volumes
@@ -17,7 +18,7 @@ namespace UnityEngine.Rendering
         internal VolumeStack()
         {
         }
-
+        // First Done
         internal void Reload(IEnumerable<Type> baseTypes)
         {
             if (components == null)
@@ -39,8 +40,8 @@ namespace UnityEngine.Rendering
         /// <typeparam name="T">A type of <see cref="VolumeComponent"/>.</typeparam>
         /// <returns>The current state of the <see cref="VolumeComponent"/> of type <typeparamref name="T"/>
         /// in the stack.</returns>
-        public T GetComponent<T>()
-            where T : VolumeComponent
+        /// First Done
+        public T GetComponent<T>() where T : VolumeComponent
         {
             var comp = GetComponent(typeof(T));
             return (T)comp;
@@ -53,6 +54,7 @@ namespace UnityEngine.Rendering
         /// <param name="type">The type of <see cref="VolumeComponent"/> to look for.</param>
         /// <returns>The current state of the <see cref="VolumeComponent"/> of the specified type,
         /// or <c>null</c> if the type is invalid.</returns>
+        /// First Done
         public VolumeComponent GetComponent(Type type)
         {
             components.TryGetValue(type, out var comp);

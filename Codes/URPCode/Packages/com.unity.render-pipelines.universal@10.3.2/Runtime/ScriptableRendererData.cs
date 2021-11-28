@@ -44,7 +44,10 @@ namespace UnityEngine.Rendering.Universal
         {
             isInvalidated = true;
         }
-        // Done
+        /// <summary>
+        /// ´´½¨ Renderer
+        /// </summary>
+        /// <returns></returns>
         internal ScriptableRenderer InternalCreateRenderer()
         {
             isInvalidated = false;

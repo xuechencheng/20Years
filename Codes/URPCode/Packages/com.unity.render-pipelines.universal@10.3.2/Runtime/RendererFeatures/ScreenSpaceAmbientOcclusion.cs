@@ -83,7 +83,11 @@ namespace UnityEngine.Rendering.Universal
             }
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Destroy(m_Material)
+        /// </summary>
+        /// <param name="disposing"></param>
+        /// First Done
         protected override void Dispose(bool disposing)
         {
             CoreUtils.Destroy(m_Material);

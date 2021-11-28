@@ -156,12 +156,10 @@ namespace UnityEngine.Rendering
         public virtual void Override(VolumeComponent state, float interpFactor)
         {
             int count = parameters.Count;
-
             for (int i = 0; i < count; i++)
             {
                 var stateParam = state.parameters[i];
                 var toParam = parameters[i];
-
                 if (toParam.overrideState)
                 {
                     // Keep track of the override state for debugging purpose

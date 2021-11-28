@@ -90,14 +90,12 @@ namespace UnityEngine.Rendering
 
         // This will be called only once at runtime and everytime script reload kicks-in in the
         // editor as we need to keep track of any compatible component in the project
+        // First Done
         void ReloadBaseTypes()
         {
             m_ComponentsDefaultState.Clear();
-
             // Grab all the component types we can find
-            baseComponentTypes = CoreUtils.GetAllTypesDerivedFrom<VolumeComponent>()
-                .Where(t => !t.IsAbstract);
-
+            baseComponentTypes = CoreUtils.GetAllTypesDerivedFrom<VolumeComponent>().Where(t => !t.IsAbstract);
             // Keep an instance of each type to be used in a virtual lowest priority global volume
             // so that we have a default state to fallback to when exiting volumes
             foreach (var type in baseComponentTypes)
@@ -209,20 +207,19 @@ namespace UnityEngine.Rendering
             {
                 if (!component.active)
                     continue;
-
                 var state = stack.GetComponent(component.GetType());
                 component.Override(state, interpFactor);
             }
         }
 
         // Faster version of OverrideData to force replace values in the global state
+        // First Done
         void ReplaceData(VolumeStack stack, List<VolumeComponent> components)
         {
             foreach (var component in components)
             {
                 var target = stack.GetComponent(component.GetType());
                 int count = component.parameters.Count;
-
                 for (int i = 0; i < count; i++)
                 {
                     if(target.parameters[i] != null)
@@ -238,6 +235,7 @@ namespace UnityEngine.Rendering
         /// Checks the state of the base type library. This is only used in the editor to handle
         /// entering and exiting of play mode and domain reload.
         /// </summary>
+        /// First Done
         [Conditional("UNITY_EDITOR")]
         public void CheckBaseTypes()
         {
@@ -251,19 +249,18 @@ namespace UnityEngine.Rendering
         /// and exiting of play mode and domain reload.
         /// </summary>
         /// <param name="stack">The stack to check.</param>
+        /// First Done
         [Conditional("UNITY_EDITOR")]
         public void CheckStack(VolumeStack stack)
         {
             // The editor doesn't reload the domain when exiting play mode but still kills every
             // object created while in play mode, like stacks' component states
             var components = stack.components;
-
             if (components == null)
             {
                 stack.Reload(baseComponentTypes);
                 return;
             }
-
             foreach (var kvp in components)
             {
                 if (kvp.Key == null || kvp.Value == null)
@@ -296,22 +293,19 @@ namespace UnityEngine.Rendering
         /// <param name="layerMask">The LayerMask that Unity uses to filter Volumes that it should consider
         /// for blending.</param>
         /// <seealso cref="VolumeStack"/>
+        /// ???
         public void Update(VolumeStack stack, Transform trigger, LayerMask layerMask)
         {
             Assert.IsNotNull(stack);
 
             CheckBaseTypes();
             CheckStack(stack);
-
             // Start by resetting the global state to default values
             ReplaceData(stack, m_ComponentsDefaultState);
-
             bool onlyGlobal = trigger == null;
             var triggerPos = onlyGlobal ? Vector3.zero : trigger.position;
-
             // Sort the cached volume list(s) for the given layer mask if needed and return it
             var volumes = GrabVolumes(layerMask);
-
             Camera camera = null;
             // Behavior should be fine even if camera is null
             if (!onlyGlobal)
@@ -325,7 +319,6 @@ namespace UnityEngine.Rendering
                 if (!IsVolumeRenderedByCamera(volume, camera))
                     continue;
 #endif
-
                 // Skip disabled volumes and volumes without any data or weight
                 if (!volume.enabled || volume.profileRef == null || volume.weight <= 0f)
                     continue;
@@ -336,34 +329,26 @@ namespace UnityEngine.Rendering
                     OverrideData(stack, volume.profileRef.components, Mathf.Clamp01(volume.weight));
                     continue;
                 }
-
                 if (onlyGlobal)
                     continue;
-
                 // If volume isn't global and has no collider, skip it as it's useless
                 var colliders = m_TempColliders;
                 volume.GetComponents(colliders);
                 if (colliders.Count == 0)
                     continue;
-
                 // Find closest distance to volume, 0 means it's inside it
                 float closestDistanceSqr = float.PositiveInfinity;
-
                 foreach (var collider in colliders)
                 {
                     if (!collider.enabled)
                         continue;
-
                     var closestPoint = collider.ClosestPoint(triggerPos);
                     var d = (closestPoint - triggerPos).sqrMagnitude;
-
                     if (d < closestDistanceSqr)
                         closestDistanceSqr = d;
                 }
-
                 colliders.Clear();
                 float blendDistSqr = volume.blendDistance * volume.blendDistance;
-
                 // Volume has no influence, ignore it
                 // Note: Volume doesn't do anything when `closestDistanceSqr = blendDistSqr` but we
                 //       can't use a >= comparison as blendDistSqr could be set to 0 in which case
@@ -392,29 +377,24 @@ namespace UnityEngine.Rendering
             var volumes = GrabVolumes(layerMask);
             return volumes.ToArray();
         }
-
+        // First Done
         List<Volume> GrabVolumes(LayerMask mask)
         {
             List<Volume> list;
-
             if (!m_SortedVolumes.TryGetValue(mask, out list))
             {
                 // New layer mask detected, create a new list and cache all the volumes that belong
                 // to this mask in it
                 list = new List<Volume>();
-
                 foreach (var volume in m_Volumes)
                 {
                     if ((mask & (1 << volume.gameObject.layer)) == 0)
                         continue;
-
                     list.Add(volume);
                     m_SortNeeded[mask] = true;
                 }
-
                 m_SortedVolumes.Add(mask, list);
             }
-
             // Check sorting state
             bool sortNeeded;
             if (m_SortNeeded.TryGetValue(mask, out sortNeeded) && sortNeeded)
@@ -422,7 +402,6 @@ namespace UnityEngine.Rendering
                 m_SortNeeded[mask] = false;
                 SortByPriority(list);
             }
-
             return list;
         }
 

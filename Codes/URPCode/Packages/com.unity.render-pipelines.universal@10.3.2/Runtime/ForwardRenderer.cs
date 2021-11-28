@@ -93,13 +93,15 @@ namespace UnityEngine.Rendering.Universal
         Material m_TileDeferredMaterial;
         Material m_StencilDeferredMaterial;
 
-        // Done
+        /// <summary>
+        /// 创建RendererFeatures，很多材质，StencilStateData，很多渲染Pass和很多RenderTargetHandle。
+        /// </summary>
+        /// <param name="data"></param>
         public ForwardRenderer(ForwardRendererData data) : base(data)
         {
 #if ENABLE_VR && ENABLE_XR_MODULE
             UniversalRenderPipeline.m_XRSystem.InitializeXRSystemData(data.xrSystemData);
 #endif
-
             m_BlitMaterial = CoreUtils.CreateEngineMaterial(data.shaders.blitPS);
             m_CopyDepthMaterial = CoreUtils.CreateEngineMaterial(data.shaders.copyDepthPS);
             m_SamplingMaterial = CoreUtils.CreateEngineMaterial(data.shaders.samplingPS);
@@ -216,11 +218,12 @@ namespace UnityEngine.Rendering.Universal
             }
         }
 
-        /// <inheritdoc />
-        /// Done
+        /// <summary>
+        /// Cleanup Pass数据，Destory材质
+        /// </summary>
+        /// <param name="disposing"></param>
         protected override void Dispose(bool disposing)
         {
-            // always dispose unmanaged resources
             m_PostProcessPass.Cleanup();
             m_FinalPostProcessPass.Cleanup();
             m_ColorGradingLutPass.Cleanup();
@@ -245,7 +248,7 @@ namespace UnityEngine.Rendering.Universal
             RenderTextureDescriptor cameraTargetDescriptor = renderingData.cameraData.cameraTargetDescriptor;
             // Special path for depth only offscreen cameras. Only write opaques + transparents.
             bool isOffscreenDepthTexture = cameraData.targetTexture != null && cameraData.targetTexture.format == RenderTextureFormat.Depth;
-            if (isOffscreenDepthTexture)
+            if (isOffscreenDepthTexture)//1,离屏深度纹理
             {
                 ConfigureCameraTarget(BuiltinRenderTextureType.CameraTarget, BuiltinRenderTextureType.CameraTarget);
                 AddRenderPasses(ref renderingData);
@@ -516,7 +519,7 @@ namespace UnityEngine.Rendering.Universal
         }
 
         /// <inheritdoc />
-        /// Done
+        /// First Done
         public override void SetupCullingParameters(ref ScriptableCullingParameters cullingParameters,
             ref CameraData cameraData)
         {

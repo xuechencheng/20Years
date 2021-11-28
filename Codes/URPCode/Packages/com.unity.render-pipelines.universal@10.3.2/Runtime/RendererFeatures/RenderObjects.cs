@@ -61,7 +61,9 @@ namespace UnityEngine.Experimental.Rendering.Universal
         public RenderObjectsSettings settings = new RenderObjectsSettings();
 
         RenderObjectsPass renderObjectsPass;
-
+        /// <summary>
+        /// 创建RenderObjectsPass，并初始化它的overrideMaterial，深度和模板数据。
+        /// </summary>
         public override void Create()
         {
             FilterSettings filter = settings.filterSettings;

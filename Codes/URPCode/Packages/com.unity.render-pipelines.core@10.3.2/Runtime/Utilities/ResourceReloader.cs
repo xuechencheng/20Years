@@ -17,18 +17,8 @@ namespace UnityEngine.Rendering
     public static class ResourceReloader
     {
         /// <summary>
-        /// Looks for resources in the given <paramref name="container"/> object and reload the ones
-        /// that are missing or broken.
-        /// This version will still return null value without throwing error if the issue is due to
-        /// AssetDatabase being not ready. But in this case the assetDatabaseNotReady result will be true.
+        /// 初始化ReloadGroup标签的类中，含有Reload标签的字段。
         /// </summary>
-        /// <param name="container">The object containing reload-able resources</param>
-        /// <param name="basePath">The base path for the package</param>
-        /// <returns>
-        ///   - 1 hasChange: True if something have been reloaded.
-        ///   - 2 assetDatabaseNotReady: True if the issue preventing loading is due to state of AssetDatabase
-        /// </returns>
-        /// Done
         public static (bool hasChange, bool assetDatabaseNotReady) TryReloadAllNullIn(System.Object container, string basePath)
         {
             try
@@ -45,28 +35,20 @@ namespace UnityEngine.Rendering
 
 
         /// <summary>
-        /// Looks for resources in the given <paramref name="container"/> object and reload the ones
-        /// that are missing or broken.
+        /// 初始化ReloadGroup标签的类中，含有Reload标签的字段。
         /// </summary>
-        /// <param name="container">The object containing reload-able resources</param>
-        /// <param name="basePath">The base path for the package</param>
-        /// <returns>True if something have been reloaded.</returns>
-        /// Done
         public static bool ReloadAllNullIn(System.Object container, string basePath)
         {
             if (IsNull(container))
                 return false;
-
             var changed = false;
             foreach (var fieldInfo in container.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static))
             {
-                //Recurse on sub-containers
                 if (IsReloadGroup(fieldInfo))
                 {
                     changed |= FixGroupIfNeeded(container, fieldInfo);
                     changed |= ReloadAllNullIn(fieldInfo.GetValue(container), basePath);
                 }
-                //Find null field and reload them
                 var attribute = GetReloadAttribute(fieldInfo);
                 if (attribute != null)
                 {
@@ -80,7 +62,6 @@ namespace UnityEngine.Rendering
                         var array = (Array)fieldInfo.GetValue(container);
                         if (IsReloadGroup(array))
                         {
-                            //Recurse on each sub-containers
                             for (int index = 0; index < attribute.paths.Length; ++index)
                             {
                                 changed |= FixGroupIfNeeded(array, index);
@@ -90,7 +71,6 @@ namespace UnityEngine.Rendering
                         else
                         {
                             bool builtin = attribute.package == ReloadAttribute.Package.Builtin;
-                            //Find each null element and reload them
                             for (int index = 0; index < attribute.paths.Length; ++index)
                                 changed |= SetAndLoadIfNull(array, index, GetFullPath(basePath, attribute, index), builtin);
                         }
@@ -102,7 +82,9 @@ namespace UnityEngine.Rendering
             return changed;
         }
 
-        // Done
+        /// <summary>
+        /// 如果FieldInfo为空，实例化一个FieldInfo，赋给container
+        /// </summary>
         static bool FixGroupIfNeeded(System.Object container, FieldInfo info)
         {
             if (IsNull(container, info))
@@ -115,7 +97,9 @@ namespace UnityEngine.Rendering
             return false;
         }
 
-        // Done
+        /// <summary>
+        /// 按需创建并赋值数组元素
+        /// </summary>
         static bool FixGroupIfNeeded(Array array, int index)
         {
             Assert.IsNotNull(array);
@@ -128,7 +112,9 @@ namespace UnityEngine.Rendering
             }
             return false;
         }
-        // Done
+        /// <summary>
+        /// 按需创建FieldInfo数组并赋值
+        /// </summary>
         static bool FixArrayIfNeeded(System.Object container, FieldInfo info, int length)
         {
             if (IsNull(container, info) || ((Array)info.GetValue(container)).Length < length)
@@ -138,7 +124,9 @@ namespace UnityEngine.Rendering
             }
             return false;
         }
-        // Done
+        /// <summary>
+        /// 获取含有Reload标签的属性
+        /// </summary>
         static ReloadAttribute GetReloadAttribute(FieldInfo fieldInfo)
         {
             var attributes = (ReloadAttribute[])fieldInfo.GetCustomAttributes(typeof(ReloadAttribute), false);
@@ -147,26 +135,28 @@ namespace UnityEngine.Rendering
             return attributes[0];
         }
 
-        // Done
+        /// <summary>
+        /// ReloadGroup标签，通常修饰类
+        /// </summary>
         static bool IsReloadGroup(FieldInfo info) => info.FieldType.GetCustomAttributes(typeof(ReloadGroupAttribute), false).Length > 0;
 
-        // Done
+        /// <summary>
+        /// ReloadGroup标签，通常修饰类
+        /// </summary>
         static bool IsReloadGroup(Array field) => field.GetType().GetElementType().GetCustomAttributes(typeof(ReloadGroupAttribute), false).Length > 0;
 
-        // Done
+        // First Done
         static bool IsNull(System.Object container, FieldInfo info) => IsNull(info.GetValue(container));
-
-        static bool IsNull(System.Object field)
-            => field == null || field.Equals(null);
-        // Done
+        // First Done
+        static bool IsNull(System.Object field) => field == null || field.Equals(null);
+        /// <summary>
+        /// Load Asset
+        /// </summary>
         static UnityEngine.Object Load(string path, Type type, bool builtin)
         {
-            // Check if asset exist.
-            // Direct loading can be prevented by AssetDatabase being reloading.
             var guid = AssetDatabase.AssetPathToGUID(path);
             if (!builtin && String.IsNullOrEmpty(guid))
                 throw new Exception($"Cannot load. Incorrect path: {path}");
-            // Else the path is good. Attempt loading resource if AssetDatabase available.
             UnityEngine.Object result;
             if (builtin && type == typeof(Shader))
                 result = Shader.Find(path);
@@ -181,7 +171,9 @@ namespace UnityEngine.Rendering
             return result;
         }
 
-        // Done
+        /// <summary>
+        /// 如果FieldInfo为空，就加载并设置它
+        /// </summary>
         static bool SetAndLoadIfNull(System.Object container, FieldInfo info, string path, bool builtin)
         {
             if (IsNull(container, info))
@@ -192,7 +184,9 @@ namespace UnityEngine.Rendering
             return false;
         }
 
-        // Done
+        /// <summary>
+        /// 按需加载并赋值数组元素
+        /// </summary>
         static bool SetAndLoadIfNull(Array array, int index, string path, bool builtin)
         {
             var element = array.GetValue(index);
@@ -203,7 +197,7 @@ namespace UnityEngine.Rendering
             }
             return false;
         }
-        // Done
+        // First Done
         static string GetFullPath(string basePath, ReloadAttribute attribute, int index = 0)
         {
             string path;
