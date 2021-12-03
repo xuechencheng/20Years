@@ -32,8 +32,9 @@ namespace UnityEngine.Rendering.Universal
             private static Dictionary<int, ProfilingSampler> s_HashSamplerCache = new Dictionary<int, ProfilingSampler>();
             public static readonly ProfilingSampler unknownSampler = new ProfilingSampler("Unknown");
 
-            // Done
-            // Specialization for camera loop to avoid allocations.
+            /// <summary>
+            /// 获取或增加相机的Sampler
+            /// </summary>
             public static ProfilingSampler TryGetOrAddCameraSampler(Camera camera)
             {
                 #if UNIVERSAL_PROFILING_NO_ALLOC
@@ -202,8 +203,10 @@ namespace UnityEngine.Rendering.Universal
 #if UNITY_2021_1_OR_NEWER
         protected override void Render(ScriptableRenderContext renderContext, List<Camera> cameras)
 #else
-        // Start Point
-        // Done
+        /// <summary>
+        /// 主循环
+        /// </summary>
+        /// Start Point
         protected override void Render(ScriptableRenderContext renderContext, Camera[] cameras)
 #endif
         {
@@ -294,7 +297,9 @@ namespace UnityEngine.Rendering.Universal
 #endif
             RenderSingleCamera(context, cameraData, cameraData.postProcessEnabled);
         }
-        //Done
+        /// <summary>
+        /// 裁剪
+        /// </summary>
         static bool TryGetCullingParameters(CameraData cameraData, out ScriptableCullingParameters cullingParams)
         {
 #if ENABLE_VR && ENABLE_XR_MODULE
@@ -314,12 +319,8 @@ namespace UnityEngine.Rendering.Universal
         }
 
         /// <summary>
-        /// Renders a single camera. This method will do culling, setup and execution of the renderer.
+        /// 渲染单个相机
         /// </summary>
-        /// <param name="context">Render context used to record commands during execution.</param>
-        /// <param name="cameraData">Camera rendering data. This might contain data inherited from a base camera.</param>
-        /// <param name="anyPostProcessingEnabled">True if at least one camera has post-processing enabled in the stack, false otherwise.</param>
-        /// Done Pause
         static void RenderSingleCamera(ScriptableRenderContext context, CameraData cameraData, bool anyPostProcessingEnabled)
         {
             Camera camera = cameraData.camera;
@@ -333,12 +334,6 @@ namespace UnityEngine.Rendering.Universal
                 return;
             ScriptableRenderer.current = renderer;
             bool isSceneViewCamera = cameraData.isSceneViewCamera;
-            // NOTE: Do NOT mix ProfilingScope with named CommandBuffers i.e. CommandBufferPool.Get("name").
-            // Currently there's an issue which results in mismatched markers.
-            // The named CommandBuffer will close its "profiling scope" on execution.
-            // That will orphan ProfilingScope markers as the named CommandBuffer markers are their parents.
-            // Resulting in following pattern:
-            // exec(cmd.start, scope.start, cmd.end) and exec(cmd.start, scope.end, cmd.end)
             CommandBuffer cmd = CommandBufferPool.Get();
             ProfilingSampler sampler = Profiling.TryGetOrAddCameraSampler(camera);
             using (new ProfilingScope(cmd, sampler)) // Enqueues a "BeginSample" command into the CommandBuffer cmd
@@ -367,30 +362,23 @@ namespace UnityEngine.Rendering.Universal
                 {
                     renderer.Setup(context, ref renderingData);
                 }
-                // Timing scope inside
                 renderer.Execute(context, ref renderingData);
-
-            } // When ProfilingSample goes out of scope, an "EndSample" command is enqueued into CommandBuffer cmd
-
+            }
             cameraData.xr.EndCamera(cmd, cameraData);
-            context.ExecuteCommandBuffer(cmd); // Sends to ScriptableRenderContext all the commands enqueued since cmd.Clear, i.e the "EndSample" command
+            context.ExecuteCommandBuffer(cmd);
             CommandBufferPool.Release(cmd);
-
             using (new ProfilingScope(cmd, Profiling.Pipeline.Context.submit))
             {
-                context.Submit(); // Actually execute the commands that we previously sent to the ScriptableRenderContext context
+                context.Submit();
             }
-
             ScriptableRenderer.current = null;
         }
 
         /// <summary>
-        // Renders a camera stack. This method calls RenderSingleCamera for each valid camera in the stack.
-        // The last camera resolves the final target to screen.
+        /// 渲染相机栈
         /// </summary>
-        /// <param name="context">Render context used to record commands during execution.</param>
-        /// <param name="camera">Camera to render.</param>
-        /// Done 
+        /// <param name="context"></param>
+        /// <param name="baseCamera"></param>
         static void RenderCameraStack(ScriptableRenderContext context, Camera baseCamera)
         {
             using var profScope = new ProfilingScope(null, ProfilingSampler.Get(URPProfileId.RenderCameraStack));
@@ -398,14 +386,11 @@ namespace UnityEngine.Rendering.Universal
             // Overlay cameras剔除掉，它跟着Base相机一起渲染。
             if (baseCameraAdditionalData != null && baseCameraAdditionalData.renderType == CameraRenderType.Overlay)
                 return;
-            var renderer = baseCameraAdditionalData?.scriptableRenderer;// Pause
+            var renderer = baseCameraAdditionalData?.scriptableRenderer;
             bool supportsCameraStacking = renderer != null && renderer.supportedRenderingFeatures.cameraStacking;
             List<Camera> cameraStack = (supportsCameraStacking) ? baseCameraAdditionalData?.cameraStack : null;
             bool anyPostProcessingEnabled = baseCameraAdditionalData != null && baseCameraAdditionalData.renderPostProcessing;
-            // We need to know the last active camera in the stack to be able to resolve
-            // rendering to screen when rendering it. The last camera in the stack is not
-            // necessarily the last active one as it users might disable it.
-            int lastActiveOverlayCameraIndex = -1;
+            int lastActiveOverlayCameraIndex = -1;//最后一个相机还要负责渲染到屏幕
             if (cameraStack != null)
             {
                 var baseCameraRendererType = baseCameraAdditionalData?.scriptableRenderer.GetType();
@@ -445,10 +430,10 @@ namespace UnityEngine.Rendering.Universal
                     baseCameraAdditionalData.UpdateCameraStack();
                 }
             }
-            // Post-processing not supported in GLES2.
             anyPostProcessingEnabled &= SystemInfo.graphicsDeviceType != GraphicsDeviceType.OpenGLES2;
             bool isStackedRendering = lastActiveOverlayCameraIndex != -1;
             InitializeCameraData(baseCamera, baseCameraAdditionalData, !isStackedRendering, out var baseCameraData);
+            #region XR
 #if ENABLE_VR && ENABLE_XR_MODULE
             var originalTargetDesc = baseCameraData.cameraTargetDescriptor;
             var xrActive = false;
@@ -469,7 +454,8 @@ namespace UnityEngine.Rendering.Universal
                     m_XRSystem.UpdateCameraData(ref baseCameraData, baseCameraData.xr);
                 }
 #endif
-                using(new ProfilingScope(null, Profiling.Pipeline.beginCameraRendering))
+                #endregion
+                using (new ProfilingScope(null, Profiling.Pipeline.beginCameraRendering))
                 {
                     BeginCameraRendering(context, baseCamera);
                 }
@@ -477,7 +463,7 @@ namespace UnityEngine.Rendering.Universal
                 //It should be called before culling to prepare material. When there isn't any VisualEffect component, this method has no effect.
                 VFX.VFXManager.PrepareCamera(baseCamera);
 #endif
-                UpdateVolumeFramework(baseCamera, baseCameraAdditionalData);//待续
+                UpdateVolumeFramework(baseCamera, baseCameraAdditionalData);//Pause
 #if ADAPTIVE_PERFORMANCE_2_0_0_OR_NEWER
                 if (asset.useAdaptivePerformance)
                     ApplyAdaptivePerformance(ref baseCameraData);
@@ -523,6 +509,7 @@ namespace UnityEngine.Rendering.Universal
                         }
                     }
                 }
+                #region XR
 #if ENABLE_VR && ENABLE_XR_MODULE
                 if (baseCameraData.xr.enabled)
                     baseCameraData.cameraTargetDescriptor = originalTargetDesc;
@@ -534,14 +521,15 @@ namespace UnityEngine.Rendering.Universal
                 {
                     m_XRSystem.RenderMirrorView(cmd, baseCamera);
                 }
-
                 context.ExecuteCommandBuffer(cmd);
                 context.Submit();
                 CommandBufferPool.Release(cmd);
             }
             m_XRSystem.ReleaseFrame();
 #endif
+            #endregion
         }
+        // ???
         static void UpdateVolumeFramework(Camera camera, UniversalAdditionalCameraData additionalCameraData)
         {
             using var profScope = new ProfilingScope(null, ProfilingSampler.Get(URPProfileId.UpdateVolumeFramework));
@@ -600,7 +588,9 @@ namespace UnityEngine.Rendering.Universal
             SceneViewDrawMode.SetupDrawMode();
 #endif
         }
-        //Done
+        /// <summary>
+        /// 初始化CameraData
+        /// </summary>
         static void InitializeCameraData(Camera camera, UniversalAdditionalCameraData additionalCameraData, bool resolveFinalTarget, out CameraData cameraData)
         {
             using var profScope = new ProfilingScope(null, Profiling.Pipeline.initializeCameraData);
@@ -610,13 +600,8 @@ namespace UnityEngine.Rendering.Universal
         }
 
         /// <summary>
-        /// Initialize camera data settings common for all cameras in the stack. Overlay cameras will inherit
-        /// settings from base camera.
+        /// 初始化CameraData信息：Environment，Post-processing和output
         /// </summary>
-        /// <param name="baseCamera">Base camera to inherit settings from.</param>
-        /// <param name="baseAdditionalCameraData">Component that contains additional base camera data.</param>
-        /// <param name="cameraData">Camera data to initialize setttings.</param>
-        /// First Done
         static void InitializeStackedCameraData(Camera baseCamera, UniversalAdditionalCameraData baseAdditionalCameraData, ref CameraData cameraData)
         {
             using var profScope = new ProfilingScope(null, Profiling.Pipeline.initializeStackedCameraData);
@@ -711,13 +696,8 @@ namespace UnityEngine.Rendering.Universal
         }
 
         /// <summary>
-        /// Initialize settings that can be different for each camera in the stack.
+        /// 初始化相机数据
         /// </summary>
-        /// <param name="camera">Camera to initialize settings from.</param>
-        /// <param name="additionalCameraData">Additional camera data component to initialize settings from.</param>
-        /// <param name="resolveFinalTarget">True if this is the last camera in the stack and rendering should resolve to camera target.</param>
-        /// <param name="cameraData">Settings to be initilized.</param>
-        /// First Done
         static void InitializeAdditionalCameraData(Camera camera, UniversalAdditionalCameraData additionalCameraData, bool resolveFinalTarget, ref CameraData cameraData)
         {
             using var profScope = new ProfilingScope(null, Profiling.Pipeline.initializeAdditionalCameraData);
@@ -784,7 +764,9 @@ namespace UnityEngine.Rendering.Universal
             }
             cameraData.SetViewAndProjectionMatrix(camera.worldToCameraMatrix, projectionMatrix);
         }
-        //First Done
+        /// <summary>
+        /// 初始化渲染数据，主要是灯光，阴影和后处理
+        /// </summary>
         static void InitializeRenderingData(UniversalRenderPipelineAsset settings, ref CameraData cameraData, ref CullingResults cullResults,
             bool anyPostProcessingEnabled, out RenderingData renderingData)
         {
@@ -823,7 +805,9 @@ namespace UnityEngine.Rendering.Universal
             renderingData.perObjectData = GetPerObjectLightFlags(renderingData.lightData.additionalLightsCount);
             renderingData.postProcessingEnabled = anyPostProcessingEnabled;
         }
-        // First Done
+        /// <summary>
+        /// 初始化阴影数据
+        /// </summary>
         static void InitializeShadowData(UniversalRenderPipelineAsset settings, NativeArray<VisibleLight> visibleLights, bool mainLightCastShadows, bool additionalLightsCastShadows, out ShadowData shadowData)
         {
             using var profScope = new ProfilingScope(null, Profiling.Pipeline.initializeShadowData);
@@ -869,13 +853,15 @@ namespace UnityEngine.Rendering.Universal
             shadowData.supportsSoftShadows = settings.supportsSoftShadows && (shadowData.supportsMainLightShadows || shadowData.supportsAdditionalLightShadows);
             shadowData.shadowmapDepthBufferBits = 16;
         }
-        //Done
+
         static void InitializePostProcessingData(UniversalRenderPipelineAsset settings, out PostProcessingData postProcessingData)
         {
             postProcessingData.gradingMode = settings.supportsHDR ? settings.colorGradingMode : ColorGradingMode.LowDynamicRange;
             postProcessingData.lutSize = settings.colorGradingLutSize;
         }
-        // First Done
+        /// <summary>
+        /// 初始化光照信息
+        /// </summary>
         static void InitializeLightData(UniversalRenderPipelineAsset settings, NativeArray<VisibleLight> visibleLights, int mainLightIndex, out LightData lightData)
         {
             using var profScope = new ProfilingScope(null, Profiling.Pipeline.initializeLightData);
@@ -896,7 +882,9 @@ namespace UnityEngine.Rendering.Universal
             lightData.visibleLights = visibleLights;
             lightData.supportsMixedLighting = settings.supportsMixedLighting;
         }
-        //First Done
+        /// <summary>
+        /// 获取PerObjectData配置
+        /// </summary>
         static PerObjectData GetPerObjectLightFlags(int additionalLightsCount)
         {
             using var profScope = new ProfilingScope(null, Profiling.Pipeline.getPerObjectLightFlags);
@@ -911,8 +899,9 @@ namespace UnityEngine.Rendering.Universal
             return configuration;
         }
 
-        // Main Light is always a directional light
-        // First Done
+        /// <summary>
+        /// 获取主光源
+        /// </summary>
         static int GetMainLightIndex(UniversalRenderPipelineAsset settings, NativeArray<VisibleLight> visibleLights)
         {
             using var profScope = new ProfilingScope(null, Profiling.Pipeline.getMainLightIndex);

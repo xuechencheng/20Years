@@ -1,9 +1,9 @@
+
 using System.Runtime.CompilerServices;
 using UnityEngine.Experimental.Rendering;
 
 namespace UnityEngine.Rendering.Universal
 {
-    // TODO: xmldoc
     public interface IPostProcessComponent
     {
         bool IsActive();
@@ -13,11 +13,6 @@ namespace UnityEngine.Rendering.Universal
 
 namespace UnityEngine.Rendering.Universal.Internal
 {
-    // TODO: TAA
-    // TODO: Motion blur
-    /// <summary>
-    /// Renders the post-processing effect stack.
-    /// </summary>
     public class PostProcessPass : ScriptableRenderPass
     {
         RenderTextureDescriptor m_Descriptor;
@@ -25,16 +20,12 @@ namespace UnityEngine.Rendering.Universal.Internal
         RenderTargetHandle m_Destination;
         RenderTargetHandle m_Depth;
         RenderTargetHandle m_InternalLut;
-
         const string k_RenderPostProcessingTag = "Render PostProcessing Effects";
         const string k_RenderFinalPostProcessingTag = "Render Final PostProcessing Pass";
         private static readonly ProfilingSampler m_ProfilingRenderPostProcessing = new ProfilingSampler(k_RenderPostProcessingTag);
         private static readonly ProfilingSampler m_ProfilingRenderFinalPostProcessing = new ProfilingSampler(k_RenderFinalPostProcessingTag);
-
         MaterialLibrary m_Materials;
         PostProcessData m_Data;
-
-        // Builtin effects settings
         DepthOfField m_DepthOfField;
         MotionBlur m_MotionBlur;
         PaniniProjection m_PaniniProjection;
@@ -46,7 +37,6 @@ namespace UnityEngine.Rendering.Universal.Internal
         ColorAdjustments m_ColorAdjustments;
         Tonemapping m_Tonemapping;
         FilmGrain m_FilmGrain;
-
         // Misc
         const int k_MaxPyramidSize = 16;
         readonly GraphicsFormat m_DefaultHDRFormat;
@@ -59,23 +49,17 @@ namespace UnityEngine.Rendering.Universal.Internal
         RenderTargetIdentifier[] m_MRT2;
         Vector4[] m_BokehKernel;
         int m_BokehHash;
-
         // True when this is the very last pass in the pipeline
         bool m_IsFinalPass;
-
         // If there's a final post process pass after this pass.
         // If yes, Film Grain and Dithering are setup in the final pass, otherwise they are setup in this pass.
         bool m_HasFinalPass;
-
         // Some Android devices do not support sRGB backbuffer
         // We need to do the conversion manually on those
         bool m_EnableSRGBConversionIfNeeded;
-
         // Option to use procedural draw instead of cmd.blit
         bool m_UseDrawProcedural;
-
         Material m_BlitMaterial;
-
         public PostProcessPass(RenderPassEvent evt, PostProcessData data, Material blitMaterial)
         {
             base.profilingSampler = new ProfilingSampler(nameof(PostProcessPass));
@@ -83,8 +67,6 @@ namespace UnityEngine.Rendering.Universal.Internal
             m_Data = data;
             m_Materials = new MaterialLibrary(data);
             m_BlitMaterial = blitMaterial;
-
-            // Texture format pre-lookup
             if (SystemInfo.IsFormatSupported(GraphicsFormat.B10G11R11_UFloatPack32, FormatUsage.Linear | FormatUsage.Render))
             {
                 m_DefaultHDRFormat = GraphicsFormat.B10G11R11_UFloatPack32;
@@ -92,42 +74,33 @@ namespace UnityEngine.Rendering.Universal.Internal
             }
             else
             {
-                m_DefaultHDRFormat = QualitySettings.activeColorSpace == ColorSpace.Linear
-                    ? GraphicsFormat.R8G8B8A8_SRGB
-                    : GraphicsFormat.R8G8B8A8_UNorm;
+                m_DefaultHDRFormat = QualitySettings.activeColorSpace == ColorSpace.Linear ? GraphicsFormat.R8G8B8A8_SRGB: GraphicsFormat.R8G8B8A8_UNorm;
                 m_UseRGBM = true;
             }
-
             // Only two components are needed for edge render texture, but on some vendors four components may be faster.
             if (SystemInfo.IsFormatSupported(GraphicsFormat.R8G8_UNorm, FormatUsage.Render) && SystemInfo.graphicsDeviceVendor.ToLowerInvariant().Contains("arm"))
                 m_SMAAEdgeFormat = GraphicsFormat.R8G8_UNorm;
             else
                 m_SMAAEdgeFormat = GraphicsFormat.R8G8B8A8_UNorm;
-
             if (SystemInfo.IsFormatSupported(GraphicsFormat.R16_UNorm, FormatUsage.Linear | FormatUsage.Render))
                 m_GaussianCoCFormat = GraphicsFormat.R16_UNorm;
             else if (SystemInfo.IsFormatSupported(GraphicsFormat.R16_SFloat, FormatUsage.Linear | FormatUsage.Render))
                 m_GaussianCoCFormat = GraphicsFormat.R16_SFloat;
             else // Expect CoC banding
                 m_GaussianCoCFormat = GraphicsFormat.R8_UNorm;
-
             // Bloom pyramid shader ids - can't use a simple stackalloc in the bloom function as we
             // unfortunately need to allocate strings
             ShaderConstants._BloomMipUp = new int[k_MaxPyramidSize];
             ShaderConstants._BloomMipDown = new int[k_MaxPyramidSize];
-
             for (int i = 0; i < k_MaxPyramidSize; i++)
             {
                 ShaderConstants._BloomMipUp[i] = Shader.PropertyToID("_BloomMipUp" + i);
                 ShaderConstants._BloomMipDown[i] = Shader.PropertyToID("_BloomMipDown" + i);
             }
-
             m_MRT2 = new RenderTargetIdentifier[2];
             m_ResetHistory = true;
         }
-
         public void Cleanup() => m_Materials.Cleanup();
-
         public void Setup(in RenderTextureDescriptor baseDescriptor, in RenderTargetHandle source, in RenderTargetHandle destination, in RenderTargetHandle depth, in RenderTargetHandle internalLut, bool hasFinalPass, bool enableSRGBConversion)
         {
             m_Descriptor = baseDescriptor;
@@ -141,7 +114,6 @@ namespace UnityEngine.Rendering.Universal.Internal
             m_HasFinalPass = hasFinalPass;
             m_EnableSRGBConversionIfNeeded = enableSRGBConversion;
         }
-
         public void SetupFinalPass(in RenderTargetHandle source)
         {
             m_Source = source;
@@ -150,32 +122,24 @@ namespace UnityEngine.Rendering.Universal.Internal
             m_HasFinalPass = false;
             m_EnableSRGBConversionIfNeeded = true;
         }
-
         /// <inheritdoc/>
         public override void OnCameraSetup(CommandBuffer cmd, ref RenderingData renderingData)
         {
             if (m_Destination == RenderTargetHandle.CameraTarget)
                 return;
-
             // If RenderTargetHandle already has a valid internal render target identifier, we shouldn't request a temp
             if (m_Destination.HasInternalRenderTargetId())
                 return;
-
             var desc = GetCompatibleDescriptor();
             desc.depthBufferBits = 0;
             cmd.GetTemporaryRT(m_Destination.id, desc, FilterMode.Point);
         }
-
-        /// <inheritdoc/>
         public override void OnCameraCleanup(CommandBuffer cmd)
         {
             if (m_Destination == RenderTargetHandle.CameraTarget)
                 return;
-
-            // Logic here matches the if check in OnCameraSetup
             if (m_Destination.HasInternalRenderTargetId())
                 return;
-
             cmd.ReleaseTemporaryRT(m_Destination.id);
         }
 
@@ -222,23 +186,17 @@ namespace UnityEngine.Rendering.Universal.Internal
             }
             else if (CanRunOnTile())
             {
-                // TODO: Add a fast render path if only on-tile compatible effects are used and we're actually running on a platform that supports it
-                // Note: we can still work on-tile if FXAA is enabled, it'd be part of the final pass
             }
             else
             {
-                // Regular render path (not on-tile) - we do everything in a single command buffer as it
-                // makes it easier to manage temporary targets' lifetime
                 var cmd = CommandBufferPool.Get();
                 using (new ProfilingScope(cmd, m_ProfilingRenderPostProcessing))
                 {
                     Render(cmd, ref renderingData);
                 }
-
                 context.ExecuteCommandBuffer(cmd);
                 CommandBufferPool.Release(cmd);
             }
-
             m_ResetHistory = false;
         }
 
@@ -296,18 +254,12 @@ namespace UnityEngine.Rendering.Universal.Internal
         void Render(CommandBuffer cmd, ref RenderingData renderingData)
         {
             ref var cameraData = ref renderingData.cameraData;
-
-            // Don't use these directly unless you have a good reason to, use GetSource() and
-            // GetDestination() instead
             bool tempTargetUsed = false;
             bool tempTarget2Used = false;
             int source = m_Source.id;
             int destination = -1;
             bool isSceneViewCamera = cameraData.isSceneViewCamera;
-
-            // Utilities to simplify intermediate target management
             int GetSource() => source;
-
             int GetDestination()
             {
                 if (destination == -1)
@@ -323,15 +275,11 @@ namespace UnityEngine.Rendering.Universal.Internal
                     destination = ShaderConstants._TempTarget2;
                     tempTarget2Used = true;
                 }
-
                 return destination;
             }
-
             void Swap() => CoreUtils.Swap(ref source, ref destination);
-
             // Setup projection matrix for cmd.DrawMesh()
             cmd.SetGlobalMatrix(ShaderConstants._FullscreenProjMat, GL.GetGPUProjectionMatrix(Matrix4x4.identity, true));
-
             // Optional NaN killer before post-processing kicks in
             // stopNaN may be null on Adreno 3xx. It doesn't support full shader level 3.5, but SystemInfo.graphicsShaderLevel is 35.
             if (cameraData.isStopNaNEnabled && m_Materials.stopNaN != null)
@@ -346,7 +294,6 @@ namespace UnityEngine.Rendering.Universal.Internal
                     Swap();
                 }
             }
-
             // Anti-aliasing
             if (cameraData.antialiasing == AntialiasingMode.SubpixelMorphologicalAntiAliasing && SystemInfo.graphicsDeviceType != GraphicsDeviceType.OpenGLES2)
             {
@@ -357,21 +304,18 @@ namespace UnityEngine.Rendering.Universal.Internal
                     Swap();
                 }
             }
-
             // Depth of Field
             if (m_DepthOfField.IsActive() && !isSceneViewCamera)
             {
                 var markerName = m_DepthOfField.mode.value == DepthOfFieldMode.Gaussian
                     ? URPProfileId.GaussianDepthOfField
                     : URPProfileId.BokehDepthOfField;
-
                 using (new ProfilingScope(cmd, ProfilingSampler.Get(markerName)))
                 {
                     DoDepthOfField(cameraData.camera, cmd, GetSource(), GetDestination(), cameraData.pixelRect);
                     Swap();
                 }
             }
-
             // Motion blur
             if (m_MotionBlur.IsActive() && !isSceneViewCamera)
             {
@@ -381,7 +325,6 @@ namespace UnityEngine.Rendering.Universal.Internal
                     Swap();
                 }
             }
-
             // Panini projection is done as a fullscreen pass after all depth-based effects are done
             // and before bloom kicks in
             if (m_PaniniProjection.IsActive() && !isSceneViewCamera)
@@ -392,13 +335,11 @@ namespace UnityEngine.Rendering.Universal.Internal
                     Swap();
                 }
             }
-
             // Combined post-processing stack
             using (new ProfilingScope(cmd, ProfilingSampler.Get(URPProfileId.UberPostProcess)))
             {
                 // Reset uber keywords
                 m_Materials.uber.shaderKeywords = null;
-
                 // Bloom goes first
                 bool bloomActive = m_Bloom.IsActive();
                 if (bloomActive)
@@ -1276,7 +1217,6 @@ namespace UnityEngine.Rendering.Universal.Internal
                 {
                     return null;
                 }
-
                 return CoreUtils.CreateEngineMaterial(shader);
             }
 

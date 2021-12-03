@@ -23,10 +23,8 @@ namespace UnityEngine.Rendering.Universal
         public abstract void Create();
 
         /// <summary>
-        /// Injects one or multiple <c>ScriptableRenderPass</c> in the renderer.
+        /// Enqueue ScriptableRenderer
         /// </summary>
-        /// <param name="renderPasses">List of render passes to add to.</param>
-        /// <param name="renderingData">Rendering state. Use this to setup render passes.</param>
         public abstract void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData);
 
         void OnEnable()

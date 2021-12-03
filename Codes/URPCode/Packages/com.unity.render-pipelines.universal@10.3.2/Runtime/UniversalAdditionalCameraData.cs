@@ -218,11 +218,8 @@ namespace UnityEngine.Rendering.Universal
         }
 
         /// <summary>
-        /// Returns the camera stack. Only valid for Base cameras.
-        /// Overlay cameras have no stack and will return null.
-        /// <seealso cref="CameraRenderType"/>.
+        /// 对于Base相机返回List<Camera>，对于Over相机返回camera组件
         /// </summary>
-        /// Done
         public List<Camera> cameraStack
         {
             get
@@ -233,7 +230,6 @@ namespace UnityEngine.Rendering.Universal
                     Debug.LogWarning(string.Format("{0}: This camera is of {1} type. Only Base cameras can have a camera stack.", camera.name, renderType));
                     return null;
                 }
-
                 if (scriptableRenderer.supportedRenderingFeatures.cameraStacking == false)
                 {
                     var camera = gameObject.GetComponent<Camera>();
@@ -243,7 +239,9 @@ namespace UnityEngine.Rendering.Universal
                 return m_Cameras;
             }
         }
-        //First Done
+        /// <summary>
+        /// 更新相机栈，去掉空相机
+        /// </summary>
         internal void UpdateCameraStack()
         {
 #if UNITY_EDITOR
@@ -308,9 +306,8 @@ namespace UnityEngine.Rendering.Universal
         }
 
         /// <summary>
-        /// Returns the <see cref="ScriptableRenderer"/> that is used to render this camera.
+        /// 获取ScriptableRenderer
         /// </summary>
-        /// First Done
         public ScriptableRenderer scriptableRenderer
         {
             get

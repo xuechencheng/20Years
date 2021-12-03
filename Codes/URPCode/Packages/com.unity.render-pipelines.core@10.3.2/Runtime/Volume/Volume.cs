@@ -76,7 +76,6 @@ namespace UnityEngine.Rendering
                         }
                     }
                 }
-
                 return m_InternalProfile;
             }
             set => m_InternalProfile = value;

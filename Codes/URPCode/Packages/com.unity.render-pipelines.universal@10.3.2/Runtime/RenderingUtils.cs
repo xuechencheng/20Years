@@ -253,12 +253,10 @@ namespace UnityEngine.Rendering.Universal
         }
 
         /// <summary>
-        /// Checks if a render texture format is supported by the run-time system.
-        /// Similar to <see cref="SystemInfo.SupportsRenderTextureFormat(RenderTextureFormat)"/>, but doesn't allocate memory.
+        /// RenderTextureFormat是否支持
         /// </summary>
-        /// <param name="format">The format to look up.</param>
-        /// <returns>Returns true if the graphics card supports the given <c>RenderTextureFormat</c></returns>
-        /// Done
+        /// <param name="format"></param>
+        /// <returns></returns>
         public static bool SupportsRenderTextureFormat(RenderTextureFormat format)
         {
             if (!m_RenderTextureFormatSupport.TryGetValue(format, out var support))
@@ -316,11 +314,8 @@ namespace UnityEngine.Rendering.Universal
         }
 
         /// <summary>
-        /// Return the number of items in colorBuffers actually referring to an existing RenderTarget
+        /// 统计RenderTargetIdentifier[]中非零的数量
         /// </summary>
-        /// <param name="colorBuffers"></param>
-        /// <returns></returns>
-        /// Done
         internal static uint GetValidColorBufferCount(RenderTargetIdentifier[] colorBuffers)
         {
             uint nonNullColorBuffers = 0;
@@ -335,11 +330,10 @@ namespace UnityEngine.Rendering.Universal
             return nonNullColorBuffers;
         }
         /// <summary>
-        /// Return true if colorBuffers is an actual MRT setup
+        /// RenderTargetIdentifier[]中非零的数量大于1
         /// </summary>
         /// <param name="colorBuffers"></param>
         /// <returns></returns>
-        /// Done
         internal static bool IsMRT(RenderTargetIdentifier[] colorBuffers)
         {
             return GetValidColorBufferCount(colorBuffers) > 1;

@@ -93,7 +93,6 @@ namespace UnityEngine.Rendering.Universal.Internal
                         RenderBufferStoreAction.Store,
                         ClearFlag.None,
                         Color.black);
-
                     Camera camera = cameraData.camera;
                     cmd.SetViewProjectionMatrices(Matrix4x4.identity, Matrix4x4.identity);
                     cmd.SetViewport(cameraData.pixelRect);

@@ -8,10 +8,9 @@ namespace UnityEngine.Rendering.Universal
         public Matrix4x4 viewMatrix;
         public Matrix4x4 projectionMatrix;
         public Matrix4x4 shadowTransform;
-        public int offsetX;
+        public int offsetX;//坐标
         public int offsetY;
         public int resolution;
-
         public void Clear()
         {
             viewMatrix = Matrix4x4.identity;
@@ -36,12 +35,14 @@ namespace UnityEngine.Rendering.Universal
                 GraphicsSettings.HasShaderDefine(Graphics.activeTier, BuiltinShaderDefine.UNITY_METAL_SHADOWS_USE_POINT_FILTERING);
         }
 
+        /// <summary>
+        /// 计算阴影变换，包围球等数据
+        /// </summary>
         public static bool ExtractDirectionalLightMatrix(ref CullingResults cullResults, ref ShadowData shadowData, int shadowLightIndex, int cascadeIndex, int shadowmapWidth, int shadowmapHeight, int shadowResolution, float shadowNearPlane, out Vector4 cascadeSplitDistance, out ShadowSliceData shadowSliceData, out Matrix4x4 viewMatrix, out Matrix4x4 projMatrix)
         {
             ShadowSplitData splitData;
             bool success = cullResults.ComputeDirectionalShadowMatricesAndCullingPrimitives(shadowLightIndex, cascadeIndex, shadowData.mainLightShadowCascadesCount, 
                 shadowData.mainLightShadowCascadesSplit, shadowResolution, shadowNearPlane, out viewMatrix, out projMatrix, out splitData);
-
             cascadeSplitDistance = splitData.cullingSphere;
             shadowSliceData.offsetX = (cascadeIndex % 2) * shadowResolution;
             shadowSliceData.offsetY = (cascadeIndex / 2) * shadowResolution;
@@ -63,10 +64,11 @@ namespace UnityEngine.Rendering.Universal
             shadowMatrix = GetShadowTransform(projMatrix, viewMatrix);
             return success;
         }
-
+        /// <summary>
+        /// 绘制阴影
+        /// </summary>
         public static void RenderShadowSlice(CommandBuffer cmd, ref ScriptableRenderContext context,
-            ref ShadowSliceData shadowSliceData, ref ShadowDrawingSettings settings,
-            Matrix4x4 proj, Matrix4x4 view)
+            ref ShadowSliceData shadowSliceData, ref ShadowDrawingSettings settings, Matrix4x4 proj, Matrix4x4 view)
         {
             cmd.SetViewport(new Rect(shadowSliceData.offsetX, shadowSliceData.offsetY, shadowSliceData.resolution, shadowSliceData.resolution));
             cmd.SetViewProjectionMatrices(view, proj);
@@ -84,7 +86,9 @@ namespace UnityEngine.Rendering.Universal
             RenderShadowSlice(cmd, ref context, ref shadowSliceData, ref settings,
                 shadowSliceData.projectionMatrix, shadowSliceData.viewMatrix);
         }
-
+        /// <summary>
+        /// 计算分辨率
+        /// </summary>
         public static int GetMaxTileResolutionInAtlas(int atlasWidth, int atlasHeight, int tileCount)
         {
             int resolution = Mathf.Min(atlasWidth, atlasHeight);
@@ -96,7 +100,9 @@ namespace UnityEngine.Rendering.Universal
             }
             return resolution;
         }
-
+        /// <summary>
+        /// 计算在图集中的位置
+        /// </summary>
         public static void ApplySliceTransform(ref ShadowSliceData shadowSliceData, int atlasWidth, int atlasHeight)
         {
             Matrix4x4 sliceTransform = Matrix4x4.identity;
@@ -106,7 +112,6 @@ namespace UnityEngine.Rendering.Universal
             sliceTransform.m11 = shadowSliceData.resolution * oneOverAtlasHeight;
             sliceTransform.m03 = shadowSliceData.offsetX * oneOverAtlasWidth;
             sliceTransform.m13 = shadowSliceData.offsetY * oneOverAtlasHeight;
-
             // Apply shadow slice scale and offset
             shadowSliceData.shadowTransform = sliceTransform * shadowSliceData.shadowTransform;
         }
@@ -167,16 +172,19 @@ namespace UnityEngine.Rendering.Universal
             cmd.SetGlobalVector("_ShadowBias", shadowBias);
             cmd.SetGlobalVector("_LightDirection", new Vector4(lightDirection.x, lightDirection.y, lightDirection.z, 0.0f));
         }
-
+        /// <summary>
+        /// 获取阴影RT
+        /// </summary>
         public static RenderTexture GetTemporaryShadowTexture(int width, int height, int bits)
         {
             var shadowTexture = RenderTexture.GetTemporary(width, height, bits, m_ShadowmapFormat);
             shadowTexture.filterMode = m_ForceShadowPointSampling ? FilterMode.Point : FilterMode.Bilinear;
             shadowTexture.wrapMode = TextureWrapMode.Clamp;
-
             return shadowTexture;
         }
-
+        /// <summary>
+        /// 阴影变换矩阵
+        /// </summary>
         static Matrix4x4 GetShadowTransform(Matrix4x4 proj, Matrix4x4 view)
         {
             // Currently CullResults ComputeDirectionalShadowMatricesAndCullingPrimitives doesn't

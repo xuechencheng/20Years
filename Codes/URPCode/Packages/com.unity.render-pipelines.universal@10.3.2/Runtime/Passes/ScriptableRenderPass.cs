@@ -178,13 +178,8 @@ namespace UnityEngine.Rendering.Universal
         }
 
         /// <summary>
-        /// Configures render targets for this render pass. Call this instead of CommandBuffer.SetRenderTarget.
-        /// This method should be called inside Configure.
+        /// 配置颜色和深度RT句柄
         /// </summary>
-        /// <param name="colorAttachment">Color attachment identifier.</param>
-        /// <param name="depthAttachment">Depth attachment identifier.</param>
-        /// <seealso cref="Configure"/>
-        /// Done
         public void ConfigureTarget(RenderTargetIdentifier colorAttachment, RenderTargetIdentifier depthAttachment)
         {
             m_DepthAttachment = depthAttachment;
@@ -211,12 +206,8 @@ namespace UnityEngine.Rendering.Universal
         }
 
         /// <summary>
-        /// Configures render targets for this render pass. Call this instead of CommandBuffer.SetRenderTarget.
-        /// This method should be called inside Configure.
+        /// 配置颜色RT句柄
         /// </summary>
-        /// <param name="colorAttachment">Color attachment identifier.</param>
-        /// <seealso cref="Configure"/>
-        /// Done
         public void ConfigureTarget(RenderTargetIdentifier colorAttachment)
         {
             overrideCameraTarget = true;
@@ -322,13 +313,8 @@ namespace UnityEngine.Rendering.Universal
         }
 
         /// <summary>
-        /// Creates <c>DrawingSettings</c> based on current the rendering state.
+        /// 创建DrawingSettings
         /// </summary>
-        /// <param name="shaderTagId">Shader pass tag to render.</param>
-        /// <param name="renderingData">Current rendering state.</param>
-        /// <param name="sortingCriteria">Criteria to sort objects being rendered.</param>
-        /// <returns></returns>
-        /// <seealso cref="DrawingSettings"/>
         public DrawingSettings CreateDrawingSettings(ShaderTagId shaderTagId, ref RenderingData renderingData, SortingCriteria sortingCriteria)
         {
             Camera camera = renderingData.cameraData.camera;
@@ -338,8 +324,6 @@ namespace UnityEngine.Rendering.Universal
                 perObjectData = renderingData.perObjectData,
                 mainLightIndex = renderingData.lightData.mainLightIndex,
                 enableDynamicBatching = renderingData.supportsDynamicBatching,
-
-                // Disable instancing for preview cameras. This is consistent with the built-in forward renderer. Also fixes case 1127324.
                 enableInstancing = camera.cameraType == CameraType.Preview ? false : true,
             };
             return settings;

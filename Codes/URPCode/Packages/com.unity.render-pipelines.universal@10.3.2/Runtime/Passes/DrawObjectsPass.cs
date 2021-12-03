@@ -4,13 +4,6 @@ using UnityEngine.Profiling;
 
 namespace UnityEngine.Rendering.Universal.Internal
 {
-    /// <summary>
-    /// Draw  objects into the given color and depth target
-    ///
-    /// You can use this pass to render objects that have a material and/or shader
-    /// with the pass names UniversalForward or SRPDefaultUnlit.
-    /// </summary>
-    /// Done
     public class DrawObjectsPass : ScriptableRenderPass
     {
         FilteringSettings m_FilteringSettings;
@@ -19,13 +12,10 @@ namespace UnityEngine.Rendering.Universal.Internal
         string m_ProfilerTag;
         ProfilingSampler m_ProfilingSampler;
         bool m_IsOpaque;
-
         static readonly int s_DrawObjectPassDataPropID = Shader.PropertyToID("_DrawObjectPassData");
-
         public DrawObjectsPass(string profilerTag, ShaderTagId[] shaderTagIds, bool opaque, RenderPassEvent evt, RenderQueueRange renderQueueRange, LayerMask layerMask, StencilState stencilState, int stencilReference)
         {
             base.profilingSampler = new ProfilingSampler(nameof(DrawObjectsPass));
-
             m_ProfilerTag = profilerTag;
             m_ProfilingSampler = new ProfilingSampler(profilerTag);
             foreach (ShaderTagId sid in shaderTagIds)
@@ -41,7 +31,6 @@ namespace UnityEngine.Rendering.Universal.Internal
                 m_RenderStateBlock.stencilState = stencilState;
             }
         }
-
         public DrawObjectsPass(string profilerTag, bool opaque, RenderPassEvent evt, RenderQueueRange renderQueueRange, LayerMask layerMask, StencilState stencilState, int stencilReference)
             : this(profilerTag,
                 new ShaderTagId[] { new ShaderTagId("SRPDefaultUnlit"), new ShaderTagId("UniversalForward"), new ShaderTagId("UniversalForwardOnly"), new ShaderTagId("LightweightForward")},
@@ -57,14 +46,9 @@ namespace UnityEngine.Rendering.Universal.Internal
         /// <inheritdoc/>
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {
-            // NOTE: Do NOT mix ProfilingScope with named CommandBuffers i.e. CommandBufferPool.Get("name").
-            // Currently there's an issue which results in mismatched markers.
             CommandBuffer cmd = CommandBufferPool.Get();
             using (new ProfilingScope(cmd, m_ProfilingSampler))
             {
-                // Global render pass data containing various settings.
-                // x,y,z are currently unused
-                // w is used for knowing whether the object is opaque(1) or alpha blended(0)
                 Vector4 drawObjectPassData = new Vector4(0.0f, 0.0f, 0.0f, (m_IsOpaque) ? 1.0f : 0.0f);
                 cmd.SetGlobalVector(s_DrawObjectPassDataPropID, drawObjectPassData);
                 // scaleBias.x = flipSign

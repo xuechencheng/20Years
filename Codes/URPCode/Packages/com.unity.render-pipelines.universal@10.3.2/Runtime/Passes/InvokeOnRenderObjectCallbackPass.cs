@@ -1,9 +1,5 @@
 namespace UnityEngine.Rendering.Universal
 {
-    /// <summary>
-    /// Invokes OnRenderObject callback
-    /// </summary>
-    /// Done
     internal class InvokeOnRenderObjectCallbackPass : ScriptableRenderPass
     {
         public InvokeOnRenderObjectCallbackPass(RenderPassEvent evt)
@@ -11,8 +7,6 @@ namespace UnityEngine.Rendering.Universal
             base.profilingSampler = new ProfilingSampler(nameof(InvokeOnRenderObjectCallbackPass));
             renderPassEvent = evt;
         }
-
-        /// <inheritdoc/>
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {
             context.InvokeOnRenderObjectCallback();

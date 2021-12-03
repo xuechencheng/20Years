@@ -2,16 +2,6 @@ using System;
 
 namespace UnityEngine.Rendering.Universal.Internal
 {
-    /// <summary>
-    /// Copy the given depth buffer into the given destination depth buffer.
-    ///
-    /// You can use this pass to copy a depth buffer to a destination,
-    /// so you can use it later in rendering. If the source texture has MSAA
-    /// enabled, the pass uses a custom MSAA resolve. If the source texture
-    /// does not have MSAA enabled, the pass uses a Blit or a Copy Texture
-    /// operation, depending on what the current platform supports.
-    /// </summary>
-    /// Done
     public class CopyDepthPass : ScriptableRenderPass
     {
         private RenderTargetHandle source { get; set; }
@@ -25,18 +15,12 @@ namespace UnityEngine.Rendering.Universal.Internal
             m_CopyDepthMaterial = copyDepthMaterial;
             renderPassEvent = evt;
         }
-        /// <summary>
-        /// Configure the pass with the source and destination to execute on.
-        /// </summary>
-        /// <param name="source">Source Render Target</param>
-        /// <param name="destination">Destination Render Targt</param>
         public void Setup(RenderTargetHandle source, RenderTargetHandle destination)
         {
             this.source = source;
             this.destination = destination;
             this.AllocateRT = AllocateRT && !destination.HasInternalRenderTargetId();
         }
-
         public override void OnCameraSetup(CommandBuffer cmd, ref RenderingData renderingData)
         {
             var descriptor = renderingData.cameraData.cameraTargetDescriptor;
@@ -89,6 +73,7 @@ namespace UnityEngine.Rendering.Universal.Internal
                         break;
                 }
                 cmd.SetGlobalTexture("_CameraDepthAttachment", source.Identifier());
+                #region XR
 #if ENABLE_VR && ENABLE_XR_MODULE
                 // XR uses procedural draw instead of cmd.blit or cmd.DrawFullScreenMesh
                 if (renderingData.cameraData.xr.enabled)
@@ -110,6 +95,7 @@ namespace UnityEngine.Rendering.Universal.Internal
                 }
                 else
 #endif
+                #endregion
                 {
                     // Blit has logic to flip projection matrix when rendering to render texture.
                     // Currently the y-flip is handled in CopyDepthPass.hlsl by checking _ProjectionParams.x
@@ -129,8 +115,6 @@ namespace UnityEngine.Rendering.Universal.Internal
             context.ExecuteCommandBuffer(cmd);
             CommandBufferPool.Release(cmd);
         }
-
-        /// <inheritdoc/>
         public override void OnCameraCleanup(CommandBuffer cmd)
         {
             if (cmd == null)

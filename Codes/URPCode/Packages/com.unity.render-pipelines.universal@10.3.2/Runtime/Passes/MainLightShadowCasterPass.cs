@@ -36,11 +36,11 @@ namespace UnityEngine.Rendering.Universal.Internal
 
         Matrix4x4[] m_MainLightShadowMatrices;
         ShadowSliceData[] m_CascadeSlices;
-        Vector4[] m_CascadeSplitDistances;
+        Vector4[] m_CascadeSplitDistances;//级联球的数据
 
         ProfilingSampler m_ProfilingSetupSampler = new ProfilingSampler("Setup Main Shadowmap");
 
-        // First Done
+        
         public MainLightShadowCasterPass(RenderPassEvent evt)
         {
             base.profilingSampler = new ProfilingSampler(nameof(MainLightShadowCasterPass));
@@ -70,36 +70,28 @@ namespace UnityEngine.Rendering.Universal.Internal
         public bool Setup(ref RenderingData renderingData)
         {
             using var profScope = new ProfilingScope(null, m_ProfilingSetupSampler);
-
             if (!renderingData.shadowData.supportsMainLightShadows)
                 return false;
-
             Clear();
             int shadowLightIndex = renderingData.lightData.mainLightIndex;
             if (shadowLightIndex == -1)
                 return false;
-
             VisibleLight shadowLight = renderingData.lightData.visibleLights[shadowLightIndex];
             Light light = shadowLight.light;
             if (light.shadows == LightShadows.None)
                 return false;
-
             if (shadowLight.lightType != LightType.Directional)
             {
                 Debug.LogWarning("Only directional lights are supported as main light.");
             }
-
             Bounds bounds;
             if (!renderingData.cullResults.GetShadowCasterBounds(shadowLightIndex, out bounds))
                 return false;
-
             m_ShadowCasterCascadesCount = renderingData.shadowData.mainLightShadowCascadesCount;
-
             int shadowResolution = ShadowUtils.GetMaxTileResolutionInAtlas(renderingData.shadowData.mainLightShadowmapWidth,
                 renderingData.shadowData.mainLightShadowmapHeight, m_ShadowCasterCascadesCount);
             m_ShadowmapWidth = renderingData.shadowData.mainLightShadowmapWidth;
-            m_ShadowmapHeight = (m_ShadowCasterCascadesCount == 2) ?
-                renderingData.shadowData.mainLightShadowmapHeight >> 1 : renderingData.shadowData.mainLightShadowmapHeight;
+            m_ShadowmapHeight = (m_ShadowCasterCascadesCount == 2) ? renderingData.shadowData.mainLightShadowmapHeight >> 1 : renderingData.shadowData.mainLightShadowmapHeight;
             for (int cascadeIndex = 0; cascadeIndex < m_ShadowCasterCascadesCount; ++cascadeIndex)
             {
                 bool success = ShadowUtils.ExtractDirectionalLightMatrix(ref renderingData.cullResults, ref renderingData.shadowData,
@@ -111,7 +103,9 @@ namespace UnityEngine.Rendering.Universal.Internal
             m_MaxShadowDistance = renderingData.cameraData.maxShadowDistance * renderingData.cameraData.maxShadowDistance;
             return true;
         }
-
+        /// <summary>
+        /// 配置RT
+        /// </summary>
         public override void Configure(CommandBuffer cmd, RenderTextureDescriptor cameraTextureDescriptor)
         {
             m_MainLightShadowmapTexture = ShadowUtils.GetTemporaryShadowTexture(m_ShadowmapWidth, m_ShadowmapHeight, k_ShadowmapBufferBits);
@@ -157,16 +151,11 @@ namespace UnityEngine.Rendering.Universal.Internal
             int shadowLightIndex = lightData.mainLightIndex;
             if (shadowLightIndex == -1)
                 return;
-
             VisibleLight shadowLight = lightData.visibleLights[shadowLightIndex];
-
-            // NOTE: Do NOT mix ProfilingScope with named CommandBuffers i.e. CommandBufferPool.Get("name").
-            // Currently there's an issue which results in mismatched markers.
             CommandBuffer cmd = CommandBufferPool.Get();
             using (new ProfilingScope(cmd, ProfilingSampler.Get(URPProfileId.MainLightShadow)))
             {
                 var settings = new ShadowDrawingSettings(cullResults, shadowLightIndex);
-
                 for (int cascadeIndex = 0; cascadeIndex < m_ShadowCasterCascadesCount; ++cascadeIndex)
                 {
                     var splitData = settings.splitData;
@@ -177,15 +166,12 @@ namespace UnityEngine.Rendering.Universal.Internal
                     ShadowUtils.RenderShadowSlice(cmd, ref context, ref m_CascadeSlices[cascadeIndex],
                         ref settings, m_CascadeSlices[cascadeIndex].projectionMatrix, m_CascadeSlices[cascadeIndex].viewMatrix);
                 }
-
                 bool softShadows = shadowLight.light.shadows == LightShadows.Soft && shadowData.supportsSoftShadows;
                 CoreUtils.SetKeyword(cmd, ShaderKeywordStrings.MainLightShadows, true);
                 CoreUtils.SetKeyword(cmd, ShaderKeywordStrings.MainLightShadowCascades, shadowData.mainLightShadowCascadesCount > 1);
                 CoreUtils.SetKeyword(cmd, ShaderKeywordStrings.SoftShadows, softShadows);
-
                 SetupMainLightShadowReceiverConstants(cmd, shadowLight, shadowData.supportsSoftShadows);
             }
-
             context.ExecuteCommandBuffer(cmd);
             CommandBufferPool.Release(cmd);
         }
@@ -194,14 +180,10 @@ namespace UnityEngine.Rendering.Universal.Internal
         {
             Light light = shadowLight.light;
             bool softShadows = shadowLight.light.shadows == LightShadows.Soft && supportsSoftShadows;
-
             int cascadeCount = m_ShadowCasterCascadesCount;
             for (int i = 0; i < cascadeCount; ++i)
                 m_MainLightShadowMatrices[i] = m_CascadeSlices[i].shadowTransform;
 
-            // We setup and additional a no-op WorldToShadow matrix in the last index
-            // because the ComputeCascadeIndex function in Shadows.hlsl can return an index
-            // out of bounds. (position not inside any cascade) and we want to avoid branching
             Matrix4x4 noOpShadowMatrix = Matrix4x4.zero;
             noOpShadowMatrix.m22 = (SystemInfo.usesReversedZBuffer) ? 1.0f : 0.0f;
             for (int i = cascadeCount; i <= k_MaxCascades; ++i)
@@ -226,14 +208,10 @@ namespace UnityEngine.Rendering.Universal.Internal
 
             if (m_ShadowCasterCascadesCount > 1)
             {
-                cmd.SetGlobalVector(MainLightShadowConstantBuffer._CascadeShadowSplitSpheres0,
-                    m_CascadeSplitDistances[0]);
-                cmd.SetGlobalVector(MainLightShadowConstantBuffer._CascadeShadowSplitSpheres1,
-                    m_CascadeSplitDistances[1]);
-                cmd.SetGlobalVector(MainLightShadowConstantBuffer._CascadeShadowSplitSpheres2,
-                    m_CascadeSplitDistances[2]);
-                cmd.SetGlobalVector(MainLightShadowConstantBuffer._CascadeShadowSplitSpheres3,
-                    m_CascadeSplitDistances[3]);
+                cmd.SetGlobalVector(MainLightShadowConstantBuffer._CascadeShadowSplitSpheres0, m_CascadeSplitDistances[0]);
+                cmd.SetGlobalVector(MainLightShadowConstantBuffer._CascadeShadowSplitSpheres1, m_CascadeSplitDistances[1]);
+                cmd.SetGlobalVector(MainLightShadowConstantBuffer._CascadeShadowSplitSpheres2, m_CascadeSplitDistances[2]);
+                cmd.SetGlobalVector(MainLightShadowConstantBuffer._CascadeShadowSplitSpheres3, m_CascadeSplitDistances[3]);
                 cmd.SetGlobalVector(MainLightShadowConstantBuffer._CascadeShadowSplitSphereRadii, new Vector4(
                     m_CascadeSplitDistances[0].w * m_CascadeSplitDistances[0].w,
                     m_CascadeSplitDistances[1].w * m_CascadeSplitDistances[1].w,
@@ -258,12 +236,10 @@ namespace UnityEngine.Rendering.Universal.Internal
                     cmd.SetGlobalVector(MainLightShadowConstantBuffer._ShadowOffset3,
                         new Vector4(invHalfShadowAtlasWidth, invHalfShadowAtlasHeight, 0.0f, 0.0f));
                 }
-
                 // Currently only used when !SHADER_API_MOBILE but risky to not set them as it's generic
                 // enough so custom shaders might use it.
                 cmd.SetGlobalVector(MainLightShadowConstantBuffer._ShadowmapSize, new Vector4(invShadowAtlasWidth,
-                    invShadowAtlasHeight,
-                    m_ShadowmapWidth, m_ShadowmapHeight));
+                    invShadowAtlasHeight,m_ShadowmapWidth, m_ShadowmapHeight));
             }
         }
     };

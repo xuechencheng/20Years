@@ -156,7 +156,6 @@ namespace UnityEngine.Rendering.Universal
                 bool renderingToTexture = !renderingToBackBufferTarget || targetTexture != null;
                 return SystemInfo.graphicsUVStartsAtTop && renderingToTexture;
             }
-
             return true;
         }
 
@@ -428,7 +427,9 @@ namespace UnityEngine.Rendering.Universal
                 Array.Sort(cameras, cameraComparison);
         }
 #endif
-        //First Done
+        /// <summary>
+        /// ´´½¨RenderTextureÃèÊö·û
+        /// </summary>
         static RenderTextureDescriptor CreateRenderTextureDescriptor(Camera camera, float renderScale,
             bool isHdrEnabled, int msaaSamples, bool needsAlpha)
         {

@@ -15,7 +15,7 @@ namespace UnityEngine.Rendering.Universal
             id = -2;
             rtid = renderTargetIdentifier;
         }
-        // Done
+
         internal static RenderTargetHandle GetCameraTarget(XRPass xr)
         {
 #if ENABLE_VR && ENABLE_XR_MODULE
