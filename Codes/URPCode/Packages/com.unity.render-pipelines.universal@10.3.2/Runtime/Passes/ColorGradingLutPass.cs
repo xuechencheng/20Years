@@ -73,15 +73,11 @@ namespace UnityEngine.Rendering.Universal.Internal
                     shadowsMidtonesHighlights.highlightsStart.value, shadowsMidtonesHighlights.highlightsEnd.value);
 
                 var (shadows, midtones, highlights) = ColorUtils.PrepareShadowsMidtonesHighlights(
-                    shadowsMidtonesHighlights.shadows.value, shadowsMidtonesHighlights.midtones.value,
-                    shadowsMidtonesHighlights.highlights.value);
+                    shadowsMidtonesHighlights.shadows.value, shadowsMidtonesHighlights.midtones.value, shadowsMidtonesHighlights.highlights.value);
                 
-                var (lift, gamma, gain) = ColorUtils.PrepareLiftGammaGain(
-                    liftGammaGain.lift.value, liftGammaGain.gamma.value, liftGammaGain.gain.value);
-                var (splitShadows, splitHighlights) = ColorUtils.PrepareSplitToning(
-                    splitToning.shadows.value, splitToning.highlights.value, splitToning.balance.value);
-                var lutParameters = new Vector4(lutHeight, 0.5f / lutWidth, 0.5f / lutHeight,
-                    lutHeight / (lutHeight - 1f));
+                var (lift, gamma, gain) = ColorUtils.PrepareLiftGammaGain( liftGammaGain.lift.value, liftGammaGain.gamma.value, liftGammaGain.gain.value);
+                var (splitShadows, splitHighlights) = ColorUtils.PrepareSplitToning( splitToning.shadows.value, splitToning.highlights.value, splitToning.balance.value);
+                var lutParameters = new Vector4(lutHeight, 0.5f / lutWidth, 0.5f / lutHeight, lutHeight / (lutHeight - 1f));
                 // Fill in constants
                 material.SetVector(ShaderConstants._Lut_Params, lutParameters);
                 material.SetVector(ShaderConstants._ColorBalance, lmsColorBalance);

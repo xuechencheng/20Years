@@ -101,7 +101,7 @@ namespace UnityEngine.Rendering.Universal
             return resolution;
         }
         /// <summary>
-        /// 计算在图集中的位置
+        /// 计算在图集中的位置 ???
         /// </summary>
         public static void ApplySliceTransform(ref ShadowSliceData shadowSliceData, int atlasWidth, int atlasHeight)
         {
@@ -115,7 +115,7 @@ namespace UnityEngine.Rendering.Universal
             // Apply shadow slice scale and offset
             shadowSliceData.shadowTransform = sliceTransform * shadowSliceData.shadowTransform;
         }
-
+        // ???
         public static Vector4 GetShadowBias(ref VisibleLight shadowLight, int shadowLightIndex, ref ShadowData shadowData, Matrix4x4 lightProjectionMatrix, float shadowResolution)
         {
             if (shadowLightIndex < 0 || shadowLightIndex >= shadowData.bias.Count)
@@ -199,7 +199,7 @@ namespace UnityEngine.Rendering.Universal
 
             Matrix4x4 worldToShadow = proj * view;
 
-            var textureScaleAndBias = Matrix4x4.identity;
+            var textureScaleAndBias = Matrix4x4.identity;//???
             textureScaleAndBias.m00 = 0.5f;
             textureScaleAndBias.m11 = 0.5f;
             textureScaleAndBias.m22 = 0.5f;

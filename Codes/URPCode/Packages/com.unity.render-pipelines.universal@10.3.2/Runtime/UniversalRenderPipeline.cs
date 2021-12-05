@@ -45,7 +45,6 @@ namespace UnityEngine.Rendering.Universal
                     bool exists = s_HashSamplerCache.TryGetValue(cameraId, out ps);
                     if (!exists)
                     {
-                        // NOTE: camera.name allocates!
                         ps = new ProfilingSampler( $"{nameof(UniversalRenderPipeline)}.{nameof(RenderSingleCamera)}: {camera.name}");
                         s_HashSamplerCache.Add(cameraId, ps);
                     }
@@ -319,7 +318,7 @@ namespace UnityEngine.Rendering.Universal
         }
 
         /// <summary>
-        /// 渲染单个相机
+        /// 渲染单个相机  Pause
         /// </summary>
         static void RenderSingleCamera(ScriptableRenderContext context, CameraData cameraData, bool anyPostProcessingEnabled)
         {
@@ -343,7 +342,7 @@ namespace UnityEngine.Rendering.Universal
                 {
                     renderer.SetupCullingParameters(ref cullingParameters, ref cameraData);
                 }
-                context.ExecuteCommandBuffer(cmd); // Send all the commands enqueued so far in the CommandBuffer cmd, to the ScriptableRenderContext context
+                context.ExecuteCommandBuffer(cmd);
                 cmd.Clear();
 #if UNITY_EDITOR
                 // Emit scene view UI
@@ -463,7 +462,7 @@ namespace UnityEngine.Rendering.Universal
                 //It should be called before culling to prepare material. When there isn't any VisualEffect component, this method has no effect.
                 VFX.VFXManager.PrepareCamera(baseCamera);
 #endif
-                UpdateVolumeFramework(baseCamera, baseCameraAdditionalData);//Pause
+                UpdateVolumeFramework(baseCamera, baseCameraAdditionalData);
 #if ADAPTIVE_PERFORMANCE_2_0_0_OR_NEWER
                 if (asset.useAdaptivePerformance)
                     ApplyAdaptivePerformance(ref baseCameraData);
@@ -529,15 +528,14 @@ namespace UnityEngine.Rendering.Universal
 #endif
             #endregion
         }
-        // ???
+        /// <summary>
+        /// 使用Volumes进行属性插值
+        /// </summary>
         static void UpdateVolumeFramework(Camera camera, UniversalAdditionalCameraData additionalCameraData)
         {
             using var profScope = new ProfilingScope(null, ProfilingSampler.Get(URPProfileId.UpdateVolumeFramework));
-
-            // Default values when there's no additional camera data available
             LayerMask layerMask = 1; // "Default"
             Transform trigger = camera.transform;
-
             if (additionalCameraData != null)
             {
                 layerMask = additionalCameraData.volumeLayerMask;
@@ -545,7 +543,6 @@ namespace UnityEngine.Rendering.Universal
             }
             else if (camera.cameraType == CameraType.SceneView)
             {
-                // Try to mirror the MainCamera volume layer mask for the scene view - do not mirror the target
                 var mainCamera = Camera.main;
                 UniversalAdditionalCameraData mainAdditionalCameraData = null;
                 if (mainCamera != null && mainCamera.TryGetComponent(out mainAdditionalCameraData))
@@ -777,8 +774,7 @@ namespace UnityEngine.Rendering.Universal
             bool additionalLightsCastShadows = false;
             if (cameraData.maxShadowDistance > 0.0f)
             {
-                mainLightCastShadows = (mainLightIndex != -1 && visibleLights[mainLightIndex].light != null &&
-                                        visibleLights[mainLightIndex].light.shadows != LightShadows.None);
+                mainLightCastShadows = (mainLightIndex != -1 && visibleLights[mainLightIndex].light != null && visibleLights[mainLightIndex].light.shadows != LightShadows.None);
                 // If additional lights are shaded per-pixel they cannot cast shadows
                 if (settings.additionalLightsRenderingMode == LightRenderingMode.PerPixel)
                 {
@@ -949,7 +945,7 @@ namespace UnityEngine.Rendering.Universal
             Shader.SetGlobalVector(ShaderPropertyId.glossyEnvironmentColor, glossyEnvColor);
             // Ambient
             Shader.SetGlobalVector(ShaderPropertyId.ambientSkyColor, CoreUtils.ConvertSRGBToActiveColorSpace(RenderSettings.ambientSkyColor));
-            Shader.SetGlobalVector(ShaderPropertyId.ambientEquatorColor, CoreUtils.ConvertSRGBToActiveColorSpace(RenderSettings.ambientEquatorColor));
+            Shader.SetGlobalVector(ShaderPropertyId.ambientEquatorColor, CoreUtils.ConvertSRGBToActiveColorSpace(RenderSettings.ambientEquatorColor));//赤道
             Shader.SetGlobalVector(ShaderPropertyId.ambientGroundColor, CoreUtils.ConvertSRGBToActiveColorSpace(RenderSettings.ambientGroundColor));
             // Used when subtractive mode is selected
             Shader.SetGlobalVector(ShaderPropertyId.subtractiveShadowColor, CoreUtils.ConvertSRGBToActiveColorSpace(RenderSettings.subtractiveShadowColor));

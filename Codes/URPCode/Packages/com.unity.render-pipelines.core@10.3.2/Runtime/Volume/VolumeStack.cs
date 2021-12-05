@@ -3,12 +3,6 @@ using System.Collections.Generic;
 
 namespace UnityEngine.Rendering
 {
-    /// <summary>
-    /// Holds the state of a Volume blending update. A global stack is
-    /// available by default in <see cref="VolumeManager"/> but you can also create your own using
-    /// <see cref="VolumeManager.CreateStack"/> if you need to update the manager with specific
-    /// settings and store the results for later use.
-    /// </summary>
     /// First Done
     public sealed class VolumeStack : IDisposable
     {
@@ -18,7 +12,10 @@ namespace UnityEngine.Rendering
         internal VolumeStack()
         {
         }
-        // First Done
+        /// <summary>
+        /// 用baseTypes的实例来初始化components
+        /// </summary>
+        /// <param name="baseTypes"></param>
         internal void Reload(IEnumerable<Type> baseTypes)
         {
             if (components == null)
@@ -47,14 +44,6 @@ namespace UnityEngine.Rendering
             return (T)comp;
         }
 
-        /// <summary>
-        /// Gets the current state of the <see cref="VolumeComponent"/> of the specified type in the
-        /// stack.
-        /// </summary>
-        /// <param name="type">The type of <see cref="VolumeComponent"/> to look for.</param>
-        /// <returns>The current state of the <see cref="VolumeComponent"/> of the specified type,
-        /// or <c>null</c> if the type is invalid.</returns>
-        /// First Done
         public VolumeComponent GetComponent(Type type)
         {
             components.TryGetValue(type, out var comp);

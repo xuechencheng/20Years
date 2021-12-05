@@ -14,7 +14,9 @@ namespace UnityEngine.Rendering.Universal
     public class ForwardRendererData : ScriptableRendererData
     {
 #if UNITY_EDITOR
-        // Done
+        /// <summary>
+        /// Perfect
+        /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1812")]
         internal class CreateForwardRendererAsset : EndNameEditAction
         {
@@ -26,14 +28,12 @@ namespace UnityEngine.Rendering.Universal
                 Selection.activeObject = instance;
             }
         }
-        // Done
         [MenuItem("Assets/Create/Rendering/Universal Render Pipeline/Forward Renderer", priority = CoreUtils.assetCreateMenuPriority2)]
         static void CreateForwardRendererData()
         {
             ProjectWindowUtil.StartNameEditingIfProjectWindowExists(0, CreateInstance<CreateForwardRendererAsset>(), "CustomForwardRendererData.asset", null, null);
         }
 #endif
-
         [Serializable, ReloadGroup]
         public sealed class ShaderResources
         {

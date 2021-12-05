@@ -197,7 +197,9 @@ namespace UnityEngine.Rendering
             }
             return false;
         }
-        // First Done
+        /// <summary>
+        /// »ñÈ¡Â·¾¶
+        /// </summary>
         static string GetFullPath(string basePath, ReloadAttribute attribute, int index = 0)
         {
             string path;

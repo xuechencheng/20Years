@@ -510,7 +510,7 @@ namespace UnityEngine.Rendering.Universal
         }
 
         /// <inheritdoc />
-        /// Done
+        /// …Ë÷√π‚’’µƒKeyWords
         public override void SetupLights(ScriptableRenderContext context, ref RenderingData renderingData)
         {
             m_ForwardLights.Setup(context, ref renderingData);

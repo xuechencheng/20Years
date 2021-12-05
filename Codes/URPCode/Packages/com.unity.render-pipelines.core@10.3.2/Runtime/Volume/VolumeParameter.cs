@@ -99,9 +99,7 @@ namespace UnityEngine.Rendering
         {
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(ObjectParameter<>))
                 return true;
-
-            return type.BaseType != null
-                && IsObjectParameter(type.BaseType);
+            return type.BaseType != null && IsObjectParameter(type.BaseType);
         }
 
         /// <summary>

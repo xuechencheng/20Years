@@ -2,6 +2,9 @@ using System;
 
 namespace UnityEngine.Rendering.Universal.Internal
 {
+    /// <summary>
+    /// 使用Name为DepthNormals的Pass，渲染两张纹理_CameraDepthTexture和_CameraNormalsTexture。用来获得屏幕空间的法线和深度。
+    /// </summary>
     public class DepthNormalOnlyPass : ScriptableRenderPass
     {
         internal RenderTextureDescriptor normalDescriptor { get; private set; }

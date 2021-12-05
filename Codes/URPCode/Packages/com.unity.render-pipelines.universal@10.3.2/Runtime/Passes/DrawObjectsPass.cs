@@ -4,6 +4,9 @@ using UnityEngine.Profiling;
 
 namespace UnityEngine.Rendering.Universal.Internal
 {
+    /// <summary>
+    /// 使用List<ShaderTagId>渲染透明或者不透明的物体
+    /// </summary>
     public class DrawObjectsPass : ScriptableRenderPass
     {
         FilteringSettings m_FilteringSettings;

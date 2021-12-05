@@ -15,7 +15,10 @@ using UnityEngine.Profiling;
 
 namespace UnityEngine.Rendering
 {
-    //Done
+    /// <summary>
+    /// Perfect
+    /// </summary>
+    /// <typeparam name="TEnum"></typeparam>
     class TProfilingSampler<TEnum> : ProfilingSampler where TEnum : Enum
     {
 #if USE_UNSAFE
@@ -45,13 +48,14 @@ namespace UnityEngine.Rendering
 #endif
             }
         }
-        
         public TProfilingSampler(string name): base(name)
         {
         }
     }
 
-    // Done
+    /// <summary>
+    /// Perfect
+    /// </summary>
     public class ProfilingSampler
     {
         public static ProfilingSampler Get<TEnum>(TEnum marker) where TEnum : Enum
@@ -66,7 +70,6 @@ namespace UnityEngine.Rendering
         /// <summary>
         /// 创建name和Inl_{name}的CustomSampler
         /// </summary>
-        /// <param name="name"></param>
         public ProfilingSampler(string name)
         {
 #if UNITY_USE_RECORDER
@@ -86,7 +89,6 @@ namespace UnityEngine.Rendering
         /// <summary>
         /// 开始sampler和inlineSampler的采样
         /// </summary>
-        /// <param name="cmd"></param>
         public void Begin(CommandBuffer cmd)
         {
             if (cmd != null)
@@ -103,7 +105,6 @@ namespace UnityEngine.Rendering
         /// <summary>
         /// 结束sampler和inlineSampler的采样
         /// </summary>
-        /// <param name="cmd"></param>
         public void End(CommandBuffer cmd)
         {
             if (cmd != null)
@@ -188,19 +189,16 @@ namespace UnityEngine.Rendering
 
 #if DEVELOPMENT_BUILD || UNITY_EDITOR
     /// <summary>
-    /// Done
+    /// Prefect
     /// </summary>
     public struct ProfilingScope : IDisposable
     {
         CommandBuffer       m_Cmd;
         bool                m_Disposed;
         ProfilingSampler    m_Sampler;
-
         /// <summary>
         /// 设置参数并开始采样
         /// </summary>
-        /// <param name="cmd"></param>
-        /// <param name="sampler"></param>
         public ProfilingScope(CommandBuffer cmd, ProfilingSampler sampler)
         {
             m_Cmd = cmd;
@@ -208,7 +206,6 @@ namespace UnityEngine.Rendering
             m_Sampler = sampler;
             m_Sampler?.Begin(m_Cmd);
         }
-
         /// <summary>
         ///  停止性能采样
         /// </summary>

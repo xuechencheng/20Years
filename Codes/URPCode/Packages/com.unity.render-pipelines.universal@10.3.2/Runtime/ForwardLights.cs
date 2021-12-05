@@ -36,7 +36,6 @@ namespace UnityEngine.Rendering.Universal.Internal
         Vector4[] m_AdditionalLightOcclusionProbeChannels;
 
         bool m_UseStructuredBuffer;
-        // First Done
         public ForwardLights()
         {
             m_UseStructuredBuffer = RenderingUtils.useStructuredBuffer;// Always false
@@ -64,7 +63,7 @@ namespace UnityEngine.Rendering.Universal.Internal
 	            m_AdditionalLightOcclusionProbeChannels = new Vector4[maxLights];
             }
         }
-        // Done
+        // …Ë÷√Keyword
         public void Setup(ScriptableRenderContext context, ref RenderingData renderingData)
         {
             int additionalLightsCount = renderingData.lightData.additionalLightsCount;

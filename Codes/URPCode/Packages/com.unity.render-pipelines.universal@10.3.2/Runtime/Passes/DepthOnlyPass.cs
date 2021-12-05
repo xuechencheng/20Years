@@ -2,6 +2,9 @@ using System;
 
 namespace UnityEngine.Rendering.Universal.Internal
 {
+    /// <summary>
+    /// 使用Name为DepthOnly的Pass，渲染_CameraDepthTexture。用来获得屏幕空间的深度。
+    /// </summary>
     public class DepthOnlyPass : ScriptableRenderPass
     {
         int kDepthBufferBits = 32;

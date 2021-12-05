@@ -2,6 +2,9 @@ using System;
 
 namespace UnityEngine.Rendering.Universal.Internal
 {
+    /// <summary>
+    /// CopyDepth.shader
+    /// </summary>
     public class CopyDepthPass : ScriptableRenderPass
     {
         private RenderTargetHandle source { get; set; }
@@ -106,8 +109,7 @@ namespace UnityEngine.Rendering.Universal.Internal
                     // scaleBias.z = bias
                     // scaleBias.w = unused
                     float flipSign = (cameraData.IsCameraProjectionMatrixFlipped()) ? -1.0f : 1.0f;
-                    Vector4 scaleBiasRt = (flipSign < 0.0f) ? new Vector4(flipSign, 1.0f, -1.0f, 1.0f)
-                        : new Vector4(flipSign, 0.0f, 1.0f, 1.0f);
+                    Vector4 scaleBiasRt = (flipSign < 0.0f) ? new Vector4(flipSign, 1.0f, -1.0f, 1.0f) : new Vector4(flipSign, 0.0f, 1.0f, 1.0f);
                     cmd.SetGlobalVector(ShaderPropertyId.scaleBiasRt, scaleBiasRt);
                     cmd.DrawMesh(RenderingUtils.fullscreenMesh, Matrix4x4.identity, m_CopyDepthMaterial);
                 }

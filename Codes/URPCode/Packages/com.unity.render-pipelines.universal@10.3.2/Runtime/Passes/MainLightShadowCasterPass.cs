@@ -3,7 +3,7 @@ using System;
 namespace UnityEngine.Rendering.Universal.Internal
 {
     /// <summary>
-    /// Renders a shadow map for the main Light.
+    /// 将主光照的级联阴影渲染到_MainLightShadowmapTexture中
     /// </summary>
     public class MainLightShadowCasterPass : ScriptableRenderPass
     {
@@ -85,7 +85,7 @@ namespace UnityEngine.Rendering.Universal.Internal
                 Debug.LogWarning("Only directional lights are supported as main light.");
             }
             Bounds bounds;
-            if (!renderingData.cullResults.GetShadowCasterBounds(shadowLightIndex, out bounds))
+            if (!renderingData.cullResults.GetShadowCasterBounds(shadowLightIndex, out bounds))///???
                 return false;
             m_ShadowCasterCascadesCount = renderingData.shadowData.mainLightShadowCascadesCount;
             int shadowResolution = ShadowUtils.GetMaxTileResolutionInAtlas(renderingData.shadowData.mainLightShadowmapWidth,
@@ -164,7 +164,7 @@ namespace UnityEngine.Rendering.Universal.Internal
                     Vector4 shadowBias = ShadowUtils.GetShadowBias(ref shadowLight, shadowLightIndex, ref shadowData, m_CascadeSlices[cascadeIndex].projectionMatrix, m_CascadeSlices[cascadeIndex].resolution);
                     ShadowUtils.SetupShadowCasterConstantBuffer(cmd, ref shadowLight, shadowBias);
                     ShadowUtils.RenderShadowSlice(cmd, ref context, ref m_CascadeSlices[cascadeIndex],
-                        ref settings, m_CascadeSlices[cascadeIndex].projectionMatrix, m_CascadeSlices[cascadeIndex].viewMatrix);
+                        ref settings, m_CascadeSlices[cascadeIndex].projectionMatrix, m_CascadeSlices[cascadeIndex].viewMatrix);//绘制级联阴影
                 }
                 bool softShadows = shadowLight.light.shadows == LightShadows.Soft && shadowData.supportsSoftShadows;
                 CoreUtils.SetKeyword(cmd, ShaderKeywordStrings.MainLightShadows, true);

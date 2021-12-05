@@ -111,7 +111,6 @@ namespace UnityEngine.Rendering
         {
             if (parameters == null)
                 return;
-
             foreach (var parameter in parameters)
             {
                 if (parameter != null)
@@ -153,6 +152,8 @@ namespace UnityEngine.Rendering
         /// }
         /// </code>
         /// </example>
+
+        // Ù–‘≤Â÷µ
         public virtual void Override(VolumeComponent state, float interpFactor)
         {
             int count = parameters.Count;
@@ -189,9 +190,7 @@ namespace UnityEngine.Rendering
                 {
                     // This method won't be called a lot but this is sub-optimal, fix me
                     var innerParams = (ReadOnlyCollection<VolumeParameter>)
-                        t.GetProperty("parameters", BindingFlags.NonPublic | BindingFlags.Instance)
-                        .GetValue(prop, null);
-
+                        t.GetProperty("parameters", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(prop, null);
                     if (innerParams != null)
                         SetAllOverridesTo(innerParams, state);
                 }

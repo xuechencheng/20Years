@@ -180,7 +180,6 @@ namespace UnityEngine.Rendering.Universal.Internal
                 {
                     RenderFinalPass(cmd, ref renderingData);
                 }
-
                 context.ExecuteCommandBuffer(cmd);
                 CommandBufferPool.Release(cmd);
             }
@@ -307,9 +306,7 @@ namespace UnityEngine.Rendering.Universal.Internal
             // Depth of Field
             if (m_DepthOfField.IsActive() && !isSceneViewCamera)
             {
-                var markerName = m_DepthOfField.mode.value == DepthOfFieldMode.Gaussian
-                    ? URPProfileId.GaussianDepthOfField
-                    : URPProfileId.BokehDepthOfField;
+                var markerName = m_DepthOfField.mode.value == DepthOfFieldMode.Gaussian ? URPProfileId.GaussianDepthOfField : URPProfileId.BokehDepthOfField;
                 using (new ProfilingScope(cmd, ProfilingSampler.Get(markerName)))
                 {
                     DoDepthOfField(cameraData.camera, cmd, GetSource(), GetDestination(), cameraData.pixelRect);

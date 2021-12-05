@@ -12,11 +12,17 @@ namespace UnityEngine.Rendering
         static readonly Lazy<VolumeManager> s_Instance = new Lazy<VolumeManager>(() => new VolumeManager());
         public static VolumeManager instance => s_Instance.Value;
         public VolumeStack stack { get; private set; }
+        /// <summary>
+        /// 所有继承于VolumeComponent的类
+        /// </summary>
         public IEnumerable<Type> baseComponentTypes { get; private set; }
         const int k_MaxLayerCount = 32;
         readonly Dictionary<int, List<Volume>> m_SortedVolumes;
         readonly List<Volume> m_Volumes;
         readonly Dictionary<int, bool> m_SortNeeded;
+        /// <summary>
+        /// 所有继承于VolumeComponent的实例
+        /// </summary>
         readonly List<VolumeComponent> m_ComponentsDefaultState;
         readonly List<Collider> m_TempColliders;
         VolumeManager()
@@ -39,6 +45,9 @@ namespace UnityEngine.Rendering
         {
             stack.Dispose();
         }
+        /// <summary>
+        /// 实例化所有继承自VolumeComponent的类，并加入到m_ComponentsDefaultState
+        /// </summary>
         void ReloadBaseTypes()
         {
             m_ComponentsDefaultState.Clear();
@@ -49,6 +58,9 @@ namespace UnityEngine.Rendering
                 m_ComponentsDefaultState.Add(inst);
             }
         }
+        /// <summary>
+        /// 注册Volume
+        /// </summary>
         public void Register(Volume volume, int layer)
         {
             m_Volumes.Add(volume);
@@ -59,6 +71,11 @@ namespace UnityEngine.Rendering
             }
             SetLayerDirty(layer);
         }
+        /// <summary>
+        /// Unregister Volume
+        /// </summary>
+        /// <param name="volume"></param>
+        /// <param name="layer"></param>
         public void Unregister(Volume volume, int layer)
         {
             m_Volumes.Remove(volume);
@@ -86,6 +103,9 @@ namespace UnityEngine.Rendering
             }
             return false;
         }
+        /// <summary>
+        /// 设置m_SortNeeded[mask]
+        /// </summary>
         internal void SetLayerDirty(int layer)
         {
             Assert.IsTrue(layer >= 0 && layer <= k_MaxLayerCount, "Invalid layer bit");
@@ -96,6 +116,9 @@ namespace UnityEngine.Rendering
                     m_SortNeeded[mask] = true;
             }
         }
+        /// <summary>
+        /// Volume更新了Layer
+        /// </summary>
         internal void UpdateVolumeLayer(Volume volume, int prevLayer, int newLayer)
         {
             Assert.IsTrue(prevLayer >= 0 && prevLayer <= k_MaxLayerCount, "Invalid layer bit");
@@ -112,6 +135,9 @@ namespace UnityEngine.Rendering
                 component.Override(state, interpFactor);
             }
         }
+        /// <summary>
+        /// 用components替换stack中的数据
+        /// </summary>
         void ReplaceData(VolumeStack stack, List<VolumeComponent> components)
         {
             foreach (var component in components)
@@ -128,12 +154,19 @@ namespace UnityEngine.Rendering
                 }
             }
         }
+        /// <summary>
+        /// 根据需要重载m_ComponentsDefaultState
+        /// </summary>
         [Conditional("UNITY_EDITOR")]
         public void CheckBaseTypes()
         {
             if (m_ComponentsDefaultState == null || (m_ComponentsDefaultState.Count > 0 && m_ComponentsDefaultState[0] == null))
                 ReloadBaseTypes();
         }
+        /// <summary>
+        /// 根据需要重载stack.components
+        /// </summary>
+        /// <param name="stack"></param>
         [Conditional("UNITY_EDITOR")]
         public void CheckStack(VolumeStack stack)
         {
@@ -156,6 +189,9 @@ namespace UnityEngine.Rendering
         {
             Update(stack, trigger, layerMask);
         }
+        /// <summary>
+        /// 根据Volumes进行属性插值
+        /// </summary>
         public void Update(VolumeStack stack, Transform trigger, LayerMask layerMask)
         {
             Assert.IsNotNull(stack);
@@ -168,23 +204,16 @@ namespace UnityEngine.Rendering
             // Sort the cached volume list(s) for the given layer mask if needed and return it
             var volumes = GrabVolumes(layerMask);
             Camera camera = null;
-            // Behavior should be fine even if camera is null
             if (!onlyGlobal)
                 trigger.TryGetComponent<Camera>(out camera);
-
-            // Traverse all volumes
             foreach (var volume in volumes)
             {
 #if UNITY_EDITOR
-                // Skip volumes that aren't in the scene currently displayed in the scene view
                 if (!IsVolumeRenderedByCamera(volume, camera))
                     continue;
 #endif
-                // Skip disabled volumes and volumes without any data or weight
                 if (!volume.enabled || volume.profileRef == null || volume.weight <= 0f)
                     continue;
-
-                // Global volumes always have influence
                 if (volume.isGlobal)
                 {
                     OverrideData(stack, volume.profileRef.components, Mathf.Clamp01(volume.weight));
@@ -238,14 +267,14 @@ namespace UnityEngine.Rendering
             var volumes = GrabVolumes(layerMask);
             return volumes.ToArray();
         }
-        // First Done
+        /// <summary>
+        /// 根据LayerMask获取Volume
+        /// </summary>
         List<Volume> GrabVolumes(LayerMask mask)
         {
             List<Volume> list;
             if (!m_SortedVolumes.TryGetValue(mask, out list))
             {
-                // New layer mask detected, create a new list and cache all the volumes that belong
-                // to this mask in it
                 list = new List<Volume>();
                 foreach (var volume in m_Volumes)
                 {
@@ -256,7 +285,6 @@ namespace UnityEngine.Rendering
                 }
                 m_SortedVolumes.Add(mask, list);
             }
-            // Check sorting state
             bool sortNeeded;
             if (m_SortNeeded.TryGetValue(mask, out sortNeeded) && sortNeeded)
             {
@@ -266,23 +294,22 @@ namespace UnityEngine.Rendering
             return list;
         }
 
-        // Stable insertion sort. Faster than List<T>.Sort() for our needs.
+        /// <summary>
+        /// 根据Priority排序
+        /// </summary>
         static void SortByPriority(List<Volume> volumes)
         {
             Assert.IsNotNull(volumes, "Trying to sort volumes of non-initialized layer");
-
             for (int i = 1; i < volumes.Count; i++)
             {
                 var temp = volumes[i];
                 int j = i - 1;
-
                 // Sort order is ascending
                 while (j >= 0 && volumes[j].priority > temp.priority)
                 {
                     volumes[j + 1] = volumes[j];
                     j--;
                 }
-
                 volumes[j + 1] = temp;
             }
         }
