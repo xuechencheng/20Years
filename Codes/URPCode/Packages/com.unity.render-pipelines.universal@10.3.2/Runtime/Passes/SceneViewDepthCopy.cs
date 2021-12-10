@@ -51,9 +51,7 @@ namespace UnityEngine.Rendering.Universal
                 // scaleBias.w = unused
                 ref CameraData cameraData = ref renderingData.cameraData;
                 float flipSign = (cameraData.IsCameraProjectionMatrixFlipped()) ? -1.0f : 1.0f;
-                Vector4 scaleBiasRt = (flipSign < 0.0f)
-                    ? new Vector4(flipSign, 1.0f, -1.0f, 1.0f)
-                    : new Vector4(flipSign, 0.0f, 1.0f, 1.0f);
+                Vector4 scaleBiasRt = (flipSign < 0.0f) ? new Vector4(flipSign, 1.0f, -1.0f, 1.0f) : new Vector4(flipSign, 0.0f, 1.0f, 1.0f);
                 cmd.SetGlobalVector(ShaderPropertyId.scaleBiasRt, scaleBiasRt);
                 cmd.DrawMesh(RenderingUtils.fullscreenMesh, Matrix4x4.identity, m_CopyDepthMaterial);
             }

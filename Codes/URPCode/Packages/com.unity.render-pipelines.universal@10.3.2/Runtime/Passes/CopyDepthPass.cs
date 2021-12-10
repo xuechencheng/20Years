@@ -21,7 +21,7 @@ namespace UnityEngine.Rendering.Universal.Internal
         public void Setup(RenderTargetHandle source, RenderTargetHandle destination)
         {
             this.source = source;
-            this.destination = destination;
+            this.destination = destination;//_CameraDepthTexture
             this.AllocateRT = AllocateRT && !destination.HasInternalRenderTargetId();
         }
         public override void OnCameraSetup(CommandBuffer cmd, ref RenderingData renderingData)
@@ -75,7 +75,7 @@ namespace UnityEngine.Rendering.Universal.Internal
                         cmd.DisableShaderKeyword(ShaderKeywordStrings.DepthMsaa8);
                         break;
                 }
-                cmd.SetGlobalTexture("_CameraDepthAttachment", source.Identifier());
+                cmd.SetGlobalTexture("_CameraDepthAttachment", source.Identifier());//_CameraDepthAttachment
                 #region XR
 #if ENABLE_VR && ENABLE_XR_MODULE
                 // XR uses procedural draw instead of cmd.blit or cmd.DrawFullScreenMesh

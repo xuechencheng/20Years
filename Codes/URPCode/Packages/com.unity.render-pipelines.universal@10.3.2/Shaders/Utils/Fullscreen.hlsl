@@ -29,7 +29,7 @@ struct Varyings
     float2 uv         : TEXCOORD0;
     UNITY_VERTEX_OUTPUT_STEREO
 };
-// Done
+//初始化顶点坐标和uv
 Varyings FullscreenVert(Attributes input)
 {
     Varyings output;

@@ -48,55 +48,44 @@ Shader "Hidden/Universal Render Pipeline/LutBuilderHdr"
         {
             // Switch back to linear
             float3 colorLinear = LogCToLinear(colorLutSpace);
-
-            // White balance in LMS space
+            // White balance in LMS space 白平衡
             float3 colorLMS = LinearToLMS(colorLinear);
             colorLMS *= _ColorBalance.xyz;
             colorLinear = LMSToLinear(colorLMS);
-
-            // Do contrast in log after white balance
+            // Do contrast in log after white balance 对比度
             #if _TONEMAP_ACES
             float3 colorLog = ACES_to_ACEScc(unity_to_ACES(colorLinear));
             #else
             float3 colorLog = LinearToLogC(colorLinear);
             #endif
-
             colorLog = (colorLog - ACEScc_MIDGRAY) * _HueSatCon.z + ACEScc_MIDGRAY;
-    
             #if _TONEMAP_ACES
             colorLinear = ACES_to_ACEScg(ACEScc_to_ACES(colorLog));
             #else
             colorLinear = LogCToLinear(colorLog);
             #endif
-
-            // Color filter is just an unclipped multiplier
+            // Color filter is just an unclipped multiplier 颜色滤镜
             colorLinear *= _ColorFilter.xyz;
-
             // Do NOT feed negative values to the following color ops
             colorLinear = max(0.0, colorLinear);
-
-            // Split toning
+            // Split toning                                 色调分离
             // As counter-intuitive as it is, to make split-toning work the same way it does in Adobe
             // products we have to do all the maths in gamma-space...
             float balance = _SplitShadows.w;
             float3 colorGamma = PositivePow(colorLinear, 1.0 / 2.2);
-
             float luma = saturate(GetLuminance(saturate(colorGamma)) + balance);
             float3 splitShadows = lerp((0.5).xxx, _SplitShadows.xyz, 1.0 - luma);
             float3 splitHighlights = lerp((0.5).xxx, _SplitHighlights.xyz, luma);
             colorGamma = SoftLight(colorGamma, splitShadows);
             colorGamma = SoftLight(colorGamma, splitHighlights);
-
             colorLinear = PositivePow(colorGamma, 2.2);
-
-            // Channel mixing (Adobe style)
+            // Channel mixing (Adobe style) 通道混合
             colorLinear = float3(
                 dot(colorLinear, _ChannelMixerRed.xyz),
                 dot(colorLinear, _ChannelMixerGreen.xyz),
                 dot(colorLinear, _ChannelMixerBlue.xyz)
             );
-
-            // Shadows, midtones, highlights
+            // Shadows, midtones, highlights --Shadows Midtones Highlights
             luma = GetLuminance(colorLinear);
             float shadowsFactor = 1.0 - smoothstep(_ShaHiLimits.x, _ShaHiLimits.y, luma);
             float highlightsFactor = smoothstep(_ShaHiLimits.z, _ShaHiLimits.w, luma);
@@ -109,19 +98,16 @@ Shader "Hidden/Universal Render Pipeline/LutBuilderHdr"
             colorLinear = colorLinear * _Gain.xyz + _Lift.xyz;
             colorLinear = sign(colorLinear) * pow(abs(colorLinear), _Gamma.xyz);
 
-            // HSV operations
+            // HSV operations 色调偏移
             float satMult;
             float3 hsv = RgbToHsv(colorLinear);
             {
                 // Hue Vs Sat
                 satMult = EvaluateCurve(_CurveHueVsSat, hsv.x) * 2.0;
-
                 // Sat Vs Sat
                 satMult *= EvaluateCurve(_CurveSatVsSat, hsv.y) * 2.0;
-
                 // Lum Vs Sat
                 satMult *= EvaluateCurve(_CurveLumVsSat, Luminance(colorLinear)) * 2.0;
-
                 // Hue Shift & Hue Vs Hue
                 float hue = hsv.x + _HueSatCon.x;
                 float offset = EvaluateCurve(_CurveHueVsHue, hue) - 0.5;

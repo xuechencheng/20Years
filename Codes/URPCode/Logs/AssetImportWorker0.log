@@ -1,0 +1,189 @@
+Using pre-set license
+Built from '2020.3/china_unity/release' branch; Version is '2020.3.1f1c1 (3e9f4b065a9d) revision 4104011'; Using compiler version '192528614'; Build Type 'Release'
+OS: 'Windows 10 Home China; OS build 19042.1348; Version 2009; 64bit' Language: 'zh' Physical Memory: 65249 MB
+BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1, IsPro: 0
+
+ COMMAND LINE ARGUMENTS:
+C:\Program Files\Unity\Hub\Editor\2020.3.1f1c1\Editor\Unity.exe
+-adb2
+-batchMode
+-noUpm
+-name
+AssetImportWorker0
+-projectPath
+D:/20Years/Codes/URPCode
+-logFile
+Logs/AssetImportWorker0.log
+-srvPort
+63480
+Successfully changed project path to: D:/20Years/Codes/URPCode
+D:/20Years/Codes/URPCode
+Using Asset Import Pipeline V2.
+Refreshing native plugins compatible for Editor in 36.24 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Initialize engine version: 2020.3.1f1c1 (3e9f4b065a9d)
+[Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/2020.3.1f1c1/Editor/Data/Resources/UnitySubsystems
+[Subsystems] Discovering subsystems at path D:/20Years/Codes/URPCode/Assets
+GfxDevice: creating device client; threaded=0
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.1]
+    Renderer: NVIDIA GeForce RTX 2060 (ID=0x1f08)
+    Vendor:   
+    VRAM:     5980 MB
+    Driver:   27.21.14.6172
+Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
+Initialize mono
+Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/2020.3.1f1c1/Editor/Data/Managed'
+Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/2020.3.1f1c1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit'
+Mono config path = 'C:/Program Files/Unity/Hub/Editor/2020.3.1f1c1/Editor/Data/MonoBleedingEdge/etc'
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56776
+Begin MonoManager ReloadAssembly
+Registering precompiled unity dll's ...
+Register platform support module: C:/Program Files/Unity/Hub/Editor/2020.3.1f1c1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
+Registered in 0.001572 seconds.
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 35.44 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Invoked RoslynAnalysisRunner static constructor.
+RoslynAnalysisRunner will not be running.
+RoslynAnalysisRunner has terminated.
+Mono: successfully reloaded assembly
+- Completed reload, in  1.673 seconds
+Platform modules already initialized, skipping
+Registering precompiled user dll's ...
+Registered in 0.000967 seconds.
+Begin MonoManager ReloadAssembly
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 37.49 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Invoked RoslynAnalysisRunner static constructor.
+RoslynAnalysisRunner will not be running.
+RoslynAnalysisRunner has terminated.
+Mono: successfully reloaded assembly
+- Completed reload, in  0.861 seconds
+Platform modules already initialized, skipping
+========================================================================
+Worker process is ready to serve import requests
+Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.04 seconds
+Refreshing native plugins compatible for Editor in 0.42 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 2416 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 112.1 MB.
+System memory in use after: 112.3 MB.
+
+Unloading 10 unused Assets to reduce memory usage. Loaded Objects now: 2858.
+Total: 2.046900 ms (FindLiveObjects: 0.302700 ms CreateObjectMapping: 0.202400 ms MarkObjects: 1.468100 ms  DeleteObjects: 0.072600 ms)
+
+========================================================================
+Received Import Request.
+  path: Assets/Scenes/SampleScene.unity
+  artifactKey: Guid(9fc0d4010bbf28b4594072e72b8655ab) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Scenes/SampleScene.unity using Guid(9fc0d4010bbf28b4594072e72b8655ab) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'e93ce4cd8c84b5439abf48f997b9dbb4') in 0.012243 seconds
+  Import took 0.016079 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 312.944642 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Shaders/PostProcessing/LutBuilderHdr.shader
+  artifactKey: Guid(ec9fec698a3456d4fb18cf8bacb7a2bc) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Shaders/PostProcessing/LutBuilderHdr.shader using Guid(ec9fec698a3456d4fb18cf8bacb7a2bc) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '69613b19e946f1afe152c82d71e8f6af') in 0.015937 seconds
+  Import took 0.019696 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.954916 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Shaders/PostProcessing/LutBuilderLdr.shader
+  artifactKey: Guid(65df88701913c224d95fc554db28381a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Shaders/PostProcessing/LutBuilderLdr.shader using Guid(65df88701913c224d95fc554db28381a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'caf41a26443b1f72b7d870789b9a9595') in 0.003814 seconds
+  Import took 0.007082 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.578033 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Shaders/PostProcessing/PaniniProjection.shader
+  artifactKey: Guid(a15b78cf8ca26ca4fb2090293153c62c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Shaders/PostProcessing/PaniniProjection.shader using Guid(a15b78cf8ca26ca4fb2090293153c62c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'e09db4fd97fd2b3af1c0871fd4715782') in 0.003727 seconds
+  Import took 0.007302 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.569671 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Shaders/PostProcessing/StopNaN.shader
+  artifactKey: Guid(1121bb4e615ca3c48b214e79e841e823) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Shaders/PostProcessing/StopNaN.shader using Guid(1121bb4e615ca3c48b214e79e841e823) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '8f624542df2955cb48fc9947a0522d98') in 0.003207 seconds
+  Import took 0.006490 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.510368 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Shaders/PostProcessing/SubpixelMorphologicalAntialiasing.shader
+  artifactKey: Guid(63eaba0ebfb82cc43bde059b4a8c65f6) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Shaders/PostProcessing/SubpixelMorphologicalAntialiasing.shader using Guid(63eaba0ebfb82cc43bde059b4a8c65f6) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '47735a983f358894d3faa55ba95cd6e3') in 0.003617 seconds
+  Import took 0.006952 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.522719 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Shaders/PostProcessing/UberPost.shader
+  artifactKey: Guid(e7857e9d0c934dc4f83f270f8447b006) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Shaders/PostProcessing/UberPost.shader using Guid(e7857e9d0c934dc4f83f270f8447b006) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '66aa7fb054cbb6ec6124acee1e411f70') in 0.003613 seconds
+  Import took 0.006986 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 2.919916 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Shaders/PostProcessing/FinalPost.shader
+  artifactKey: Guid(c49e63ed1bbcb334780a3bd19dfed403) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Shaders/PostProcessing/FinalPost.shader using Guid(c49e63ed1bbcb334780a3bd19dfed403) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'cc8edf73dba9190039d2a5d76dd38a08') in 0.003644 seconds
+  Import took 0.006890 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 1.005808 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Shaders/PostProcessing/CameraMotionBlur.shader
+  artifactKey: Guid(1edcd131364091c46a17cbff0b1de97a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Shaders/PostProcessing/CameraMotionBlur.shader using Guid(1edcd131364091c46a17cbff0b1de97a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '6bfd3f898a372af80762b4ecae82c065') in 0.003277 seconds
+  Import took 0.006533 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.446588 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Shaders/PostProcessing/BokehDepthOfField.shader
+  artifactKey: Guid(2aed67ad60045d54ba3a00c91e2d2631) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Shaders/PostProcessing/BokehDepthOfField.shader using Guid(2aed67ad60045d54ba3a00c91e2d2631) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '6ffd7d11124ae5fc8b6589c24b915a3a') in 0.003288 seconds
+  Import took 0.006376 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 1446.850487 seconds.
+  path: Packages/com.unity.render-pipelines.universal/Shaders/PostProcessing/SubpixelMorphologicalAntialiasing.hlsl
+  artifactKey: Guid(3f1f7ec9e0c852a48826fe085f257d80) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.render-pipelines.universal/Shaders/PostProcessing/SubpixelMorphologicalAntialiasing.hlsl using Guid(3f1f7ec9e0c852a48826fe085f257d80) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '6270f19b92760789cce488f28cad31f2') in 0.010507 seconds
+  Import took 0.014091 seconds .
+
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.001380 seconds.
+Begin MonoManager ReloadAssembly
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 0.34 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Invoked RoslynAnalysisRunner static constructor.
+RoslynAnalysisRunner will not be running.
+RoslynAnalysisRunner has terminated.
+Mono: successfully reloaded assembly
+- Completed reload, in  0.721 seconds
+Platform modules already initialized, skipping
+Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
+Refreshing native plugins compatible for Editor in 0.33 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 2306 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 106.2 MB.
+System memory in use after: 106.4 MB.
+
+Unloading 5 unused Assets to reduce memory usage. Loaded Objects now: 2861.
+Total: 1.758500 ms (FindLiveObjects: 0.281600 ms CreateObjectMapping: 0.096600 ms MarkObjects: 1.367000 ms  DeleteObjects: 0.012500 ms)
+
+AssetImportWorkerClient::OnTransportError - code=2 error=End of file
