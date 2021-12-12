@@ -318,7 +318,7 @@ namespace UnityEngine.Rendering.Universal
         }
 
         /// <summary>
-        /// 渲染单个相机  Pause
+        /// 渲染单个相机
         /// </summary>
         static void RenderSingleCamera(ScriptableRenderContext context, CameraData cameraData, bool anyPostProcessingEnabled)
         {
@@ -462,7 +462,7 @@ namespace UnityEngine.Rendering.Universal
                 //It should be called before culling to prepare material. When there isn't any VisualEffect component, this method has no effect.
                 VFX.VFXManager.PrepareCamera(baseCamera);
 #endif
-                UpdateVolumeFramework(baseCamera, baseCameraAdditionalData);
+                UpdateVolumeFramework(baseCamera, baseCameraAdditionalData); // Pause
 #if ADAPTIVE_PERFORMANCE_2_0_0_OR_NEWER
                 if (asset.useAdaptivePerformance)
                     ApplyAdaptivePerformance(ref baseCameraData);
@@ -933,7 +933,7 @@ namespace UnityEngine.Rendering.Universal
         }
 
         /// <summary>
-        /// 设置Shader常量：glossyEnvironmentColor，ambientSkyColor，ambientEquatorColor，ambientGroundColor和subtractiveShadowColor
+        /// 设置Shader环境常量
         /// </summary>
         static void SetupPerFrameShaderConstants()
         {

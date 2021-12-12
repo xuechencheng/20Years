@@ -15,10 +15,6 @@ using UnityEngine.Profiling;
 
 namespace UnityEngine.Rendering
 {
-    /// <summary>
-    /// Perfect
-    /// </summary>
-    /// <typeparam name="TEnum"></typeparam>
     class TProfilingSampler<TEnum> : ProfilingSampler where TEnum : Enum
     {
 #if USE_UNSAFE
@@ -27,7 +23,7 @@ namespace UnityEngine.Rendering
         internal static Dictionary<TEnum, TProfilingSampler<TEnum>> samples = new Dictionary<TEnum, TProfilingSampler<TEnum>>();
 #endif
         /// <summary>
-        /// 使用枚举的类型和用值创建的TProfilingSampler填充samples Dict。
+        /// 使用枚举构建Dictionary<TEnum, TProfilingSampler<TEnum>>
         /// </summary>
         static TProfilingSampler()
         {
@@ -53,9 +49,6 @@ namespace UnityEngine.Rendering
         }
     }
 
-    /// <summary>
-    /// Perfect
-    /// </summary>
     public class ProfilingSampler
     {
         public static ProfilingSampler Get<TEnum>(TEnum marker) where TEnum : Enum
@@ -68,7 +61,7 @@ namespace UnityEngine.Rendering
 #endif
         }
         /// <summary>
-        /// 创建name和Inl_{name}的CustomSampler
+        /// 创建CustomSampler，获取Recorder
         /// </summary>
         public ProfilingSampler(string name)
         {
@@ -87,7 +80,7 @@ namespace UnityEngine.Rendering
 #endif
         }
         /// <summary>
-        /// 开始sampler和inlineSampler的采样
+        /// BeginSample
         /// </summary>
         public void Begin(CommandBuffer cmd)
         {
@@ -103,7 +96,7 @@ namespace UnityEngine.Rendering
             inlineSampler?.Begin();
         }
         /// <summary>
-        /// 结束sampler和inlineSampler的采样
+        /// EndSample
         /// </summary>
         public void End(CommandBuffer cmd)
         {
@@ -197,7 +190,7 @@ namespace UnityEngine.Rendering
         bool                m_Disposed;
         ProfilingSampler    m_Sampler;
         /// <summary>
-        /// 设置参数并开始采样
+        /// 开始采样
         /// </summary>
         public ProfilingScope(CommandBuffer cmd, ProfilingSampler sampler)
         {
@@ -207,7 +200,7 @@ namespace UnityEngine.Rendering
             m_Sampler?.Begin(m_Cmd);
         }
         /// <summary>
-        ///  停止性能采样
+        ///  停止采样
         /// </summary>
         public void Dispose()
         {
@@ -215,7 +208,7 @@ namespace UnityEngine.Rendering
         }
 
         /// <summary>
-        /// 停止性能采样
+        /// 停止采样
         /// </summary>
         /// <param name="disposing"></param>
         void Dispose(bool disposing)

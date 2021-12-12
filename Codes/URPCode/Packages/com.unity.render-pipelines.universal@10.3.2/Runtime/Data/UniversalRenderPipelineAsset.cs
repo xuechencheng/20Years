@@ -407,7 +407,7 @@ namespace UnityEngine.Rendering.Universal
         }
 
         /// <summary>
-        /// 获取Renderer
+        /// 获取ScriptableRenderer
         /// </summary>
         public ScriptableRenderer GetRenderer(int index)
         {
@@ -909,10 +909,8 @@ namespace UnityEngine.Rendering.Universal
             return emptyEntries != m_RendererDataList.Length;
         }
         /// <summary>
-        /// 判断索引在ScriptableRendererData[]中是否合法
+        /// 判断RendererData的索引是否合法
         /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
         internal bool ValidateRendererData(int index)
         {
             // Check to see if you are asking for the default renderer
