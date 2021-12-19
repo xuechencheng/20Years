@@ -51,7 +51,7 @@ float3 GetCameraRelativePositionWS(float3 positionWS)
 #endif
     return positionWS;
 }
-
+//法线是否需要取反
 real GetOddNegativeScale()
 {
     // FIXME: We should be able to just return unity_WorldTransformParams.w, but it is not

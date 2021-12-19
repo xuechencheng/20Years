@@ -13,7 +13,7 @@ TEXTURE2D(_EmissionMap);        SAMPLER(sampler_EmissionMap);
 ///////////////////////////////////////////////////////////////////////////////
 //                      Material Property Helpers                            //
 ///////////////////////////////////////////////////////////////////////////////
-// Done
+// Perfect 透明度计算和透明度测试
 half Alpha(half albedoAlpha, half4 color, half cutoff)
 {
 #if !defined(_SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A) && !defined(_GLOSSINESS_FROM_BASE_ALPHA)
@@ -21,15 +21,13 @@ half Alpha(half albedoAlpha, half4 color, half cutoff)
 #else
     half alpha = color.a;
 #endif
-
 #if defined(_ALPHATEST_ON)
     clip(alpha - cutoff);
 #endif
-
     return alpha;
 }
 
-// Done
+// Perfect 采样贴图
 half4 SampleAlbedoAlpha(float2 uv, TEXTURE2D_PARAM(albedoAlphaMap, sampler_albedoAlphaMap))
 {
     return SAMPLE_TEXTURE2D(albedoAlphaMap, sampler_albedoAlphaMap, uv);
@@ -49,7 +47,7 @@ half3 SampleNormal(float2 uv, TEXTURE2D_PARAM(bumpMap, sampler_bumpMap), half sc
 #endif
 }
 
-// Done
+// Done 采样自发光的图
 half3 SampleEmission(float2 uv, half3 emissionColor, TEXTURE2D_PARAM(emissionMap, sampler_emissionMap))
 {
 #ifndef _EMISSION

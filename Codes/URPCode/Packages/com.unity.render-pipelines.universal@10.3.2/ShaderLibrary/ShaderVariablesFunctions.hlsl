@@ -1,17 +1,15 @@
 #ifndef UNITY_SHADER_VARIABLES_FUNCTIONS_INCLUDED
 #define UNITY_SHADER_VARIABLES_FUNCTIONS_INCLUDED
-// Done
+// Perfect 初始化位置信息
 VertexPositionInputs GetVertexPositionInputs(float3 positionOS)
 {
     VertexPositionInputs input;
     input.positionWS = TransformObjectToWorld(positionOS);
     input.positionVS = TransformWorldToView(input.positionWS);
     input.positionCS = TransformWorldToHClip(input.positionWS);
-
-    float4 ndc = input.positionCS * 0.5f;
+    float4 ndc = input.positionCS * 0.5f;// -0.5--0.5
     input.positionNDC.xy = float2(ndc.x, ndc.y * _ProjectionParams.x) + ndc.w;
-    input.positionNDC.zw = input.positionCS.zw;
-
+    input.positionNDC.zw = input.positionCS.zw;//xy = 1/ 2 (xy  + w) zw = zw 将xy从[-1,1]变到[0,1]
     return input;
 }
 
@@ -23,12 +21,10 @@ VertexNormalInputs GetVertexNormalInputs(float3 normalOS)
     tbn.normalWS = TransformObjectToWorldNormal(normalOS);
     return tbn;
 }
-// Done
+// Perfect
 VertexNormalInputs GetVertexNormalInputs(float3 normalOS, float4 tangentOS)
 {
     VertexNormalInputs tbn;
-
-    // mikkts space compliant. only normalize when extracting normal at frag.
     real sign = tangentOS.w * GetOddNegativeScale();
     tbn.normalWS = TransformObjectToWorldNormal(normalOS);
     tbn.tangentWS = TransformObjectToWorldDir(tangentOS.xyz);
@@ -46,40 +42,16 @@ bool IsPerspectiveProjection()
 {
     return (unity_OrthoParams.w == 0);
 }
-// 阅
+// Perfect
 float3 GetCameraPositionWS()
 {
-    // Currently we do not support Camera Relative Rendering so
-    // we simply return the _WorldSpaceCameraPos until then
     return _WorldSpaceCameraPos;
-
-    // We will replace the code above with this one once
-    // we start supporting Camera Relative Rendering
-    //#if (SHADEROPTIONS_CAMERA_RELATIVE_RENDERING != 0)
-    //    return float3(0, 0, 0);
-    //#else
-    //    return _WorldSpaceCameraPos;
-    //#endif
 }
 
-// Could be e.g. the position of a primary camera or a shadow-casting light.
-// 阅
+// Perfect
 float3 GetCurrentViewPosition()
 {
-    // Currently we do not support Camera Relative Rendering so
-    // we simply return the _WorldSpaceCameraPos until then
     return GetCameraPositionWS();
-
-    // We will replace the code above with this one once
-    // we start supporting Camera Relative Rendering
-    //#if defined(SHADERPASS) && (SHADERPASS != SHADERPASS_SHADOWS)
-    //    return GetCameraPositionWS();
-    //#else
-    //    // This is a generic solution.
-    //    // However, for the primary camera, using '_WorldSpaceCameraPos' is better for cache locality,
-    //    // and in case we enable camera-relative rendering, we can statically set the position is 0.
-    //    return UNITY_MATRIX_I_V._14_24_34;
-    //#endif
 }
 
 // Returns the forward (central) direction of the current view in the world space.
@@ -90,18 +62,16 @@ float3 GetViewForwardDir()
     return -viewMat[2].xyz;
 }
 
-// Computes the world space view direction (pointing towards the viewer).
-// Done
+// Perfect 
+// 从像素指向相机
 float3 GetWorldSpaceViewDir(float3 positionWS)
 {
     if (IsPerspectiveProjection())
     {
-        // Perspective
         return GetCurrentViewPosition() - positionWS;
     }
     else
     {
-        // Orthographic
         return -GetViewForwardDir();
     }
 }
@@ -139,7 +109,7 @@ void AlphaDiscard(real alpha, real cutoff, real offset = 0.0h)
         clip(alpha - cutoff + offset);
     #endif
 }
-
+// Perfect
 half OutputAlpha(half outputAlpha, half surfaceType = 0.0)
 {
     return surfaceType == 1 ? outputAlpha : 1.0;

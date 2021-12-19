@@ -76,41 +76,38 @@ TEXTURE2D(_MetallicGlossMap);   SAMPLER(sampler_MetallicGlossMap);
 TEXTURE2D(_SpecGlossMap);       SAMPLER(sampler_SpecGlossMap);
 TEXTURE2D(_ClearCoatMap);       SAMPLER(sampler_ClearCoatMap);
 
-#ifdef _SPECULAR_SETUP
+#ifdef _SPECULAR_SETUP//采高亮图或者金属图
     #define SAMPLE_METALLICSPECULAR(uv) SAMPLE_TEXTURE2D(_SpecGlossMap, sampler_SpecGlossMap, uv)
 #else
     #define SAMPLE_METALLICSPECULAR(uv) SAMPLE_TEXTURE2D(_MetallicGlossMap, sampler_MetallicGlossMap, uv)
 #endif
 
-// Done
+// Done 获取金属度和光滑度
 half4 SampleMetallicSpecGloss(float2 uv, half albedoAlpha)
 {
     half4 specGloss;
-
-#ifdef _METALLICSPECGLOSSMAP
+#ifdef _METALLICSPECGLOSSMAP//Metallic Map不为空
     specGloss = SAMPLE_METALLICSPECULAR(uv);
     #ifdef _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
         specGloss.a = albedoAlpha * _Smoothness;
     #else
         specGloss.a *= _Smoothness;
     #endif
-#else // _METALLICSPECGLOSSMAP
+#else
     #if _SPECULAR_SETUP
         specGloss.rgb = _SpecColor.rgb;
     #else
         specGloss.rgb = _Metallic.rrr;
     #endif
-
     #ifdef _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
         specGloss.a = albedoAlpha * _Smoothness;
     #else
         specGloss.a = _Smoothness;
     #endif
 #endif
-
     return specGloss;
 }
-
+//采样AO贴图
 half SampleOcclusion(float2 uv)
 {
 #ifdef _OCCLUSIONMAP
@@ -204,10 +201,8 @@ inline void InitializeStandardLitSurfaceData(float2 uv, out SurfaceData outSurfa
 {
     half4 albedoAlpha = SampleAlbedoAlpha(uv, TEXTURE2D_ARGS(_BaseMap, sampler_BaseMap));
     outSurfaceData.alpha = Alpha(albedoAlpha.a, _BaseColor, _Cutoff);
-
     half4 specGloss = SampleMetallicSpecGloss(uv, albedoAlpha.a);
     outSurfaceData.albedo = albedoAlpha.rgb * _BaseColor.rgb;
-
 #if _SPECULAR_SETUP
     outSurfaceData.metallic = 1.0h;
     outSurfaceData.specular = specGloss.rgb;
@@ -215,13 +210,11 @@ inline void InitializeStandardLitSurfaceData(float2 uv, out SurfaceData outSurfa
     outSurfaceData.metallic = specGloss.r;
     outSurfaceData.specular = half3(0.0h, 0.0h, 0.0h);
 #endif
-
     outSurfaceData.smoothness = specGloss.a;
-    outSurfaceData.normalTS = SampleNormal(uv, TEXTURE2D_ARGS(_BumpMap, sampler_BumpMap), _BumpScale);
+    outSurfaceData.normalTS = SampleNormal(uv, TEXTURE2D_ARGS(_BumpMap, sampler_BumpMap), _BumpScale);// ???
     outSurfaceData.occlusion = SampleOcclusion(uv);
     outSurfaceData.emission = SampleEmission(uv, _EmissionColor.rgb, TEXTURE2D_ARGS(_EmissionMap, sampler_EmissionMap));
-
-#if defined(_CLEARCOAT) || defined(_CLEARCOATMAP)
+#if defined(_CLEARCOAT) || defined(_CLEARCOATMAP) // No
     half2 clearCoat = SampleClearCoat(uv);
     outSurfaceData.clearCoatMask       = clearCoat.r;
     outSurfaceData.clearCoatSmoothness = clearCoat.g;
@@ -229,8 +222,7 @@ inline void InitializeStandardLitSurfaceData(float2 uv, out SurfaceData outSurfa
     outSurfaceData.clearCoatMask       = 0.0h;
     outSurfaceData.clearCoatSmoothness = 0.0h;
 #endif
-
-#if defined(_DETAIL)
+#if defined(_DETAIL) // No
     half detailMask = SAMPLE_TEXTURE2D(_DetailMask, sampler_DetailMask, uv).a;
     float2 detailUv = uv * _DetailAlbedoMap_ST.xy + _DetailAlbedoMap_ST.zw;
     outSurfaceData.albedo = ApplyDetailAlbedo(detailUv, outSurfaceData.albedo, detailMask);

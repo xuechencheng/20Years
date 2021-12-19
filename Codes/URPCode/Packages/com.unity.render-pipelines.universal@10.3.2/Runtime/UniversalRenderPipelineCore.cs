@@ -35,7 +35,7 @@ namespace UnityEngine.Rendering.Universal
     [MovedFrom("UnityEngine.Rendering.LWRP")] public struct LightData
     {
         public int mainLightIndex;
-        public int additionalLightsCount;
+        public int additionalLightsCount;//除了主光源都是额外光照
         public int maxPerObjectAdditionalLightsCount;
         public NativeArray<VisibleLight> visibleLights;
         public bool shadeAdditionalLightsPerVertex;

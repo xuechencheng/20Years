@@ -151,7 +151,7 @@ Light GetAdditionalPerObjectLight(int perObjectLightIndex, float3 positionWS)
     float distanceSqr = max(dot(lightVector, lightVector), HALF_MIN);
 
     half3 lightDirection = half3(lightVector * rsqrt(distanceSqr));
-    //To Be Done
+    //???
     half attenuation = DistanceAttenuation(distanceSqr, distanceAndSpotAttenuation.xy) * AngleAttenuation(spotDirection.xyz, lightDirection, distanceAndSpotAttenuation.zw);
 
     Light light;
@@ -238,12 +238,9 @@ Light GetAdditionalLight(uint i, float3 positionWS, half4 shadowMask)
 
     return light;
 }
-
+// Perfect
 int GetAdditionalLightsCount()
 {
-    // TODO: we need to expose in SRP api an ability for the pipeline cap the amount of lights
-    // in the culling. This way we could do the loop branch with an uniform
-    // This would be helpful to support baking exceeding lights in SH as well
     return min(_AdditionalLightsCount.x, unity_LightData.y);
 }
 
@@ -725,7 +722,6 @@ half3 LightingPhysicallyBased(BRDFData brdfData, BRDFData brdfDataClearCoat,
         // Clear coat evaluates the specular a second timw and has some common terms with the base specular.
         // We rely on the compiler to merge these and compute them only once.
         half brdfCoat = kDielectricSpec.r * DirectBRDFSpecular(brdfDataClearCoat, normalWS, lightDirectionWS, viewDirectionWS);
-
             // Mix clear coat and base layer using khronos glTF recommended formula
             // https://github.com/KhronosGroup/glTF/blob/master/extensions/2.0/Khronos/KHR_materials_clearcoat/README.md
             // Use NoV for direct too instead of LoH as an optimization (NoV is light invariant).
@@ -733,12 +729,10 @@ half3 LightingPhysicallyBased(BRDFData brdfData, BRDFData brdfDataClearCoat,
             // Use slightly simpler fresnelTerm (Pow4 vs Pow5) as a small optimization.
             // It is matching fresnel used in the GI/Env, so should produce a consistent clear coat blend (env vs. direct)
             half coatFresnel = kDielectricSpec.x + kDielectricSpec.a * Pow4(1.0 - NoV);
-
         brdf = brdf * (1.0 - clearCoatMask * coatFresnel) + brdfCoat * clearCoatMask;
 #endif // _CLEARCOAT
     }
 #endif // _SPECULARHIGHLIGHTS_OFF
-
     return brdf * radiance;
 }
 
@@ -790,8 +784,7 @@ half3 LightingPhysicallyBased(BRDFData brdfData, half3 lightColor, half3 lightDi
 half3 VertexLighting(float3 positionWS, half3 normalWS)
 {
     half3 vertexLightColor = half3(0.0, 0.0, 0.0);
-
-#ifdef _ADDITIONAL_LIGHTS_VERTEX
+#ifdef _ADDITIONAL_LIGHTS_VERTEX//管线设置
     uint lightsCount = GetAdditionalLightsCount();
     for (uint lightIndex = 0u; lightIndex < lightsCount; ++lightIndex)
     {
@@ -800,7 +793,6 @@ half3 VertexLighting(float3 positionWS, half3 normalWS)
         vertexLightColor += LightingLambert(lightColor, light.direction, normalWS);
     }
 #endif
-
     return vertexLightColor;
 }
 
@@ -815,18 +807,14 @@ half4 UniversalFragmentPBR(InputData inputData, SurfaceData surfaceData)
 #else
     bool specularHighlightsOff = false;
 #endif
-
     BRDFData brdfData;
-
     // NOTE: can modify alpha
     InitializeBRDFData(surfaceData.albedo, surfaceData.metallic, surfaceData.specular, surfaceData.smoothness, surfaceData.alpha, brdfData);
-
     BRDFData brdfDataClearCoat = (BRDFData)0;
 #if defined(_CLEARCOAT) || defined(_CLEARCOATMAP)
     // base brdfData is modified here, rely on the compiler to eliminate dead computation by InitializeBRDFData()
     InitializeBRDFDataClearCoat(surfaceData.clearCoatMask, surfaceData.clearCoatSmoothness, brdfData, brdfDataClearCoat);
 #endif
-
     // To ensure backward compatibility we have to avoid using shadowMask input, as it is not present in older shaders
 #if defined(SHADOWS_SHADOWMASK) && defined(LIGHTMAP_ON)
     half4 shadowMask = inputData.shadowMask;
@@ -835,15 +823,12 @@ half4 UniversalFragmentPBR(InputData inputData, SurfaceData surfaceData)
 #else
     half4 shadowMask = half4(1, 1, 1, 1);
 #endif
-
     Light mainLight = GetMainLight(inputData.shadowCoord, inputData.positionWS, shadowMask);
-
     #if defined(_SCREEN_SPACE_OCCLUSION) // To be Done
         AmbientOcclusionFactor aoFactor = GetScreenSpaceAmbientOcclusion(inputData.normalizedScreenSpaceUV);
         mainLight.color *= aoFactor.directAmbientOcclusion;
         surfaceData.occlusion = min(surfaceData.occlusion, aoFactor.indirectAmbientOcclusion);
     #endif
-
     MixRealtimeAndBakedGI(mainLight, inputData.normalWS, inputData.bakedGI);//subtractive Mode
     half3 color = GlobalIllumination(brdfData, brdfDataClearCoat, surfaceData.clearCoatMask,
                                      inputData.bakedGI, surfaceData.occlusion,
@@ -852,7 +837,6 @@ half4 UniversalFragmentPBR(InputData inputData, SurfaceData surfaceData)
                                      mainLight,
                                      inputData.normalWS, inputData.viewDirectionWS,
                                      surfaceData.clearCoatMask, specularHighlightsOff);
-
 #ifdef _ADDITIONAL_LIGHTS
     uint pixelLightCount = GetAdditionalLightsCount();
     for (uint lightIndex = 0u; lightIndex < pixelLightCount; ++lightIndex)
@@ -871,9 +855,7 @@ half4 UniversalFragmentPBR(InputData inputData, SurfaceData surfaceData)
 #ifdef _ADDITIONAL_LIGHTS_VERTEX
     color += inputData.vertexLighting * brdfData.diffuse;
 #endif
-
     color += surfaceData.emission;
-
     return half4(color, surfaceData.alpha);
 }
 
