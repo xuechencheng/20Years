@@ -17,10 +17,10 @@ Shader "Hidden/Universal Render Pipeline/Bloom"
 
         float4 _Params; // x: scatter, y: clamp, z: threshold (linear), w: threshold knee
 
-        #define Scatter             _Params.x
-        #define ClampMax            _Params.y
-        #define Threshold           _Params.z
-        #define ThresholdKnee       _Params.w
+        #define Scatter             _Params.x//散射
+        #define ClampMax            _Params.y//钳子
+        #define Threshold           _Params.z//阈值
+        #define ThresholdKnee       _Params.w//阈值膝盖
 
         half4 EncodeHDR(half3 color)
         {
@@ -42,19 +42,17 @@ Shader "Hidden/Universal Render Pipeline/Bloom"
         #if UNITY_COLORSPACE_GAMMA
             color.xyz *= color.xyz; // γ to linear
         #endif
-
         #if _USE_RGBM
             return DecodeRGBM(color);
         #else
             return color.xyz;
         #endif
         }
-
+        //对像素进行模糊操作
         half4 FragPrefilter(Varyings input) : SV_Target
         {
             UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
             float2 uv = UnityStereoTransformScreenSpaceTex(input.uv);
-
         #if _BLOOM_HQ
             float texelSize = _SourceTex_TexelSize.x;
             half4 A = SAMPLE_TEXTURE2D_X(_SourceTex, sampler_LinearClamp, uv + texelSize * float2(-1.0, -1.0));
@@ -70,33 +68,27 @@ Shader "Hidden/Universal Render Pipeline/Bloom"
             half4 K = SAMPLE_TEXTURE2D_X(_SourceTex, sampler_LinearClamp, uv + texelSize * float2(-1.0, 1.0));
             half4 L = SAMPLE_TEXTURE2D_X(_SourceTex, sampler_LinearClamp, uv + texelSize * float2(0.0, 1.0));
             half4 M = SAMPLE_TEXTURE2D_X(_SourceTex, sampler_LinearClamp, uv + texelSize * float2(1.0, 1.0));
-
-            half2 div = (1.0 / 4.0) * half2(0.5, 0.125);
-
+            half2 div = (1.0 / 4.0) * half2(0.5, 0.125); 
             half4 o = (D + E + I + J) * div.x;
             o += (A + B + G + F) * div.y;
             o += (B + C + H + G) * div.y;
             o += (F + G + L + K) * div.y;
             o += (G + H + M + L) * div.y;
-
             half3 color = o.xyz;
         #else
             half3 color = SAMPLE_TEXTURE2D_X(_SourceTex, sampler_LinearClamp, uv).xyz;
         #endif
-
             // User controlled clamp to limit crazy high broken spec
             color = min(ClampMax, color);
-
             // Thresholding
             half brightness = Max3(color.r, color.g, color.b);
             half softness = clamp(brightness - Threshold + ThresholdKnee, 0.0, 2.0 * ThresholdKnee);
             softness = (softness * softness) / (4.0 * ThresholdKnee + 1e-4);
             half multiplier = max(brightness - Threshold, softness) / max(brightness, 1e-4);
             color *= multiplier;
-
             return EncodeHDR(color);
         }
-
+        //横向模糊
         half4 FragBlurH(Varyings input) : SV_Target
         {
             UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
@@ -120,24 +112,21 @@ Shader "Hidden/Universal Render Pipeline/Bloom"
 
             return EncodeHDR(color);
         }
-
+        //纵向模糊
         half4 FragBlurV(Varyings input) : SV_Target
         {
             UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
             float texelSize = _SourceTex_TexelSize.y;
             float2 uv = UnityStereoTransformScreenSpaceTex(input.uv);
-
             // Optimized bilinear 5-tap gaussian on the same-sized source (9-tap equivalent)
             half3 c0 = DecodeHDR(SAMPLE_TEXTURE2D_X(_SourceTex, sampler_LinearClamp, uv - float2(0.0, texelSize * 3.23076923)));
             half3 c1 = DecodeHDR(SAMPLE_TEXTURE2D_X(_SourceTex, sampler_LinearClamp, uv - float2(0.0, texelSize * 1.38461538)));
             half3 c2 = DecodeHDR(SAMPLE_TEXTURE2D_X(_SourceTex, sampler_LinearClamp, uv                                      ));
             half3 c3 = DecodeHDR(SAMPLE_TEXTURE2D_X(_SourceTex, sampler_LinearClamp, uv + float2(0.0, texelSize * 1.38461538)));
             half3 c4 = DecodeHDR(SAMPLE_TEXTURE2D_X(_SourceTex, sampler_LinearClamp, uv + float2(0.0, texelSize * 3.23076923)));
-
             half3 color = c0 * 0.07027027 + c1 * 0.31621622
                         + c2 * 0.22702703
                         + c3 * 0.31621622 + c4 * 0.07027027;
-
             return EncodeHDR(color);
         }
 
@@ -172,7 +161,6 @@ Shader "Hidden/Universal Render Pipeline/Bloom"
         Pass
         {
             Name "Bloom Prefilter"
-
             HLSLPROGRAM
                 #pragma vertex FullscreenVert
                 #pragma fragment FragPrefilter
@@ -183,7 +171,6 @@ Shader "Hidden/Universal Render Pipeline/Bloom"
         Pass
         {
             Name "Bloom Blur Horizontal"
-
             HLSLPROGRAM
                 #pragma vertex FullscreenVert
                 #pragma fragment FragBlurH

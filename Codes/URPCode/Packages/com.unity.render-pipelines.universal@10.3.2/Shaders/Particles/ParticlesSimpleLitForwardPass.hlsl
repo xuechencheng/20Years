@@ -7,9 +7,7 @@
 void InitializeInputData(VaryingsParticle input, half3 normalTS, out InputData output)
 {
     output = (InputData)0;
-
     output.positionWS = input.positionWS.xyz;
-
 #ifdef _NORMALMAP
     half3 viewDirWS = half3(input.normalWS.w, input.tangentWS.w, input.bitangentWS.w);
     output.normalWS = TransformTangentToWorld(normalTS,
@@ -18,15 +16,11 @@ void InitializeInputData(VaryingsParticle input, half3 normalTS, out InputData o
     half3 viewDirWS = input.viewDirWS;
     output.normalWS = input.normalWS;
 #endif
-
     output.normalWS = NormalizeNormalPerPixel(output.normalWS);
-
 #if SHADER_HINT_NICE_QUALITY
     viewDirWS = SafeNormalize(viewDirWS);
 #endif
-
     output.viewDirectionWS = viewDirWS;
-
 #if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR)
     output.shadowCoord = input.shadowCoord;
 #elif defined(MAIN_LIGHT_CALCULATE_SHADOWS)
@@ -34,7 +28,6 @@ void InitializeInputData(VaryingsParticle input, half3 normalTS, out InputData o
 #else
     output.shadowCoord = float4(0, 0, 0, 0);
 #endif
-
     output.fogCoord = (half)input.positionWS.w;
     output.vertexLighting = half3(0.0h, 0.0h, 0.0h);
     output.bakedGI = SampleSHPixel(input.vertexSH, output.normalWS);
@@ -49,19 +42,15 @@ void InitializeInputData(VaryingsParticle input, half3 normalTS, out InputData o
 VaryingsParticle ParticlesLitVertex(AttributesParticle input)
 {
     VaryingsParticle output;
-
     UNITY_SETUP_INSTANCE_ID(input);
     UNITY_TRANSFER_INSTANCE_ID(input, output);
     UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
-
     VertexPositionInputs vertexInput = GetVertexPositionInputs(input.vertex.xyz);
     VertexNormalInputs normalInput = GetVertexNormalInputs(input.normal, input.tangent);
-
     half3 viewDirWS = GetWorldSpaceViewDir(vertexInput.positionWS);
 #if !SHADER_HINT_NICE_QUALITY
     viewDirWS = SafeNormalize(viewDirWS);
 #endif
-
 #ifdef _NORMALMAP
     output.normalWS = half4(normalInput.normalWS, viewDirWS.x);
     output.tangentWS = half4(normalInput.tangentWS, viewDirWS.y);
@@ -70,20 +59,17 @@ VaryingsParticle ParticlesLitVertex(AttributesParticle input)
     output.normalWS = normalInput.normalWS;
     output.viewDirWS = viewDirWS;
 #endif
-
     OUTPUT_SH(output.normalWS.xyz, output.vertexSH);
-
     output.positionWS.xyz = vertexInput.positionWS.xyz;
     output.positionWS.w = ComputeFogFactor(vertexInput.positionCS.z);
     output.clipPos = vertexInput.positionCS;
     output.color = GetParticleColor(input.color);
-
 #if defined(_FLIPBOOKBLENDING_ON)
-#if defined(UNITY_PARTICLE_INSTANCING_ENABLED)
-    GetParticleTexcoords(output.texcoord, output.texcoord2AndBlend, input.texcoords.xyxy, 0.0);
-#else
-    GetParticleTexcoords(output.texcoord, output.texcoord2AndBlend, input.texcoords, input.texcoordBlend);
-#endif
+    #if defined(UNITY_PARTICLE_INSTANCING_ENABLED)
+        GetParticleTexcoords(output.texcoord, output.texcoord2AndBlend, input.texcoords.xyxy, 0.0);
+    #else
+        GetParticleTexcoords(output.texcoord, output.texcoord2AndBlend, input.texcoords, input.texcoordBlend);
+    #endif
 #else
     GetParticleTexcoords(output.texcoord, input.texcoords.xy);
 #endif

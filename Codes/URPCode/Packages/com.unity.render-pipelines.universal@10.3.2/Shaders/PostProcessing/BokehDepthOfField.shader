@@ -31,19 +31,16 @@ Shader "Hidden/Universal Render Pipeline/BokehDepthOfField"
         #define MaxCoC          _CoCParams.y
         #define MaxRadius       _CoCParams.z
         #define RcpAspect       _CoCParams.w
-
+        //跟相机到物体距离有关的一个数值
         half FragCoC(Varyings input) : SV_Target
         {
             UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
-
             float2 uv = UnityStereoTransformScreenSpaceTex(input.uv);
             float depth = LOAD_TEXTURE2D_X(_CameraDepthTexture, _SourceSize.xy * uv).x;
             float linearEyeDepth = LinearEyeDepth(depth, _ZBufferParams);
-
             half coc = (1.0 - FocusDist / linearEyeDepth) * MaxCoC;
             half nearCoC = clamp(coc, -1.0, 0.0);
             half farCoC = saturate(coc);
-
             return saturate((farCoC + nearCoC + 1.0) * 0.5);
         }
 
@@ -51,9 +48,7 @@ Shader "Hidden/Universal Render Pipeline/BokehDepthOfField"
         {
             UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
             float2 uv = UnityStereoTransformScreenSpaceTex(input.uv);
-
         #if SHADER_TARGET >= 45 && defined(PLATFORM_SUPPORT_GATHER)
-
             // Sample source colors
             half4 cr = GATHER_RED_TEXTURE2D_X(_SourceTex, sampler_LinearClamp, uv);
             half4 cg = GATHER_GREEN_TEXTURE2D_X(_SourceTex, sampler_LinearClamp, uv);

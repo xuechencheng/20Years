@@ -21,7 +21,8 @@ VertexNormalInputs GetVertexNormalInputs(float3 normalOS)
     tbn.normalWS = TransformObjectToWorldNormal(normalOS);
     return tbn;
 }
-// Perfect
+
+// Perfect 
 VertexNormalInputs GetVertexNormalInputs(float3 normalOS, float4 tangentOS)
 {
     VertexNormalInputs tbn;
@@ -34,6 +35,7 @@ VertexNormalInputs GetVertexNormalInputs(float3 normalOS, float4 tangentOS)
 
 float4 GetScaledScreenParams()
 {
+    //scaledCameraWidth, scaledCameraHeight, 1.0f + 1.0f / scaledCameraWidth, 1.0f + 1.0f / scaledCameraHeight
     return _ScaledScreenParams;
 }
 
@@ -102,7 +104,7 @@ void GetLeftHandedViewSpaceMatrices(out float4x4 viewMatrix, out float4x4 projMa
     projMatrix = UNITY_MATRIX_P;
     projMatrix._13_23_33_43 = -projMatrix._13_23_33_43;
 }
-// Done
+// Perfect
 void AlphaDiscard(real alpha, real cutoff, real offset = 0.0h)
 {
     #ifdef _ALPHATEST_ON
@@ -134,7 +136,7 @@ real3 NormalizeNormalPerVertex(real3 normalWS)
         return normalize(normalWS);
     #endif
 }
-
+//Prefect 单位化法线
 real3 NormalizeNormalPerPixel(real3 normalWS)
 {
     #if defined(SHADER_QUALITY_HIGH) || defined(_NORMALMAP)
@@ -153,11 +155,10 @@ float4 ComputeScreenPos(float4 positionCS)
     o.zw = positionCS.zw;
     return o;
 }
-// Done
+// Prefect 根据深度值z计算雾的影响
 real ComputeFogFactor(float z)
 {
     float clipZ_01 = UNITY_Z_0_FAR_FROM_CLIPSPACE(z);
-
     #if defined(FOG_LINEAR)
         // factor = (end-z)/(end-start) = z * (-1/(end-start)) + (end/(end-start))
         float fogFactor = saturate(clipZ_01 * unity_FogParams.z + unity_FogParams.w);

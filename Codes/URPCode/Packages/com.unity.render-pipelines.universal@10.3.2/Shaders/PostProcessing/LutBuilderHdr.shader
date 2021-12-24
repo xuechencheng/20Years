@@ -54,20 +54,22 @@ Shader "Hidden/Universal Render Pipeline/LutBuilderHdr"
             colorLinear = LMSToLinear(colorLMS);
             // Do contrast in log after white balance 对比度
             #if _TONEMAP_ACES
-            float3 colorLog = ACES_to_ACEScc(unity_to_ACES(colorLinear));
+                float3 colorLog = ACES_to_ACEScc(unity_to_ACES(colorLinear));
             #else
-            float3 colorLog = LinearToLogC(colorLinear);
+                float3 colorLog = LinearToLogC(colorLinear);
             #endif
             colorLog = (colorLog - ACEScc_MIDGRAY) * _HueSatCon.z + ACEScc_MIDGRAY;
             #if _TONEMAP_ACES
-            colorLinear = ACES_to_ACEScg(ACEScc_to_ACES(colorLog));
+                colorLinear = ACES_to_ACEScg(ACEScc_to_ACES(colorLog));
             #else
-            colorLinear = LogCToLinear(colorLog);
+                colorLinear = LogCToLinear(colorLog);
             #endif
+            
             // Color filter is just an unclipped multiplier 颜色滤镜
             colorLinear *= _ColorFilter.xyz;
             // Do NOT feed negative values to the following color ops
             colorLinear = max(0.0, colorLinear);
+            
             // Split toning                                 色调分离
             // As counter-intuitive as it is, to make split-toning work the same way it does in Adobe
             // products we have to do all the maths in gamma-space...
@@ -79,6 +81,7 @@ Shader "Hidden/Universal Render Pipeline/LutBuilderHdr"
             colorGamma = SoftLight(colorGamma, splitShadows);
             colorGamma = SoftLight(colorGamma, splitHighlights);
             colorLinear = PositivePow(colorGamma, 2.2);
+            
             // Channel mixing (Adobe style) 通道混合
             colorLinear = float3(
                 dot(colorLinear, _ChannelMixerRed.xyz),
@@ -147,7 +150,8 @@ Shader "Hidden/Universal Render Pipeline/LutBuilderHdr"
             colorLinear = max(0.0, colorLinear);
             return colorLinear;
         }
-
+        
+        //色调映射
         float3 Tonemap(float3 colorLinear)
         {
             #if _TONEMAP_NEUTRAL
@@ -172,7 +176,7 @@ Shader "Hidden/Universal Render Pipeline/LutBuilderHdr"
             // (~58.85666) and is good enough to be stored in fp16 without losing precision in the
             // darks
             float3 colorLutSpace = GetLutStripValue(input.uv, _Lut_Params);
-
+            // x: lut_height, y: 0.5 / lut_width, z: 0.5 / lut_height, w: lut_height / lut_height - 1
             // Color grade & tonemap
             float3 gradedColor = ColorGrade(colorLutSpace);
             gradedColor = Tonemap(gradedColor);

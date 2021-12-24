@@ -79,8 +79,8 @@ void InitializeInputData(Varyings input, half3 normalTS, out InputData inputData
 #endif
     inputData.fogCoord = input.fogFactorAndVertexLight.x;
     inputData.vertexLighting = input.fogFactorAndVertexLight.yzw;
-    inputData.bakedGI = SAMPLE_GI(input.lightmapUV, input.vertexSH, inputData.normalWS);// ???
-    inputData.normalizedScreenSpaceUV = GetNormalizedScreenSpaceUV(input.positionCS); //To be Done
+    inputData.bakedGI = SAMPLE_GI(input.lightmapUV, input.vertexSH, inputData.normalWS);
+    inputData.normalizedScreenSpaceUV = GetNormalizedScreenSpaceUV(input.positionCS);// ???
     inputData.shadowMask = SAMPLE_SHADOWMASK(input.lightmapUV);
 }
 
@@ -88,8 +88,7 @@ void InitializeInputData(Varyings input, half3 normalTS, out InputData inputData
 //                  Vertex and Fragment functions                            //
 ///////////////////////////////////////////////////////////////////////////////
 
-// Used in Standard (Physically Based) shader
-// Done
+// Prefect
 Varyings LitPassVertex(Attributes input)
 {
     Varyings output = (Varyings)0;
@@ -123,7 +122,7 @@ Varyings LitPassVertex(Attributes input)
     output.positionWS = vertexInput.positionWS;
 #endif
 #if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR)
-    output.shadowCoord = GetShadowCoord(vertexInput);// ???
+    output.shadowCoord = GetShadowCoord(vertexInput);
 #endif
     output.positionCS = vertexInput.positionCS;
     return output;
@@ -146,7 +145,7 @@ half4 LitPassFragment(Varyings input) : SV_Target
     InitializeStandardLitSurfaceData(input.uv, surfaceData);
     InputData inputData;
     InitializeInputData(input, surfaceData.normalTS, inputData);
-    half4 color = UniversalFragmentPBR(inputData, surfaceData);
+    half4 color = UniversalFragmentPBR(inputData, surfaceData);// Pause
     color.rgb = MixFog(color.rgb, inputData.fogCoord);
     color.a = OutputAlpha(color.a, _Surface);
     return color;

@@ -41,24 +41,19 @@ TEXTURE2D(_MetallicGlossMap);   SAMPLER(sampler_MetallicGlossMap);
 half4 SampleAlbedo(float2 uv, float3 blendUv, half4 color, float4 particleColor, float4 projectedPosition, TEXTURE2D_PARAM(albedoMap, sampler_albedoMap))
 {
     half4 albedo = BlendTexture(TEXTURE2D_ARGS(albedoMap, sampler_albedoMap), uv, blendUv) * color;
-
     half4 colorAddSubDiff = half4(0, 0, 0, 0);
 #if defined (_COLORADDSUBDIFF_ON)
     colorAddSubDiff = _BaseColorAddSubDiff;
 #endif
     // No distortion Support
-    albedo = MixParticleColor(albedo, particleColor, colorAddSubDiff);
-
+    albedo = MixParticleColor(albedo, particleColor, colorAddSubDiff);//混合粒子颜色和BaseMap颜色
     AlphaDiscard(albedo.a, _Cutoff);
-
 #if defined(_SOFTPARTICLES_ON)
         ALBEDO_MUL *= SoftParticles(SOFT_PARTICLE_NEAR_FADE, SOFT_PARTICLE_INV_FADE_DISTANCE, projectedPosition);
 #endif
-
  #if defined(_FADING_ON)
      ALBEDO_MUL *= CameraFade(CAMERA_NEAR_FADE, CAMERA_INV_FADE_DISTANCE, projectedPosition);
  #endif
-
     return albedo;
 }
 

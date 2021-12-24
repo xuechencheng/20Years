@@ -20,9 +20,9 @@ TEXTURE2D_X(_BlendTexture);
 TEXTURE2D(_AreaTexture);
 TEXTURE2D(_SearchTexture);
 
-float4 _Metrics;
-
-#define SMAA_RT_METRICS _Metrics
+float4 _Metrics; 
+//new Vector4(1f / m_Descriptor.width, 1f / m_Descriptor.height, m_Descriptor.width, m_Descriptor.height)
+#define SMAA_RT_METRICS _Metrics 
 #define SMAA_AREATEX_SELECT(s) s.rg
 #define SMAA_SEARCHTEX_SELECT(s) s.a
 #define LinearSampler sampler_LinearClamp
@@ -51,12 +51,12 @@ VaryingsEdge VertEdge(Attributes input)
 {
     VaryingsEdge output;
     UNITY_SETUP_INSTANCE_ID(input);
-    UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
-#if _USE_DRAW_PROCEDURAL
+    UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);//XR
+#if _USE_DRAW_PROCEDURAL //XR
     GetProceduralQuad(input.vertexID, output.positionCS, output.uv);
 #else
     output.positionCS = TransformFullscreenMesh(input.positionOS.xyz);
-    output.uv = UnityStereoTransformScreenSpaceTex(input.uv);
+    output.uv = UnityStereoTransformScreenSpaceTex(input.uv);//uv
 #endif  
     SMAAEdgeDetectionVS(output.uv, output.offsets);
     return output;

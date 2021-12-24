@@ -27,6 +27,7 @@
 
 #ifdef LIGHTMAP_ON
     #define DECLARE_LIGHTMAP_OR_SH(lmName, shName, index) float2 lmName : TEXCOORD##index
+    //计算LightMap的UV
     #define OUTPUT_LIGHTMAP_UV(lightmapUV, lightmapScaleOffset, OUT) OUT.xy = lightmapUV.xy * lightmapScaleOffset.xy + lightmapScaleOffset.zw;
     #define OUTPUT_SH(normalWS, OUT)
 #else
@@ -60,6 +61,7 @@ struct Light
 
 // Matches Unity Vanila attenuation
 // Attenuation smoothly decreases to light range.
+// 距离衰减
 float DistanceAttenuation(float distanceSqr, half2 distanceAttenuation)
 {
     // We use a shared distance attenuation for additional directional and puctual lights
@@ -84,7 +86,7 @@ float DistanceAttenuation(float distanceSqr, half2 distanceAttenuation)
 
     return lightAtten * smoothFactor;
 }
-
+//光照角度衰减
 half AngleAttenuation(half3 spotDirection, half3 lightDirection, half2 spotAttenuation)
 {
     // Spot Attenuation with a linear falloff can be defined as
@@ -103,7 +105,7 @@ half AngleAttenuation(half3 spotDirection, half3 lightDirection, half2 spotAtten
 ///////////////////////////////////////////////////////////////////////////////
 //                      Light Abstraction                                    //
 ///////////////////////////////////////////////////////////////////////////////
-
+// Perfect
 Light GetMainLight()
 {
     Light light;
@@ -111,7 +113,6 @@ Light GetMainLight()
     light.distanceAttenuation = unity_LightData.z; // unity_LightData.z is 1 when not culled by the culling mask, otherwise 0.
     light.shadowAttenuation = 1.0;
     light.color = _MainLightColor.rgb;
-
     return light;
 }
 
@@ -144,22 +145,17 @@ Light GetAdditionalPerObjectLight(int perObjectLightIndex, float3 positionWS)
     half4 distanceAndSpotAttenuation = _AdditionalLightsAttenuation[perObjectLightIndex];
     half4 spotDirection = _AdditionalLightsSpotDir[perObjectLightIndex];
 #endif
-
     // Directional lights store direction in lightPosition.xyz and have .w set to 0.0.
     // This way the following code will work for both directional and punctual lights.
     float3 lightVector = lightPositionWS.xyz - positionWS * lightPositionWS.w;
     float distanceSqr = max(dot(lightVector, lightVector), HALF_MIN);
-
     half3 lightDirection = half3(lightVector * rsqrt(distanceSqr));
-    //???
     half attenuation = DistanceAttenuation(distanceSqr, distanceAndSpotAttenuation.xy) * AngleAttenuation(spotDirection.xyz, lightDirection, distanceAndSpotAttenuation.zw);
-
     Light light;
     light.direction = lightDirection;
     light.distanceAttenuation = attenuation;
     light.shadowAttenuation = 1.0;
     light.color = color;
-
     return light;
 }
 
@@ -174,7 +170,7 @@ uint GetPerObjectLightIndexOffset()
 
 // Returns a per-object index given a loop index.
 // This abstract the underlying data implementation for storing lights/light indices
-// Done
+// Almost Perfect
 int GetPerObjectLightIndex(uint index)
 {
 /////////////////////////////////////////////////////////////////////////////////////////////
@@ -228,14 +224,12 @@ Light GetAdditionalLight(uint i, float3 positionWS, half4 shadowMask)
 {
     int perObjectLightIndex = GetPerObjectLightIndex(i);
     Light light = GetAdditionalPerObjectLight(perObjectLightIndex, positionWS);
-
 #if USE_STRUCTURED_BUFFER_FOR_LIGHT_DATA
     half4 occlusionProbeChannels = _AdditionalLightsBuffer[perObjectLightIndex].occlusionProbeChannels;
 #else
     half4 occlusionProbeChannels = _AdditionalLightsOcclusionProbes[perObjectLightIndex];
 #endif
     light.shadowAttenuation = AdditionalLightShadow(perObjectLightIndex, positionWS, shadowMask, occlusionProbeChannels);
-
     return light;
 }
 // Perfect
@@ -275,7 +269,7 @@ half ReflectivitySpecular(half3 specular)
 #endif
 }
 
-// Done
+// Perfect
 half OneMinusReflectivityMetallic(half metallic)
 {
     // We'll need oneMinusReflectivity, so
@@ -286,7 +280,7 @@ half OneMinusReflectivityMetallic(half metallic)
     half oneMinusDielectricSpec = kDielectricSpec.a; // 0.96
     return oneMinusDielectricSpec - metallic * oneMinusDielectricSpec;
 }
-// Done
+// Perfect
 inline void InitializeBRDFDataDirect(half3 diffuse, half3 specular, half reflectivity, half oneMinusReflectivity, half smoothness, inout half alpha, out BRDFData outBRDFData)
 {
     outBRDFData.diffuse = diffuse;
@@ -306,7 +300,7 @@ inline void InitializeBRDFDataDirect(half3 diffuse, half3 specular, half reflect
 #endif
 }
 
-// Done
+// Perfect
 inline void InitializeBRDFData(half3 albedo, half metallic, half3 specular, half smoothness, inout half alpha, out BRDFData outBRDFData)
 {
 #ifdef _SPECULAR_SETUP
@@ -319,8 +313,7 @@ inline void InitializeBRDFData(half3 albedo, half metallic, half3 specular, half
     half reflectivity = 1.0 - oneMinusReflectivity;
     half3 brdfDiffuse = albedo * oneMinusReflectivity;
     half3 brdfSpecular = lerp(kDieletricSpec.rgb, albedo, metallic);
-#endif
-
+#endif 
     InitializeBRDFDataDirect(brdfDiffuse, brdfSpecular, reflectivity, oneMinusReflectivity, smoothness, alpha, outBRDFData);
 }
 
@@ -369,13 +362,13 @@ inline void InitializeBRDFDataClearCoat(half clearCoatMask, half clearCoatSmooth
 }
 
 // Computes the specular term for EnvironmentBRDF
-// Done
+// Perfect 环境光高光系数
 half3 EnvironmentBRDFSpecular(BRDFData brdfData, half fresnelTerm)
 {
     float surfaceReduction = 1.0 / (brdfData.roughness2 + 1.0);
     return surfaceReduction * lerp(brdfData.specular, brdfData.grazingTerm, fresnelTerm);
 }
-// Done
+// 环境光BRDF
 half3 EnvironmentBRDF(BRDFData brdfData, half3 indirectDiffuse, half3 indirectSpecular, half fresnelTerm)
 {
     half3 c = indirectDiffuse * brdfData.diffuse;
@@ -392,28 +385,24 @@ half3 EnvironmentBRDFClearCoat(BRDFData brdfData, half clearCoatMask, half3 indi
 
 // Computes the scalar specular term for Minimalist CookTorrance BRDF
 // NOTE: needs to be multiplied with reflectance f0, i.e. specular color to complete
+// Perfect 高光系数
 half DirectBRDFSpecular(BRDFData brdfData, half3 normalWS, half3 lightDirectionWS, half3 viewDirectionWS)
 {
     float3 halfDir = SafeNormalize(float3(lightDirectionWS) + float3(viewDirectionWS));
-
     float NoH = saturate(dot(normalWS, halfDir));
     half LoH = saturate(dot(lightDirectionWS, halfDir));
-
     // GGX Distribution multiplied by combined approximation of Visibility and Fresnel
     // BRDFspec = (D * V * F) / 4.0
     // D = roughness^2 / ( NoH^2 * (roughness^2 - 1) + 1 )^2
     // V * F = 1.0 / ( LoH^2 * (roughness + 0.5) )
     // See "Optimizing PBR for Mobile" from Siggraph 2015 moving mobile graphics course
     // https://community.arm.com/events/1155
-
     // Final BRDFspec = roughness^2 / ( NoH^2 * (roughness^2 - 1) + 1 )^2 * (LoH^2 * (roughness + 0.5) * 4.0)
     // We further optimize a few light invariant terms
     // brdfData.normalizationTerm = (roughness + 0.5) * 4.0 rewritten as roughness * 4.0 + 2.0 to a fit a MAD.
     float d = NoH * NoH * brdfData.roughness2MinusOne + 1.00001f;
-
     half LoH2 = LoH * LoH;
     half specularTerm = brdfData.roughness2 / ((d * d) * max(0.1h, LoH2) * brdfData.normalizationTerm);
-
     // On platforms where half actually means something, the denominator has a risk of overflow
     // clamp below was added specifically to "fix" that, but dx compiler (we convert bytecode to metal/gles)
     // sees that specularTerm have only non-negative terms, so it skips max(0,..) in clamp (leaving only min(100,...))
@@ -421,7 +410,6 @@ half DirectBRDFSpecular(BRDFData brdfData, half3 normalWS, half3 lightDirectionW
     specularTerm = specularTerm - HALF_MIN;
     specularTerm = clamp(specularTerm, 0.0, 100.0); // Prevent FP16 overflow on mobiles
 #endif
-
 return specularTerm;
 }
 
@@ -473,13 +461,13 @@ struct AmbientOcclusionFactor
     half indirectAmbientOcclusion;
     half directAmbientOcclusion;
 };
-
+//采样ScreenSpaceOcclusionTexture贴图
 half SampleAmbientOcclusion(float2 normalizedScreenSpaceUV)
 {
     float2 uv = UnityStereoTransformScreenSpaceTex(normalizedScreenSpaceUV);
     return SAMPLE_TEXTURE2D_X(_ScreenSpaceOcclusionTexture, sampler_ScreenSpaceOcclusionTexture, uv).x;
 }
-
+//获取SSAO值
 AmbientOcclusionFactor GetScreenSpaceAmbientOcclusion(float2 normalizedScreenSpaceUV)
 {
     AmbientOcclusionFactor aoFactor;
@@ -508,7 +496,7 @@ half3 SampleSH(half3 normalWS)
 // SH Vertex Evaluation. Depending on target SH sampling might be
 // done completely per vertex or mixed with L2 term per vertex and L0, L1
 // per pixel. See SampleSHPixel
-// Done
+// Prefect 采样顶点光照探针
 half3 SampleSHVertex(half3 normalWS)
 {
 #if defined(EVALUATE_SH_VERTEX)
@@ -517,13 +505,13 @@ half3 SampleSHVertex(half3 normalWS)
     // no max since this is only L2 contribution
     return SHEvalLinearL2(normalWS, unity_SHBr, unity_SHBg, unity_SHBb, unity_SHC);
 #endif
-
     // Fully per-pixel. Nothing to compute.
     return half3(0.0, 0.0, 0.0);
 }
 
 // SH Pixel Evaluation. Depending on target SH sampling might be done
 // mixed or fully in pixel. See SampleSHVertex
+// 片元采样光照探针
 half3 SampleSHPixel(half3 L2Term, half3 normalWS)
 {
 #if defined(EVALUATE_SH_VERTEX)
@@ -536,7 +524,6 @@ half3 SampleSHPixel(half3 L2Term, half3 normalWS)
 #endif
     return max(half3(0, 0, 0), res);
 #endif
-
     // Default: Evaluate SH fully per-pixel
     return SampleSH(normalWS);
 }
@@ -555,6 +542,7 @@ half3 SampleSHPixel(half3 L2Term, half3 normalWS)
 
 // Sample baked lightmap. Non-Direction and Directional if available.
 // Realtime GI is not supported.
+//采样光照贴图
 half3 SampleLightmap(float2 lightmapUV, half3 normalWS)
 {
 #ifdef UNITY_LIGHTMAP_FULL_HDR
@@ -584,28 +572,26 @@ half3 SampleLightmap(float2 lightmapUV, half3 normalWS)
 // We either sample GI from baked lightmap or from probes.
 // If lightmap: sampleData.xy = lightmapUV
 // If probe: sampleData.xyz = L2 SH terms
+// 采样光照贴图或者光照探针
 #if defined(LIGHTMAP_ON)
 #define SAMPLE_GI(lmName, shName, normalWSName) SampleLightmap(lmName, normalWSName)
 #else
 #define SAMPLE_GI(lmName, shName, normalWSName) SampleSHPixel(shName, normalWSName)
 #endif
-// Done
+// Perfect 采样天空盒
 half3 GlossyEnvironmentReflection(half3 reflectVector, half perceptualRoughness, half occlusion)
 {
 #if !defined(_ENVIRONMENTREFLECTIONS_OFF)
     half mip = PerceptualRoughnessToMipmapLevel(perceptualRoughness);
     half4 encodedIrradiance = SAMPLE_TEXTURECUBE_LOD(unity_SpecCube0, samplerunity_SpecCube0, reflectVector, mip);
-
     //TODO:DOTS - we need to port probes to live in c# so we can manage this manually.
     #if defined(UNITY_USE_NATIVE_HDR) || defined(UNITY_DOTS_INSTANCING_ENABLED)
         half3 irradiance = encodedIrradiance.rgb;
     #else
         half3 irradiance = DecodeHDREnvironment(encodedIrradiance, unity_SpecCube0_HDR);
     #endif
-
     return irradiance * occlusion;
 #endif // GLOSSY_REFLECTIONS
-
     return _GlossyEnvironmentColor.rgb * occlusion;
 }
 
@@ -636,7 +622,7 @@ half3 SubtractDirectMainLightFromLightmap(Light mainLight, half3 normalWS, half3
     // 3) Pick darkest color
     return min(bakedGI, realtimeShadow);
 }
-
+//Perfect 全局光照
 half3 GlobalIllumination(BRDFData brdfData, BRDFData brdfDataClearCoat, float clearCoatMask,
     half3 bakedGI, half occlusion,
     half3 normalWS, half3 viewDirectionWS)
@@ -644,17 +630,13 @@ half3 GlobalIllumination(BRDFData brdfData, BRDFData brdfDataClearCoat, float cl
     half3 reflectVector = reflect(-viewDirectionWS, normalWS);
     half NoV = saturate(dot(normalWS, viewDirectionWS));
     half fresnelTerm = Pow4(1.0 - NoV);
-
     half3 indirectDiffuse = bakedGI * occlusion;
     half3 indirectSpecular = GlossyEnvironmentReflection(reflectVector, brdfData.perceptualRoughness, occlusion);
-
     half3 color = EnvironmentBRDF(brdfData, indirectDiffuse, indirectSpecular, fresnelTerm);
-
 #if defined(_CLEARCOAT) || defined(_CLEARCOATMAP)
     half3 coatIndirectSpecular = GlossyEnvironmentReflection(reflectVector, brdfDataClearCoat.perceptualRoughness, occlusion);
     // TODO: "grazing term" causes problems on full roughness
     half3 coatColor = EnvironmentBRDFClearCoat(brdfDataClearCoat, clearCoatMask, coatIndirectSpecular, fresnelTerm);
-
     // Blend with base layer using khronos glTF recommended way using NoV
     // Smooth surface & "ambiguous" lighting
     // NOTE: fresnelTerm (above) is pow4 instead of pow5, but should be ok as blend weight.
@@ -688,13 +670,13 @@ void MixRealtimeAndBakedGI(inout Light light, half3 normalWS, inout half3 bakedG
 ///////////////////////////////////////////////////////////////////////////////
 //                      Lighting Functions                                   //
 ///////////////////////////////////////////////////////////////////////////////
-// Done
+// Perfect
 half3 LightingLambert(half3 lightColor, half3 lightDir, half3 normal)
 {
     half NdotL = saturate(dot(normal, lightDir));
     return lightColor * NdotL;
 }
-
+// Perfect
 half3 LightingSpecular(half3 lightColor, half3 lightDir, half3 normal, half3 viewDir, half4 specular, half smoothness)
 {
     float3 halfVec = SafeNormalize(float3(lightDir) + float3(viewDir));
@@ -703,21 +685,16 @@ half3 LightingSpecular(half3 lightColor, half3 lightDir, half3 normal, half3 vie
     half3 specularReflection = specular.rgb * modifier;
     return lightColor * specularReflection;
 }
-
-half3 LightingPhysicallyBased(BRDFData brdfData, BRDFData brdfDataClearCoat,
-    half3 lightColor, half3 lightDirectionWS, half lightAttenuation,
-    half3 normalWS, half3 viewDirectionWS,
-    half clearCoatMask, bool specularHighlightsOff)
-{
+//Perfect 直接光照
+half3 LightingPhysicallyBased(BRDFData brdfData, BRDFData brdfDataClearCoat, half3 lightColor, half3 lightDirectionWS, half lightAttenuation,
+    half3 normalWS, half3 viewDirectionWS, half clearCoatMask, bool specularHighlightsOff){
     half NdotL = saturate(dot(normalWS, lightDirectionWS));
     half3 radiance = lightColor * (lightAttenuation * NdotL);
-
     half3 brdf = brdfData.diffuse;
 #ifndef _SPECULARHIGHLIGHTS_OFF
     [branch] if (!specularHighlightsOff)
     {
         brdf += brdfData.specular * DirectBRDFSpecular(brdfData, normalWS, lightDirectionWS, viewDirectionWS);
-
 #if defined(_CLEARCOAT) || defined(_CLEARCOATMAP)
         // Clear coat evaluates the specular a second timw and has some common terms with the base specular.
         // We rely on the compiler to merge these and compute them only once.
@@ -824,7 +801,7 @@ half4 UniversalFragmentPBR(InputData inputData, SurfaceData surfaceData)
     half4 shadowMask = half4(1, 1, 1, 1);
 #endif
     Light mainLight = GetMainLight(inputData.shadowCoord, inputData.positionWS, shadowMask);
-    #if defined(_SCREEN_SPACE_OCCLUSION) // To be Done
+    #if defined(_SCREEN_SPACE_OCCLUSION) 
         AmbientOcclusionFactor aoFactor = GetScreenSpaceAmbientOcclusion(inputData.normalizedScreenSpaceUV);
         mainLight.color *= aoFactor.directAmbientOcclusion;
         surfaceData.occlusion = min(surfaceData.occlusion, aoFactor.indirectAmbientOcclusion);
@@ -851,7 +828,6 @@ half4 UniversalFragmentPBR(InputData inputData, SurfaceData surfaceData)
                                          surfaceData.clearCoatMask, specularHighlightsOff);
     }
 #endif
-
 #ifdef _ADDITIONAL_LIGHTS_VERTEX
     color += inputData.vertexLighting * brdfData.diffuse;
 #endif

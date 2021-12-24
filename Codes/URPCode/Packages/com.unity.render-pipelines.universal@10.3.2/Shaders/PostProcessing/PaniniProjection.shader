@@ -102,9 +102,9 @@ Shader "Hidden/Universal Render Pipeline/PaniniProjection"
             UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
 
             #if _GENERIC
-            float2 proj_pos = Panini_Generic((2.0 * input.uv - 1.0) * _Params.xy * _Params.w, _Params.z);
+                float2 proj_pos = Panini_Generic((2.0 * input.uv - 1.0) * _Params.xy * _Params.w, _Params.z);
             #else // _UNIT_DISTANCE
-            float2 proj_pos = Panini_UnitDistance((2.0 * input.uv - 1.0) * _Params.xy * _Params.w);
+                float2 proj_pos = Panini_UnitDistance((2.0 * input.uv - 1.0) * _Params.xy * _Params.w);
             #endif
 
             float2 proj_ndc = proj_pos / _Params.xy;

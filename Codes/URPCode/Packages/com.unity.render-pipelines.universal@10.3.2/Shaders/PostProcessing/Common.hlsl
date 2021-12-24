@@ -9,7 +9,7 @@
 // relying on the matrix set by the C++ engine to avoid issues with XR
 
 float4x4 _FullscreenProjMat;
-
+//处理平台差异
 float4 TransformFullscreenMesh(half3 positionOS)
 {
     return mul(_FullscreenProjMat, half4(positionOS, 1));
@@ -19,7 +19,7 @@ Varyings VertFullscreenMesh(Attributes input)
 {
     Varyings output;
     UNITY_SETUP_INSTANCE_ID(input);
-    UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
+    UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output); // XR
 
 #if _USE_DRAW_PROCEDURAL
     GetProceduralQuad(input.vertexID, output.positionCS, output.uv);
@@ -129,21 +129,19 @@ half3 ApplyColorGrading(half3 input, float postExposure, TEXTURE2D_PARAM(lutTex,
     return input;
 }
 
+//Perfect 将input和GrainTexture根据颜色进行混合
 half3 ApplyGrain(half3 input, float2 uv, TEXTURE2D_PARAM(GrainTexture, GrainSampler), float intensity, float response, float2 scale, float2 offset)
 {
     // Grain in range [0;1] with neutral at 0.5
     half grain = SAMPLE_TEXTURE2D(GrainTexture, GrainSampler, uv * scale + offset).w;
-
     // Remap [-1;1]
     grain = (grain - 0.5) * 2.0;
-
     // Noisiness response curve based on scene luminance
-    float lum = 1.0 - sqrt(Luminance(input));
-    lum = lerp(1.0, lum, response);
-
+    float lum = 1.0 - sqrt(Luminance(input));//亮度越高，lum越低
+    lum = lerp(1.0, lum, response);//response越大，lum越小
     return input + input * grain * intensity * lum;
 }
-
+//Perfect 给input增加一个噪声值
 half3 ApplyDithering(half3 input, float2 uv, TEXTURE2D_PARAM(BlueNoiseTexture, BlueNoiseSampler), float2 scale, float2 offset)
 {
     // Symmetric triangular distribution on [-1,1] with maximal density at 0

@@ -84,8 +84,8 @@
         #define UNITY_GET_INSTANCE_ID(input)    _GETINSTANCEID(input)
     #else
         #define DEFAULT_UNITY_VERTEX_INPUT_INSTANCE_ID uint instanceID : SV_InstanceID;
-        #define UNITY_GET_INSTANCE_ID(input)    input.instanceID // Get input.instanceID
-    #endif //阅
+        #define UNITY_GET_INSTANCE_ID(input)    input.instanceID // 获取input.instanceID
+    #endif 
 
 #else
     #define DEFAULT_UNITY_VERTEX_INPUT_INSTANCE_ID
@@ -166,6 +166,7 @@
 // - UNITY_TRANSFER_INSTANCE_ID     Copy instance ID from input struct to output struct. Used in vertex shader.
 
 #if UNITY_ANY_INSTANCING_ENABLED
+    //返回inputInstanceID + unity_BaseInstanceID
     void UnitySetupInstanceID(uint inputInstanceID)
     {
         #ifdef UNITY_STEREO_INSTANCING_ENABLED

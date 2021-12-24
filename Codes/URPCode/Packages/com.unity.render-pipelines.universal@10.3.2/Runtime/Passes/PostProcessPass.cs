@@ -171,7 +171,7 @@ namespace UnityEngine.Rendering.Universal.Internal
             m_ColorAdjustments    = stack.GetComponent<ColorAdjustments>();
             m_Tonemapping         = stack.GetComponent<Tonemapping>();
             m_FilmGrain           = stack.GetComponent<FilmGrain>();
-            m_UseDrawProcedural   = renderingData.cameraData.xr.enabled;
+            m_UseDrawProcedural   = renderingData.cameraData.xr.enabled;//Always False
 
             if (m_IsFinalPass)
             {
@@ -235,7 +235,9 @@ namespace UnityEngine.Rendering.Universal.Internal
                 cmd.Blit(source, destination, material, passIndex);
             }
         }
-
+        /// <summary>
+        /// 绘制全屏的Mesh
+        /// </summary>
         private void DrawFullscreenMesh(CommandBuffer cmd, Material material, int passIndex)
         {
             if (m_UseDrawProcedural)
@@ -278,7 +280,7 @@ namespace UnityEngine.Rendering.Universal.Internal
             }
             void Swap() => CoreUtils.Swap(ref source, ref destination);
             // Setup projection matrix for cmd.DrawMesh()
-            cmd.SetGlobalMatrix(ShaderConstants._FullscreenProjMat, GL.GetGPUProjectionMatrix(Matrix4x4.identity, true));
+            cmd.SetGlobalMatrix(ShaderConstants._FullscreenProjMat, GL.GetGPUProjectionMatrix(Matrix4x4.identity, true));//GL.GetGPUProjectionMatrix 就是用来处理平台差异的
             // Optional NaN killer before post-processing kicks in
             // stopNaN may be null on Adreno 3xx. It doesn't support full shader level 3.5, but SystemInfo.graphicsShaderLevel is 35.
             if (cameraData.isStopNaNEnabled && m_Materials.stopNaN != null)
@@ -468,10 +470,8 @@ namespace UnityEngine.Rendering.Universal.Internal
             material.SetTexture(ShaderConstants._SearchTexture, m_Data.textures.smaaSearchTex);
             material.SetInt(ShaderConstants._StencilRef, kStencilBit);
             material.SetInt(ShaderConstants._StencilMask, kStencilBit);
-
             // Quality presets
             material.shaderKeywords = null;
-
             switch (cameraData.antialiasingQuality)
             {
                 case AntialiasingQuality.Low: material.EnableKeyword(ShaderKeywordStrings.SmaaLow);
@@ -481,14 +481,13 @@ namespace UnityEngine.Rendering.Universal.Internal
                 case AntialiasingQuality.High: material.EnableKeyword(ShaderKeywordStrings.SmaaHigh);
                     break;
             }
-
             // Intermediate targets
             RenderTargetIdentifier stencil; // We would only need stencil, no depth. But Unity doesn't support that.
             int tempDepthBits;
             if (m_Depth == RenderTargetHandle.CameraTarget || m_Descriptor.msaaSamples > 1)
             {
                 // In case m_Depth is CameraTarget it may refer to the backbuffer and we can't use that as an attachment on all platforms
-                stencil = ShaderConstants._EdgeTexture;
+                stencil = ShaderConstants._EdgeTexture; //"_EdgeTexture"
                 tempDepthBits = 24;
             }
             else
@@ -498,19 +497,15 @@ namespace UnityEngine.Rendering.Universal.Internal
             }
             cmd.GetTemporaryRT(ShaderConstants._EdgeTexture, GetCompatibleDescriptor(m_Descriptor.width, m_Descriptor.height, m_SMAAEdgeFormat, tempDepthBits), FilterMode.Point);
             cmd.GetTemporaryRT(ShaderConstants._BlendTexture, GetCompatibleDescriptor(m_Descriptor.width, m_Descriptor.height, GraphicsFormat.R8G8B8A8_UNorm), FilterMode.Point);
-
             // Prepare for manual blit
-            cmd.SetViewProjectionMatrices(Matrix4x4.identity, Matrix4x4.identity);
+            cmd.SetViewProjectionMatrices(Matrix4x4.identity, Matrix4x4.identity);//???
             cmd.SetViewport(pixelRect);
-
             // Pass 1: Edge detection
             cmd.SetRenderTarget(new RenderTargetIdentifier(ShaderConstants._EdgeTexture, 0, CubemapFace.Unknown, -1),
-                RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store, stencil,
-                RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store);
+                RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store, stencil, RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store);
             cmd.ClearRenderTarget(true, true, Color.clear);
             cmd.SetGlobalTexture(ShaderConstants._ColorTexture, source);
-            DrawFullscreenMesh(cmd, material, 0);
-
+            DrawFullscreenMesh(cmd, material, 0);//把边缘信息绘制到_EdgeTexture中
             // Pass 2: Blend weights
             cmd.SetRenderTarget(new RenderTargetIdentifier(ShaderConstants._BlendTexture, 0, CubemapFace.Unknown, -1),
                 RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store, stencil,
@@ -518,7 +513,6 @@ namespace UnityEngine.Rendering.Universal.Internal
             cmd.ClearRenderTarget(false, true, Color.clear);
             cmd.SetGlobalTexture(ShaderConstants._ColorTexture, ShaderConstants._EdgeTexture);
             DrawFullscreenMesh(cmd, material, 1);
-
             // Pass 3: Neighborhood blending
             cmd.SetRenderTarget(new RenderTargetIdentifier(destination, 0, CubemapFace.Unknown, -1),
                 RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store,
@@ -575,7 +569,8 @@ namespace UnityEngine.Rendering.Universal.Internal
             PostProcessUtils.SetSourceSize(cmd, m_Descriptor);
             cmd.SetGlobalVector(ShaderConstants._DownSampleScaleFactor, new Vector4(1.0f / downSample, 1.0f / downSample, downSample, downSample));
 
-            // Compute CoC
+            // Compute CoC 
+            //saturate((depth - FarStart) / (FarEnd - FarStart))
             Blit(cmd, source, ShaderConstants._FullCoCTexture, material, 0);
 
             // Downscale & prefilter color + coc
@@ -586,7 +581,7 @@ namespace UnityEngine.Rendering.Universal.Internal
             cmd.SetViewport(pixelRect);
             cmd.SetGlobalTexture(ShaderConstants._ColorTexture, source);
             cmd.SetGlobalTexture(ShaderConstants._FullCoCTexture, ShaderConstants._FullCoCTexture);
-            cmd.SetRenderTarget(m_MRT2, ShaderConstants._HalfCoCTexture, 0, CubemapFace.Unknown, -1);
+            cmd.SetRenderTarget(m_MRT2, ShaderConstants._HalfCoCTexture, 0, CubemapFace.Unknown, -1);//???
             DrawFullscreenMesh(cmd, material, 1);
 
             cmd.SetViewProjectionMatrices(camera.worldToCameraMatrix, camera.projectionMatrix);

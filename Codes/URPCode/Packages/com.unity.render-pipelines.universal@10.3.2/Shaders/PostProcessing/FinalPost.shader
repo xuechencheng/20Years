@@ -39,27 +39,24 @@ Shader "Hidden/Universal Render Pipeline/FinalPost"
             float2 uv = coords + offset;
             return SAMPLE_TEXTURE2D_X(_SourceTex, sampler_LinearClamp, uv).xyz;
         }
-
+        //采样_SourceTex，icoords是uv坐标，idx和idy是偏移量
         half3 Load(int2 icoords, int idx, int idy)
         {
             #if SHADER_API_GLES
-            float2 uv = (icoords + int2(idx, idy)) * _SourceSize.zw;
-            return SAMPLE_TEXTURE2D_X(_SourceTex, sampler_LinearClamp, uv).xyz;
+                float2 uv = (icoords + int2(idx, idy)) * _SourceSize.zw;
+                return SAMPLE_TEXTURE2D_X(_SourceTex, sampler_LinearClamp, uv).xyz;
             #else
-            return LOAD_TEXTURE2D_X(_SourceTex, clamp(icoords + int2(idx, idy), 0, _SourceSize.xy - 1.0)).xyz;
+                return LOAD_TEXTURE2D_X(_SourceTex, clamp(icoords + int2(idx, idy), 0, _SourceSize.xy - 1.0)).xyz;
             #endif
         }
 
         half4 Frag(Varyings input) : SV_Target
         {
             UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
-
             float2 uv = UnityStereoTransformScreenSpaceTex(input.uv);
             float2 positionNDC = uv;
             int2   positionSS  = uv * _SourceSize.xy;
-
             half3 color = Load(positionSS, 0, 0).xyz;
-
             #if _FXAA
             {
                 // Edge detection

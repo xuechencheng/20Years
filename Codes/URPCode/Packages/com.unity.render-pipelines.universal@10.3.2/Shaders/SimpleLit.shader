@@ -1,3 +1,4 @@
+// Perfect
 // Shader targeted for low end devices. Single Pass Forward Rendering.
 Shader "Universal Render Pipeline/Simple Lit"
 {

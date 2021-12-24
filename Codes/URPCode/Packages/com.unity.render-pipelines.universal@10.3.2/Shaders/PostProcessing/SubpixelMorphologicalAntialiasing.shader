@@ -17,7 +17,6 @@ Shader "Hidden/Universal Render Pipeline/SubpixelMorphologicalAntialiasing"
     SubShader
     {
         Cull Off ZWrite Off ZTest Always
-
         // Edge detection 
         Pass
         {
@@ -28,13 +27,10 @@ Shader "Hidden/Universal Render Pipeline/SubpixelMorphologicalAntialiasing"
                 Comp Always
                 Pass Replace
             }
-
             HLSLPROGRAM
-
                 #pragma vertex VertEdge
                 #pragma fragment FragEdge
                 #include "SubpixelMorphologicalAntialiasingBridge.hlsl"
-
             ENDHLSL
         }
 
@@ -49,13 +45,10 @@ Shader "Hidden/Universal Render Pipeline/SubpixelMorphologicalAntialiasing"
                 Comp Equal
                 Pass Replace
             }
-
             HLSLPROGRAM
-
                 #pragma vertex VertBlend
                 #pragma fragment FragBlend
                 #include "SubpixelMorphologicalAntialiasingBridge.hlsl"
-
             ENDHLSL
         }
 

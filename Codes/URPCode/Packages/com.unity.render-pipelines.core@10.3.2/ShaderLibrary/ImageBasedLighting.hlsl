@@ -26,7 +26,7 @@ real PerceptualRoughnessToMipmapLevel(real perceptualRoughness, uint mipMapCount
 
     return perceptualRoughness * mipMapCount;
 }
-
+// Perfect 将粗糙度转换成Mipmap Level
 real PerceptualRoughnessToMipmapLevel(real perceptualRoughness)
 {
     return PerceptualRoughnessToMipmapLevel(perceptualRoughness, UNITY_SPECCUBE_LOD_STEPS);

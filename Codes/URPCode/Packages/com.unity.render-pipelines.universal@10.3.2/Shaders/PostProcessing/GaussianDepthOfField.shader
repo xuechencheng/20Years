@@ -64,7 +64,7 @@ Shader "Hidden/Universal Render Pipeline/GaussianDepthOfField"
         };
 
         #endif
-
+        //Perfect saturate((depth - FarStart) / (FarEnd - FarStart))
         half FragCoC(Varyings input) : SV_Target
         {
             UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
@@ -81,14 +81,12 @@ Shader "Hidden/Universal Render Pipeline/GaussianDepthOfField"
             half  coc   : SV_Target0;
             half3 color : SV_Target1;
         };
-
+        //coc是FullCoCTexture的采样值 color是_ColorTexture的采样值乘以coc
         PrefilterOutput FragPrefilter(Varyings input)
         {
             UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
             float2 uv = UnityStereoTransformScreenSpaceTex(input.uv);
-
         #if _HIGH_QUALITY_SAMPLING
-
             // Use a rotated grid to minimize artifacts coming from horizontal and vertical boundaries
             // "High Quality Antialiasing" [Lorach07]
             const int kCount = 5;
@@ -99,53 +97,45 @@ Shader "Hidden/Universal Render Pipeline/GaussianDepthOfField"
                 float2( 0.4,  0.9),
                 float2(-0.4, -0.9)
             };
-
             half3 colorAcc = 0.0;
             half farCoCAcc = 0.0;
-
             UNITY_UNROLL
             for (int i = 0; i < kCount; i++)
             {
                 float2 tapCoord = _SourceSize.zw * kTaps[i] + uv;
                 half3 tapColor = SAMPLE_TEXTURE2D_X(_ColorTexture, sampler_LinearClamp, tapCoord).xyz;
                 half coc = SAMPLE_TEXTURE2D_X(_FullCoCTexture, sampler_LinearClamp, tapCoord).x;
-
                 // Pre-multiply CoC to reduce bleeding of background blur on focused areas
                 colorAcc += tapColor * coc;
                 farCoCAcc += coc;
             }
-
-            half3 color = colorAcc * rcp(kCount);
+            half3 color = colorAcc * rcp(kCount);//rcp 快速近视的倒数
             half farCoC = farCoCAcc * rcp(kCount);
-
         #else
-
             // Bilinear sampling the coc is technically incorrect but we're aiming for speed here
             half farCoC = SAMPLE_TEXTURE2D_X(_FullCoCTexture, sampler_LinearClamp, uv).x;
-
             // Fast bilinear downscale of the source target and pre-multiply the CoC to reduce
             // bleeding of background blur on focused areas
             half3 color = SAMPLE_TEXTURE2D_X(_ColorTexture, sampler_LinearClamp, uv).xyz;
             color *= farCoC;
-
         #endif
-
             PrefilterOutput o;
             o.coc   = farCoC;
             o.color = color;
             return o;
         }
-
+        // ???
         half4 Blur(Varyings input, float2 dir, float premultiply)
         {
             UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
             float2 uv = UnityStereoTransformScreenSpaceTex(input.uv);
 
             // Use the center CoC as radius
-            int2 positionSS = int2(_SourceSize.xy * _DownSampleScaleFactor.xy * uv);
+            int2 positionSS = int2(_SourceSize.xy * _DownSampleScaleFactor.xy * uv); //_DownSampleScaleFactor(1/2, 1/2, 2, 2)
             half samp0CoC = LOAD_TEXTURE2D_X(_HalfCoCTexture, positionSS).x;
 
-            float2 offset = _SourceSize.zw * _DownSampleScaleFactor.zw * dir * samp0CoC * MaxRadius;
+            float2 offset = _SourceSize.zw * _DownSampleScaleFactor.zw * dir * samp0CoC * MaxRadius;//偏移量和coc成正比
+            //_SourceSize : new Vector4(width, height, 1.0f / width, 1.0f / height)
             half4 acc = 0.0;
 
             UNITY_UNROLL

@@ -31,7 +31,7 @@
 #define SHADOWMASK_SAMPLER_NAME samplerunity_ShadowMask
 #define SHADOWMASK_SAMPLE_EXTRA_ARGS
 #endif
-
+// 采样烘焙阴影
 #if defined(SHADOWS_SHADOWMASK) && defined(LIGHTMAP_ON)
     #define SAMPLE_SHADOWMASK(uv) SAMPLE_TEXTURE2D_LIGHTMAP(SHADOWMASK_NAME, SHADOWMASK_SAMPLER_NAME, uv SHADOWMASK_SAMPLE_EXTRA_ARGS);
 #elif !defined (LIGHTMAP_ON)
@@ -174,7 +174,7 @@ half SampleScreenSpaceShadowmap(float4 shadowCoord)
 
     return attenuation;
 }
-
+// Perfect
 real SampleShadowmapFiltered(TEXTURE2D_SHADOW_PARAM(ShadowMap, sampler_ShadowMap), float4 shadowCoord, ShadowSamplingData samplingData)
 {
     real attenuation;
@@ -205,16 +205,14 @@ real SampleShadowmapFiltered(TEXTURE2D_SHADOW_PARAM(ShadowMap, sampler_ShadowMap
 
     return attenuation;
 }
-// Done
+// Perfect
 real SampleShadowmap(TEXTURE2D_SHADOW_PARAM(ShadowMap, sampler_ShadowMap), float4 shadowCoord, ShadowSamplingData samplingData, half4 shadowParams, bool isPerspectiveProjection = true)
 {
     // Compiler will optimize this branch away as long as isPerspectiveProjection is known at compile time
     if (isPerspectiveProjection)
         shadowCoord.xyz /= shadowCoord.w;
-
     real attenuation;
     real shadowStrength = shadowParams.x;
-
     // TODO: We could branch on if this light has soft shadows (shadowParams.y) to save perf on some platforms.
 #ifdef _SHADOWS_SOFT
     attenuation = SampleShadowmapFiltered(TEXTURE2D_SHADOW_ARGS(ShadowMap, sampler_ShadowMap), shadowCoord, samplingData);
@@ -222,14 +220,12 @@ real SampleShadowmap(TEXTURE2D_SHADOW_PARAM(ShadowMap, sampler_ShadowMap), float
     // 1-tap hardware comparison
     attenuation = SAMPLE_TEXTURE2D_SHADOW(ShadowMap, sampler_ShadowMap, shadowCoord.xyz);
 #endif
-
     attenuation = LerpWhiteTo(attenuation, shadowStrength);
-
     // Shadow coords that fall out of the light frustum volume must always return attenuation 1.0
     // TODO: We could use branch here to save some perf on some platforms.
     return BEYOND_SHADOW_FAR(shadowCoord) ? 1.0 : attenuation;
 }
-//Done
+//Prefect 计算级联索引
 half ComputeCascadeIndex(float3 positionWS)
 {
     float3 fromCenter0 = positionWS - _CascadeShadowSplitSpheres0.xyz;
@@ -237,13 +233,11 @@ half ComputeCascadeIndex(float3 positionWS)
     float3 fromCenter2 = positionWS - _CascadeShadowSplitSpheres2.xyz;
     float3 fromCenter3 = positionWS - _CascadeShadowSplitSpheres3.xyz;
     float4 distances2 = float4(dot(fromCenter0, fromCenter0), dot(fromCenter1, fromCenter1), dot(fromCenter2, fromCenter2), dot(fromCenter3, fromCenter3));
-
     half4 weights = half4(distances2 < _CascadeShadowSplitSphereRadii);
-    weights.yzw = saturate(weights.yzw - weights.xyz);//解决两个1的问题
-
+    weights.yzw = saturate(weights.yzw - weights.xyz);//处理一个点同时在两个球上的情况
     return 4 - dot(weights, half4(4, 3, 2, 1));
 }
-// Done
+// Prefect 从世界坐标转换到级联阴影贴图的坐标
 float4 TransformWorldToShadowCoord(float3 positionWS)
 {
 #ifdef _MAIN_LIGHT_SHADOWS_CASCADE
@@ -251,19 +245,16 @@ float4 TransformWorldToShadowCoord(float3 positionWS)
 #else
     half cascadeIndex = 0;
 #endif
-
     float4 shadowCoord = mul(_MainLightWorldToShadow[cascadeIndex], float4(positionWS, 1.0));
-
     return float4(shadowCoord.xyz, cascadeIndex);
 }
 
-// Done
+// Perfect 主光源的ShadowrMap
 half MainLightRealtimeShadow(float4 shadowCoord)
 {
 #if !defined(MAIN_LIGHT_CALCULATE_SHADOWS)
     return 1.0h;
 #endif
-
     ShadowSamplingData shadowSamplingData = GetMainLightShadowSamplingData();
     half4 shadowParams = GetMainLightShadowParams();
     return SampleShadowmap(TEXTURE2D_ARGS(_MainLightShadowmapTexture, sampler_MainLightShadowmapTexture), shadowCoord, shadowSamplingData, shadowParams, false);
@@ -294,16 +285,16 @@ half AdditionalLightRealtimeShadow(int lightIndex, float3 positionWS)
     half4 shadowParams = GetAdditionalLightShadowParams(lightIndex);
     return SampleShadowmap(TEXTURE2D_ARGS(_AdditionalLightsShadowmapTexture, sampler_AdditionalLightsShadowmapTexture), shadowCoord, shadowSamplingData, shadowParams, true);
 }
-
+//阴影过渡
 half GetShadowFade(float3 positionWS)
 {
     float3 camToPixel = positionWS - _WorldSpaceCameraPos;
     float distanceCamToPixel2 = dot(camToPixel, camToPixel);
-
+    // (x: shadowStrength, y: 1.0 if soft shadows, 0.0 otherwise, z: oneOverFadeDist, w: minusStartFade)
     half fade = saturate(distanceCamToPixel2 * _MainLightShadowParams.z + _MainLightShadowParams.w);
     return fade * fade;
 }
-
+//混合实时阴影和烘焙阴影 shadowFade越小，越接近实时阴影 shadowFade为1的时候就是烘焙阴影
 half MixRealtimeAndBakedShadows(half realtimeShadow, half bakedShadow, half shadowFade)
 {
 #if defined(LIGHTMAP_SHADOW_MIXING)
@@ -323,7 +314,7 @@ half BakedShadow(half4 shadowMask, half4 occlusionProbeChannels)
     return bakedShadow;
 }
 
-// To be Done
+//主光源阴影，混合实时阴影和烘焙阴影
 half MainLightShadow(float4 shadowCoord, float3 positionWS, half4 shadowMask, half4 occlusionProbeChannels)
 {
     half realtimeShadow = MainLightRealtimeShadow(shadowCoord);
@@ -333,42 +324,37 @@ half MainLightShadow(float4 shadowCoord, float3 positionWS, half4 shadowMask, ha
 #else
     half bakedShadow = 1.0h;
 #endif
-
 #ifdef MAIN_LIGHT_CALCULATE_SHADOWS
     half shadowFade = GetShadowFade(positionWS);
 #else
     half shadowFade = 1.0h;
 #endif
-
 #if defined(_MAIN_LIGHT_SHADOWS_CASCADE) && defined(CALCULATE_BAKED_SHADOWS)
     // shadowCoord.w represents shadow cascade index
     // in case we are out of shadow cascade we need to set shadow fade to 1.0 for correct blending
     // it is needed when realtime shadows gets cut to early during fade and causes disconnect between baked shadow
-    shadowFade = shadowCoord.w == 4 ? 1.0h : shadowFade;
+    shadowFade = shadowCoord.w == 4 ? 1.0h : shadowFade;//最后一个级联
 #endif
-
     return MixRealtimeAndBakedShadows(realtimeShadow, bakedShadow, shadowFade);
 }
 
 half AdditionalLightShadow(int lightIndex, float3 positionWS, half4 shadowMask, half4 occlusionProbeChannels)
 {
     half realtimeShadow = AdditionalLightRealtimeShadow(lightIndex, positionWS);
-
 #ifdef CALCULATE_BAKED_SHADOWS
     half bakedShadow = BakedShadow(shadowMask, occlusionProbeChannels);
 #else
     half bakedShadow = 1.0h;
 #endif
-
 #ifdef ADDITIONAL_LIGHT_CALCULATE_SHADOWS
     half shadowFade = GetShadowFade(positionWS);
 #else
     half shadowFade = 1.0h;
 #endif
-
     return MixRealtimeAndBakedShadows(realtimeShadow, bakedShadow, shadowFade);
 }
 
+// Prefect 获取阴影坐标
 float4 GetShadowCoord(VertexPositionInputs vertexInput)
 {
     return TransformWorldToShadowCoord(vertexInput.positionWS);

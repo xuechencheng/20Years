@@ -209,7 +209,7 @@ real3 UnpackNormal(real4 packedNormal)
     return UnpackNormalmapRGorAG(packedNormal, 1.0);
 #endif
 }
-
+//Prefect 解压法线贴图
 real3 UnpackNormalScale(real4 packedNormal, real bumpScale)
 {
 #if defined(UNITY_ASTC_NORMALMAP_ENCODING)

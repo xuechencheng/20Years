@@ -17,19 +17,17 @@ struct ParticleParams
     float3 blendUv;
     float2 uv;
 };
-
+//Perfect
 void InitParticleParams(VaryingsParticle input, out ParticleParams output)
 {
     output = (ParticleParams) 0;
     output.uv = input.texcoord;
     output.vertexColor = input.color;
-
     #if defined(_FLIPBOOKBLENDING_ON)
         output.blendUv = input.texcoord2AndBlend;
     #else
         output.blendUv = float3(0,0,0);
     #endif
-
     #if !defined(PARTICLES_EDITOR_META_PASS)
         output.positionWS = input.positionWS;
         output.baseColor = _BaseColor;
@@ -82,6 +80,7 @@ float4 MixParticleColor(float4 baseColor, float4 particleColor, float4 colorAddS
 }
 
 // Soft particles - returns alpha value for fading particles based on the depth to the background pixel
+// 软粒子
 float SoftParticles(float near, float far, float4 projection)
 {
     float fade = 1;
@@ -109,12 +108,13 @@ float SoftParticles(float near, float far, ParticleParams params)
 }
 
 // Camera fade - returns alpha value for fading particles based on camera distance
+// 靠近相机淡化
 half CameraFade(float near, float far, float4 projection)
 {
     float thisZ = LinearEyeDepth(projection.z / projection.w, _ZBufferParams);
     return saturate((thisZ - near) * far);
 }
-
+// Alpha预乘
 half3 AlphaModulate(half3 albedo, half alpha)
 {
 #if defined(_ALPHAMODULATE_ON)
@@ -124,7 +124,7 @@ half3 AlphaModulate(half3 albedo, half alpha)
 #endif
     return albedo;
 }
-
+//扰动效果
 half3 Distortion(float4 baseColor, float3 normal, half strength, half blend, float4 projection)
 {
     float2 screenUV = (projection.xy / projection.w) + normal.xy * strength * baseColor.a;
@@ -134,6 +134,7 @@ half3 Distortion(float4 baseColor, float3 normal, half strength, half blend, flo
 }
 
 // Sample a texture and do blending for texture sheet animation if needed
+//Perfect 混合纹理
 half4 BlendTexture(TEXTURE2D_PARAM(_Texture, sampler_Texture), float2 uv, float3 blendUv)
 {
     half4 color = SAMPLE_TEXTURE2D(_Texture, sampler_Texture, uv);
@@ -145,6 +146,7 @@ half4 BlendTexture(TEXTURE2D_PARAM(_Texture, sampler_Texture), float2 uv, float3
 }
 
 // Sample a normal map in tangent space
+// Perfect 采样法线贴图
 half3 SampleNormalTS(float2 uv, float3 blendUv, TEXTURE2D_PARAM(bumpMap, sampler_bumpMap), half scale = 1.0h)
 {
 #if defined(_NORMALMAP)
@@ -158,7 +160,7 @@ half3 SampleNormalTS(float2 uv, float3 blendUv, TEXTURE2D_PARAM(bumpMap, sampler
     return half3(0.0h, 0.0h, 1.0h);
 #endif
 }
-
+// 粒子顶点色
 half4 GetParticleColor(half4 color)
 {
 #if defined(UNITY_PARTICLE_INSTANCING_ENABLED)
