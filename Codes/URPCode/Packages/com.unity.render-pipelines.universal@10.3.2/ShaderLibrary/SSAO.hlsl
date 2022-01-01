@@ -123,7 +123,7 @@ float RawToLinearDepth(float rawDepth)
         return LinearEyeDepth(rawDepth, _ZBufferParams);
     #endif
 }
-
+// ???
 float SampleAndGetLinearDepth(float2 uv)
 {
     float rawDepth = SampleSceneDepth(uv.xy).r;
@@ -208,7 +208,7 @@ float3 ReconstructNormal(float2 uv, float depth, float3 vpos, float2 p11_22, flo
         return normalize(cross(P2 - vpos, P1 - vpos));
     #endif
 }
-
+//???
 void SampleDepthNormalView(float2 uv, float2 p11_22, float2 p13_31, out float depth, out float3 normal, out float3 vpos)
 {
     depth  = SampleAndGetLinearDepth(uv);
@@ -238,11 +238,9 @@ float4 SSAO(Varyings input) : SV_Target
 {
     UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
     float2 uv = input.uv;
-
     // Parameters used in coordinate conversion
     float2 p11_22, p13_31;
     float3x3 camProj = GetCoordinateConversionParameters(p11_22, p13_31);
-
     // Get the depth, normal and view position for this fragment
     float depth_o;
     float3 norm_o;

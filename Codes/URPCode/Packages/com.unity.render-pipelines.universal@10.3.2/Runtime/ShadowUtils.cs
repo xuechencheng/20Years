@@ -36,14 +36,14 @@ namespace UnityEngine.Rendering.Universal
         }
 
         /// <summary>
-        /// 计算阴影变换，包围球等数据
+        /// 计算阴影变换，包围球等数据 ???
         /// </summary>
         public static bool ExtractDirectionalLightMatrix(ref CullingResults cullResults, ref ShadowData shadowData, int shadowLightIndex, int cascadeIndex, int shadowmapWidth, int shadowmapHeight, int shadowResolution, float shadowNearPlane, out Vector4 cascadeSplitDistance, out ShadowSliceData shadowSliceData, out Matrix4x4 viewMatrix, out Matrix4x4 projMatrix)
         {
             ShadowSplitData splitData;
             bool success = cullResults.ComputeDirectionalShadowMatricesAndCullingPrimitives(shadowLightIndex, cascadeIndex, shadowData.mainLightShadowCascadesCount, 
                 shadowData.mainLightShadowCascadesSplit, shadowResolution, shadowNearPlane, out viewMatrix, out projMatrix, out splitData);
-            cascadeSplitDistance = splitData.cullingSphere;
+            cascadeSplitDistance = splitData.cullingSphere;//（x,y,z,r半径）
             shadowSliceData.offsetX = (cascadeIndex % 2) * shadowResolution;
             shadowSliceData.offsetY = (cascadeIndex / 2) * shadowResolution;
             shadowSliceData.resolution = shadowResolution;
@@ -87,7 +87,7 @@ namespace UnityEngine.Rendering.Universal
                 shadowSliceData.projectionMatrix, shadowSliceData.viewMatrix);
         }
         /// <summary>
-        /// 计算分辨率
+        /// 计算每块的分辨率
         /// </summary>
         public static int GetMaxTileResolutionInAtlas(int atlasWidth, int atlasHeight, int tileCount)
         {
@@ -115,7 +115,7 @@ namespace UnityEngine.Rendering.Universal
             // Apply shadow slice scale and offset
             shadowSliceData.shadowTransform = sliceTransform * shadowSliceData.shadowTransform;
         }
-        // ???
+        // 计算深度偏移和法线偏移 ???
         public static Vector4 GetShadowBias(ref VisibleLight shadowLight, int shadowLightIndex, ref ShadowData shadowData, Matrix4x4 lightProjectionMatrix, float shadowResolution)
         {
             if (shadowLightIndex < 0 || shadowLightIndex >= shadowData.bias.Count)
@@ -165,7 +165,7 @@ namespace UnityEngine.Rendering.Universal
 
             return new Vector4(depthBias, normalBias, 0.0f, 0.0f);
         }
-
+        // 设置_ShadowBias和_LightDirection
         public static void SetupShadowCasterConstantBuffer(CommandBuffer cmd, ref VisibleLight shadowLight, Vector4 shadowBias)
         {
             Vector3 lightDirection = -shadowLight.localToWorldMatrix.GetColumn(2);
@@ -183,7 +183,7 @@ namespace UnityEngine.Rendering.Universal
             return shadowTexture;
         }
         /// <summary>
-        /// 阴影变换矩阵
+        /// 阴影变换矩阵 ???
         /// </summary>
         static Matrix4x4 GetShadowTransform(Matrix4x4 proj, Matrix4x4 view)
         {
@@ -199,7 +199,7 @@ namespace UnityEngine.Rendering.Universal
 
             Matrix4x4 worldToShadow = proj * view;
 
-            var textureScaleAndBias = Matrix4x4.identity;//???
+            var textureScaleAndBias = Matrix4x4.identity;
             textureScaleAndBias.m00 = 0.5f;
             textureScaleAndBias.m11 = 0.5f;
             textureScaleAndBias.m22 = 0.5f;

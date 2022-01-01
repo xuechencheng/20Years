@@ -529,7 +529,7 @@ namespace UnityEngine.Rendering.Universal
             #endregion
         }
         /// <summary>
-        /// 使用Volumes进行属性插值
+        /// 使用Volumes进行属性插值 Pause
         /// </summary>
         static void UpdateVolumeFramework(Camera camera, UniversalAdditionalCameraData additionalCameraData)
         {

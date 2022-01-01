@@ -145,7 +145,7 @@ half4 LitPassFragment(Varyings input) : SV_Target
     InitializeStandardLitSurfaceData(input.uv, surfaceData);
     InputData inputData;
     InitializeInputData(input, surfaceData.normalTS, inputData);
-    half4 color = UniversalFragmentPBR(inputData, surfaceData);// Pause
+    half4 color = UniversalFragmentPBR(inputData, surfaceData);
     color.rgb = MixFog(color.rgb, inputData.fogCoord);
     color.a = OutputAlpha(color.a, _Surface);
     return color;

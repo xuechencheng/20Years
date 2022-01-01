@@ -526,6 +526,7 @@ real3 ApplyLut2D(TEXTURE2D_PARAM(tex, samplerTex), float3 uvw, float3 scaleOffse
 
 // Returns the default value for a given position on a 2D strip-format color lookup table
 // params = (lut_height, 0.5 / lut_width, 0.5 / lut_height, lut_height / lut_height - 1)
+// ???
 real3 GetLutStripValue(float2 uv, float4 params)
 {
     uv -= params.yz;

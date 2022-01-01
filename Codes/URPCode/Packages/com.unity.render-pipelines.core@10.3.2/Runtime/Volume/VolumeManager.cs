@@ -20,9 +20,7 @@ namespace UnityEngine.Rendering
         readonly Dictionary<int, List<Volume>> m_SortedVolumes;
         readonly List<Volume> m_Volumes;
         readonly Dictionary<int, bool> m_SortNeeded;
-        /// <summary>
-        /// 所有继承于VolumeComponent的实例
-        /// </summary>
+        // 所有继承于VolumeComponent的实例
         readonly List<VolumeComponent> m_ComponentsDefaultState;
         readonly List<Collider> m_TempColliders;
         VolumeManager()

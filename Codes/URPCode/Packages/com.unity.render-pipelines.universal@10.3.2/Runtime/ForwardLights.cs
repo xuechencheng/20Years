@@ -36,6 +36,7 @@ namespace UnityEngine.Rendering.Universal.Internal
         Vector4[] m_AdditionalLightOcclusionProbeChannels;
 
         bool m_UseStructuredBuffer;
+        // Done
         public ForwardLights()
         {
             m_UseStructuredBuffer = RenderingUtils.useStructuredBuffer;// Always false

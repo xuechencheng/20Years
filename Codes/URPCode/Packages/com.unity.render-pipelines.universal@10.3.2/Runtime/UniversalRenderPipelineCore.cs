@@ -363,7 +363,7 @@ namespace UnityEngine.Rendering.Universal
         static Vector4 k_DefaultLightsProbeChannel = new Vector4(0.0f, 0.0f, 0.0f, 0.0f);
 
         static List<Vector4> m_ShadowBiasData = new List<Vector4>();
-
+        // Done
         public static bool IsGameCamera(Camera camera)
         {
             if (camera == null)
@@ -420,7 +420,6 @@ namespace UnityEngine.Rendering.Universal
         /// <summary>
         /// …„œÒª˙∞¥depth≈≈–Ú
         /// </summary>
-        /// <param name="cameras"></param>
         void SortCameras(Camera[] cameras)
         {
             if (cameras.Length > 1)

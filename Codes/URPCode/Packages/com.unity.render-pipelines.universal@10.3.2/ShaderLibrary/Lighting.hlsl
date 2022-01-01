@@ -269,7 +269,7 @@ half ReflectivitySpecular(half3 specular)
 #endif
 }
 
-// Perfect
+// Perfect 0.96 * (1 - metallic)
 half OneMinusReflectivityMetallic(half metallic)
 {
     // We'll need oneMinusReflectivity, so
@@ -285,7 +285,7 @@ inline void InitializeBRDFDataDirect(half3 diffuse, half3 specular, half reflect
 {
     outBRDFData.diffuse = diffuse;
     outBRDFData.specular = specular;
-    outBRDFData.reflectivity = reflectivity;
+    outBRDFData.reflectivity = reflectivity; // ≈ metallic
 
     outBRDFData.perceptualRoughness = PerceptualSmoothnessToPerceptualRoughness(smoothness);
     outBRDFData.roughness           = max(PerceptualRoughnessToRoughness(outBRDFData.perceptualRoughness), HALF_MIN_SQRT);

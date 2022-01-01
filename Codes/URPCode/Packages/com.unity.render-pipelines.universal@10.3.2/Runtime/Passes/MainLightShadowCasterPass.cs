@@ -25,9 +25,11 @@ namespace UnityEngine.Rendering.Universal.Internal
 
         const int k_MaxCascades = 4;
         const int k_ShadowmapBufferBits = 16;
+        // 摄像机最大阴影距离的平方
         float m_MaxShadowDistance;
         int m_ShadowmapWidth;
         int m_ShadowmapHeight;
+        // 级联阴影数量
         int m_ShadowCasterCascadesCount;
         bool m_SupportsBoxFilterForShadows;
 
@@ -40,7 +42,10 @@ namespace UnityEngine.Rendering.Universal.Internal
 
         ProfilingSampler m_ProfilingSetupSampler = new ProfilingSampler("Setup Main Shadowmap");
 
-        
+        /// <summary>
+        /// 构造函数初始化变量
+        /// </summary>
+        /// <param name="evt"></param>
         public MainLightShadowCasterPass(RenderPassEvent evt)
         {
             base.profilingSampler = new ProfilingSampler(nameof(MainLightShadowCasterPass));
@@ -66,7 +71,9 @@ namespace UnityEngine.Rendering.Universal.Internal
             m_MainLightShadowmap.Init("_MainLightShadowmapTexture");
             m_SupportsBoxFilterForShadows = Application.isMobilePlatform || SystemInfo.graphicsDeviceType == GraphicsDeviceType.Switch;
         }
-
+        /// <summary>
+        /// Setup Done
+        /// </summary>
         public bool Setup(ref RenderingData renderingData)
         {
             using var profScope = new ProfilingScope(null, m_ProfilingSetupSampler);
@@ -85,7 +92,7 @@ namespace UnityEngine.Rendering.Universal.Internal
                 Debug.LogWarning("Only directional lights are supported as main light.");
             }
             Bounds bounds;
-            if (!renderingData.cullResults.GetShadowCasterBounds(shadowLightIndex, out bounds))///???
+            if (!renderingData.cullResults.GetShadowCasterBounds(shadowLightIndex, out bounds))
                 return false;
             m_ShadowCasterCascadesCount = renderingData.shadowData.mainLightShadowCascadesCount;
             int shadowResolution = ShadowUtils.GetMaxTileResolutionInAtlas(renderingData.shadowData.mainLightShadowmapWidth,
@@ -119,7 +126,7 @@ namespace UnityEngine.Rendering.Universal.Internal
             RenderMainLightCascadeShadowmap(ref context, ref renderingData.cullResults, ref renderingData.lightData, ref renderingData.shadowData);
         }
 
-        /// <inheritdoc/>
+        // Done
         public override void OnCameraCleanup(CommandBuffer cmd)
         {
             if (cmd == null)
@@ -131,7 +138,7 @@ namespace UnityEngine.Rendering.Universal.Internal
                 m_MainLightShadowmapTexture = null;
             }
         }
-
+        // Done
         void Clear()
         {
             m_MainLightShadowmapTexture = null;
@@ -145,7 +152,9 @@ namespace UnityEngine.Rendering.Universal.Internal
             for (int i = 0; i < m_CascadeSlices.Length; ++i)
                 m_CascadeSlices[i].Clear();
         }
-
+        /// <summary>
+        /// 绘制阴影贴图
+        /// </summary>
         void RenderMainLightCascadeShadowmap(ref ScriptableRenderContext context, ref CullingResults cullResults, ref LightData lightData, ref ShadowData shadowData)
         {
             int shadowLightIndex = lightData.mainLightIndex;
@@ -175,7 +184,9 @@ namespace UnityEngine.Rendering.Universal.Internal
             context.ExecuteCommandBuffer(cmd);
             CommandBufferPool.Release(cmd);
         }
-
+        /// <summary>
+        /// 设置GPU变量
+        /// </summary>
         void SetupMainLightShadowReceiverConstants(CommandBuffer cmd, VisibleLight shadowLight, bool supportsSoftShadows)
         {
             Light light = shadowLight.light;
@@ -201,22 +212,26 @@ namespace UnityEngine.Rendering.Universal.Internal
             float oneOverFadeDist = 1/(m_MaxShadowDistance - startFade);
             float minusStartFade = -startFade * oneOverFadeDist;
 
-
+            // _MainLightShadowmapTexture 阴影贴图
             cmd.SetGlobalTexture(m_MainLightShadowmap.id, m_MainLightShadowmapTexture);
+            // _MainLightWorldToShadow 变换矩阵
             cmd.SetGlobalMatrixArray(MainLightShadowConstantBuffer._WorldToShadow, m_MainLightShadowMatrices);
+            // _MainLightShadowParams 阴影参数 (shadowStrength, isSoftShadows, 10 / m_MaxShadowDistance, -9)
             cmd.SetGlobalVector(MainLightShadowConstantBuffer._ShadowParams, new Vector4(light.shadowStrength, softShadowsProp, oneOverFadeDist, minusStartFade));
 
             if (m_ShadowCasterCascadesCount > 1)
             {
-                cmd.SetGlobalVector(MainLightShadowConstantBuffer._CascadeShadowSplitSpheres0, m_CascadeSplitDistances[0]);
+                // _CascadeShadowSplitSpheres0 包围球的球心和半径
+                cmd.SetGlobalVector(MainLightShadowConstantBuffer._CascadeShadowSplitSpheres0, m_CascadeSplitDistances[0]);//(x,y,z,r半径)
                 cmd.SetGlobalVector(MainLightShadowConstantBuffer._CascadeShadowSplitSpheres1, m_CascadeSplitDistances[1]);
                 cmd.SetGlobalVector(MainLightShadowConstantBuffer._CascadeShadowSplitSpheres2, m_CascadeSplitDistances[2]);
                 cmd.SetGlobalVector(MainLightShadowConstantBuffer._CascadeShadowSplitSpheres3, m_CascadeSplitDistances[3]);
+                // _CascadeShadowSplitSphereRadii 包围球的半径平方
                 cmd.SetGlobalVector(MainLightShadowConstantBuffer._CascadeShadowSplitSphereRadii, new Vector4(
                     m_CascadeSplitDistances[0].w * m_CascadeSplitDistances[0].w,
                     m_CascadeSplitDistances[1].w * m_CascadeSplitDistances[1].w,
                     m_CascadeSplitDistances[2].w * m_CascadeSplitDistances[2].w,
-                    m_CascadeSplitDistances[3].w * m_CascadeSplitDistances[3].w));
+                    m_CascadeSplitDistances[3].w * m_CascadeSplitDistances[3].w));//(半径的平方)
             }
 
             // Inside shader soft shadows are controlled through global keyword.
@@ -227,6 +242,7 @@ namespace UnityEngine.Rendering.Universal.Internal
             {
                 if (m_SupportsBoxFilterForShadows)
                 {
+                    // _MainLightShadowOffset0 ( 0.5 / m_ShadowmapWidth, 0.5 / m_ShadowmapWidth, 0, 0)
                     cmd.SetGlobalVector(MainLightShadowConstantBuffer._ShadowOffset0,
                         new Vector4(-invHalfShadowAtlasWidth, -invHalfShadowAtlasHeight, 0.0f, 0.0f));
                     cmd.SetGlobalVector(MainLightShadowConstantBuffer._ShadowOffset1,
@@ -236,8 +252,7 @@ namespace UnityEngine.Rendering.Universal.Internal
                     cmd.SetGlobalVector(MainLightShadowConstantBuffer._ShadowOffset3,
                         new Vector4(invHalfShadowAtlasWidth, invHalfShadowAtlasHeight, 0.0f, 0.0f));
                 }
-                // Currently only used when !SHADER_API_MOBILE but risky to not set them as it's generic
-                // enough so custom shaders might use it.
+                // _MainLightShadowmapSize (1 / m_ShadowmapWidth, 1.0f / m_ShadowmapHeight, m_ShadowmapWidth, m_ShadowmapHeight)
                 cmd.SetGlobalVector(MainLightShadowConstantBuffer._ShadowmapSize, new Vector4(invShadowAtlasWidth,
                     invShadowAtlasHeight,m_ShadowmapWidth, m_ShadowmapHeight));
             }

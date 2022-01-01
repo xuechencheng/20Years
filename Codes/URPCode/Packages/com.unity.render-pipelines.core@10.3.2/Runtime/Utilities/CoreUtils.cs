@@ -791,12 +791,7 @@ namespace UnityEngine.Rendering
             return mat;
         }
 
-        /// <summary>
-        /// Creates a Material with the provided shader.
-        /// hideFlags will be set to HideFlags.HideAndDontSave.
-        /// </summary>
-        /// <param name="shader">Shader used for the material.</param>
-        /// <returns>A new Material instance using the provided shader.</returns>
+        // Done
         public static Material CreateEngineMaterial(Shader shader)
         {
             if (shader == null)
@@ -838,11 +833,8 @@ namespace UnityEngine.Rendering
         }
 
         /// <summary>
-        /// Set a global keyword using a CommandBuffer
+        /// …Ë÷√keyword
         /// </summary>
-        /// <param name="cmd">CommandBuffer on which to set the global keyword.</param>
-        /// <param name="keyword">Keyword to be set.</param>
-        /// <param name="state">Value of the keyword to be set.</param>
         public static void SetKeyword(CommandBuffer cmd, string keyword, bool state)
         {
             if (state)

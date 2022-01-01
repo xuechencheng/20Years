@@ -1858,7 +1858,7 @@ namespace UnityEngine.Rendering.Universal.Internal
 
     struct BitArray : System.IDisposable
     {
-        NativeArray<uint> m_Mem; // ulong not supported in il2cpp???
+        NativeArray<uint> m_Mem; // ulong not supported in il2cpp
         int m_BitCount;
         int m_IntCount;
 

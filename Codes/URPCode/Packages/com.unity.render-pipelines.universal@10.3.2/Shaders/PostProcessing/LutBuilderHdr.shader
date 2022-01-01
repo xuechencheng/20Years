@@ -44,6 +44,7 @@ Shader "Hidden/Universal Render Pipeline/LutBuilderHdr"
         }
 
         // Note: when the ACES tonemapper is selected the grading steps will be done using ACES spaces
+        // 颜色分级
         float3 ColorGrade(float3 colorLutSpace)
         {
             // Switch back to linear
@@ -52,6 +53,7 @@ Shader "Hidden/Universal Render Pipeline/LutBuilderHdr"
             float3 colorLMS = LinearToLMS(colorLinear);
             colorLMS *= _ColorBalance.xyz;
             colorLinear = LMSToLinear(colorLMS);
+
             // Do contrast in log after white balance 对比度
             #if _TONEMAP_ACES
                 float3 colorLog = ACES_to_ACEScc(unity_to_ACES(colorLinear));
@@ -168,7 +170,7 @@ Shader "Hidden/Universal Render Pipeline/LutBuilderHdr"
 
             return colorLinear;
         }
-
+        // 色调映射和颜色分级
         float4 Frag(Varyings input) : SV_Target
         {
             // Lut space
@@ -180,7 +182,6 @@ Shader "Hidden/Universal Render Pipeline/LutBuilderHdr"
             // Color grade & tonemap
             float3 gradedColor = ColorGrade(colorLutSpace);
             gradedColor = Tonemap(gradedColor);
-
             return float4(gradedColor, 1.0);
         }
 

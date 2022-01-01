@@ -346,9 +346,7 @@ namespace UnityEngine.Rendering.Universal
             set => m_VolumeTrigger = value;
         }
 
-        /// <summary>
-        /// Returns true if this camera should render post-processing.
-        /// </summary>
+        // Done
         public bool renderPostProcessing
         {
             get => m_RenderPostProcessing;

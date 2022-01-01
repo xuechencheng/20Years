@@ -147,7 +147,7 @@ namespace UnityEngine.Rendering
 
         // First Done
         static bool IsNull(System.Object container, FieldInfo info) => IsNull(info.GetValue(container));
-        // First Done
+        // Done
         static bool IsNull(System.Object field) => field == null || field.Equals(null);
         /// <summary>
         /// Load Asset

@@ -9,6 +9,9 @@ namespace UnityEngine.Rendering.Universal.Internal
         readonly GraphicsFormat m_HdrLutFormat;
         readonly GraphicsFormat m_LdrLutFormat;
         RenderTargetHandle m_InternalLut;
+        /// <summary>
+        /// 构造函数，初始化
+        /// </summary>
         public ColorGradingLutPass(RenderPassEvent evt, PostProcessData data)
         {
             base.profilingSampler = new ProfilingSampler(nameof(ColorGradingLutPass));
@@ -34,11 +37,12 @@ namespace UnityEngine.Rendering.Universal.Internal
                 m_HdrLutFormat = GraphicsFormat.R8G8B8A8_UNorm;
             m_LdrLutFormat = GraphicsFormat.R8G8B8A8_UNorm;
         }
-
+        // Done
         public void Setup(in RenderTargetHandle internalLut)
         {
             m_InternalLut = internalLut;
         }
+        // Done
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {
             var cmd = CommandBufferPool.Get();
@@ -79,6 +83,7 @@ namespace UnityEngine.Rendering.Universal.Internal
                 var (splitShadows, splitHighlights) = ColorUtils.PrepareSplitToning( splitToning.shadows.value, splitToning.highlights.value, splitToning.balance.value);
                 var lutParameters = new Vector4(lutHeight, 0.5f / lutWidth, 0.5f / lutHeight, lutHeight / (lutHeight - 1f));
                 // Fill in constants
+                // _Lut_Params (lutHeight, 0.5f / lutWidth, 0.5f / lutHeight, lutHeight / (lutHeight - 1f))
                 material.SetVector(ShaderConstants._Lut_Params, lutParameters);
                 material.SetVector(ShaderConstants._ColorBalance, lmsColorBalance);
                 material.SetVector(ShaderConstants._ColorFilter, colorAdjustments.colorFilter.value.linear);
@@ -124,12 +129,13 @@ namespace UnityEngine.Rendering.Universal.Internal
             CommandBufferPool.Release(cmd);
         }
 
-        /// <inheritdoc/>
+        // Done
         public override void OnFinishCameraStackRendering(CommandBuffer cmd)
         {
             cmd.ReleaseTemporaryRT(m_InternalLut.id);
         }
 
+        // Done
         public void Cleanup()
         {
             CoreUtils.Destroy(m_LutBuilderLdr);

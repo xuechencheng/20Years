@@ -16,6 +16,9 @@ namespace UnityEngine.Rendering.Universal.Internal
         ProfilingSampler m_ProfilingSampler;
         bool m_IsOpaque;
         static readonly int s_DrawObjectPassDataPropID = Shader.PropertyToID("_DrawObjectPassData");
+        /// <summary>
+        /// 构造函数
+        /// </summary>
         public DrawObjectsPass(string profilerTag, ShaderTagId[] shaderTagIds, bool opaque, RenderPassEvent evt, RenderQueueRange renderQueueRange, LayerMask layerMask, StencilState stencilState, int stencilReference)
         {
             base.profilingSampler = new ProfilingSampler(nameof(DrawObjectsPass));
@@ -46,7 +49,9 @@ namespace UnityEngine.Rendering.Universal.Internal
             m_ProfilingSampler = ProfilingSampler.Get(profileId);
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// 绘制
+        /// </summary>
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {
             CommandBuffer cmd = CommandBufferPool.Get();
@@ -60,7 +65,7 @@ namespace UnityEngine.Rendering.Universal.Internal
                 // scaleBias.w = unused
                 float flipSign = (renderingData.cameraData.IsCameraProjectionMatrixFlipped()) ? -1.0f : 1.0f;
                 Vector4 scaleBias = (flipSign < 0.0f) ? new Vector4(flipSign, 1.0f, -1.0f, 1.0f) : new Vector4(flipSign, 0.0f, 1.0f, 1.0f);
-                cmd.SetGlobalVector(ShaderPropertyId.scaleBiasRt, scaleBias);
+                cmd.SetGlobalVector(ShaderPropertyId.scaleBiasRt, scaleBias);//_ScaleBiasRt
                 context.ExecuteCommandBuffer(cmd);
                 cmd.Clear();
                 Camera camera = renderingData.cameraData.camera;

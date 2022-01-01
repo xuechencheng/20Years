@@ -83,11 +83,7 @@ namespace UnityEngine.Rendering.Universal
             }
         }
 
-        /// <summary>
-        /// Destroy(m_Material)
-        /// </summary>
-        /// <param name="disposing"></param>
-        /// First Done
+        /// Done
         protected override void Dispose(bool disposing)
         {
             CoreUtils.Destroy(m_Material);
@@ -99,7 +95,6 @@ namespace UnityEngine.Rendering.Universal
             {
                 return true;
             }
-
             if (m_Shader == null)
             {
                 m_Shader = Shader.Find(k_ShaderName);
@@ -166,13 +161,10 @@ namespace UnityEngine.Rendering.Universal
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
-                return material != null
-                       &&  m_CurrentSettings.Intensity > 0.0f
-                       &&  m_CurrentSettings.Radius > 0.0f
-                       &&  m_CurrentSettings.SampleCount > 0;
+                return material != null &&  m_CurrentSettings.Intensity > 0.0f &&  m_CurrentSettings.Radius > 0.0f &&  m_CurrentSettings.SampleCount > 0;
             }
 
-            /// <inheritdoc/>
+            // Done
             public override void OnCameraSetup(CommandBuffer cmd, ref RenderingData renderingData)
             {
                 RenderTextureDescriptor cameraTargetDescriptor = renderingData.cameraData.cameraTargetDescriptor;
@@ -185,11 +177,10 @@ namespace UnityEngine.Rendering.Universal
                     1.0f / downsampleDivider,      // Downsampling
                     m_CurrentSettings.SampleCount  // Sample count
                 );
+                // _SSAOParams (Intensity, Radius, Downsampling, Sample count)
                 material.SetVector(s_SSAOParamsID, ssaoParams);
-
-                // Update keywords
+                // Update keywords _ORTHOGRAPHIC设置是否是正交相机
                 CoreUtils.SetKeyword(material, k_OrthographicCameraKeyword, renderingData.cameraData.camera.orthographic);
-
                 if (m_CurrentSettings.Source == ScreenSpaceAmbientOcclusionSettings.DepthSource.Depth)
                 {
                     switch (m_CurrentSettings.NormalSamples)
@@ -269,36 +260,28 @@ namespace UnityEngine.Rendering.Universal
                     RenderAndSetBaseMap(cmd, m_SSAOTexture1Target, m_SSAOTexture2Target, ShaderPasses.BlurHorizontal);
                     RenderAndSetBaseMap(cmd, m_SSAOTexture2Target, m_SSAOTexture3Target, ShaderPasses.BlurVertical);
                     RenderAndSetBaseMap(cmd, m_SSAOTexture3Target, m_SSAOTexture2Target, ShaderPasses.BlurFinal);
-
                     // Set the global SSAO texture and AO Params
                     cmd.SetGlobalTexture(k_SSAOTextureName, m_SSAOTexture2Target);
                     cmd.SetGlobalVector(k_SSAOAmbientOcclusionParamName, new Vector4(0f, 0f, 0f, m_CurrentSettings.DirectLightingStrength));
                 }
-
                 context.ExecuteCommandBuffer(cmd);
                 CommandBufferPool.Release(cmd);
             }
-
+            // Render
             private void Render(CommandBuffer cmd, RenderTargetIdentifier target, ShaderPasses pass)
             {
-                cmd.SetRenderTarget(
-                    target,
-                    RenderBufferLoadAction.DontCare,
-                    RenderBufferStoreAction.Store,
-                    target,
-                    RenderBufferLoadAction.DontCare,
-                    RenderBufferStoreAction.DontCare
-                );
+                cmd.SetRenderTarget(target, RenderBufferLoadAction.DontCare,RenderBufferStoreAction.Store, target, 
+                    RenderBufferLoadAction.DontCare, RenderBufferStoreAction.DontCare);
                 cmd.DrawMesh(RenderingUtils.fullscreenMesh, Matrix4x4.identity, material, 0, (int) pass);
             }
-
+            // Done
             private void RenderAndSetBaseMap(CommandBuffer cmd, RenderTargetIdentifier baseMap, RenderTargetIdentifier target, ShaderPasses pass)
             {
                 cmd.SetGlobalTexture(s_BaseMapID, baseMap);
                 Render(cmd, target, pass);
             }
 
-            /// <inheritdoc/>
+            // Done
             public override void OnCameraCleanup(CommandBuffer cmd)
             {
                 if (cmd == null)

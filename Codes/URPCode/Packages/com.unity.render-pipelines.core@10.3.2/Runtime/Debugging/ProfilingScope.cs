@@ -15,6 +15,7 @@ using UnityEngine.Profiling;
 
 namespace UnityEngine.Rendering
 {
+    // Done
     class TProfilingSampler<TEnum> : ProfilingSampler where TEnum : Enum
     {
 #if USE_UNSAFE
@@ -44,13 +45,15 @@ namespace UnityEngine.Rendering
 #endif
             }
         }
+        // Done
         public TProfilingSampler(string name): base(name)
         {
         }
     }
-
+    // Done
     public class ProfilingSampler
     {
+        // Done
         public static ProfilingSampler Get<TEnum>(TEnum marker) where TEnum : Enum
         {
 #if USE_UNSAFE
@@ -120,6 +123,7 @@ namespace UnityEngine.Rendering
         Recorder m_Recorder;
         Recorder m_InlineRecorder;
 #endif
+        // Done
         public bool enableRecording
         {
             set
@@ -181,9 +185,7 @@ namespace UnityEngine.Rendering
     }
 
 #if DEVELOPMENT_BUILD || UNITY_EDITOR
-    /// <summary>
-    /// Prefect
-    /// </summary>
+    // Done
     public struct ProfilingScope : IDisposable
     {
         CommandBuffer       m_Cmd;

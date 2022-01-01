@@ -21,7 +21,7 @@ namespace UnityEngine.Rendering.Universal.Internal
             renderPassEvent = evt;
         }
         /// <summary>
-        /// Setup
+        /// Setup Done
         /// </summary>
         public void Setup(RenderTextureDescriptor baseDescriptor, RenderTargetHandle depthHandle, RenderTargetHandle normalHandle)
         {
@@ -37,6 +37,9 @@ namespace UnityEngine.Rendering.Universal.Internal
             baseDescriptor.msaaSamples = 1;
             normalDescriptor = baseDescriptor;
         }
+        /// <summary>
+        /// OnCameraSetup Done
+        /// </summary>
         public override void OnCameraSetup(CommandBuffer cmd, ref RenderingData renderingData)
         {
             cmd.GetTemporaryRT(normalHandle.id, normalDescriptor, FilterMode.Point);
@@ -45,6 +48,9 @@ namespace UnityEngine.Rendering.Universal.Internal
                 new RenderTargetIdentifier(depthHandle.Identifier(), 0, CubemapFace.Unknown, -1));
             ConfigureClear(ClearFlag.All, Color.black);
         }
+        /// <summary>
+        /// Execute
+        /// </summary>
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {
             CommandBuffer cmd = CommandBufferPool.Get();
@@ -62,6 +68,9 @@ namespace UnityEngine.Rendering.Universal.Internal
             context.ExecuteCommandBuffer(cmd);
             CommandBufferPool.Release(cmd);
         }
+        /// <summary>
+        /// OnCameraCleanup Done
+        /// </summary>
         public override void OnCameraCleanup(CommandBuffer cmd)
         {
             if (cmd == null)

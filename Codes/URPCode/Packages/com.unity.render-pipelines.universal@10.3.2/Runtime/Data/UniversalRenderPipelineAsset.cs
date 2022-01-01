@@ -311,7 +311,7 @@ namespace UnityEngine.Rendering.Universal
             for (int i = 0; i < m_Renderers.Length; i++)
                 DestroyRenderer(ref m_Renderers[i]);
         }
-
+        // Done
         void DestroyRenderer(ref ScriptableRenderer renderer)
         {
             if (renderer != null)
