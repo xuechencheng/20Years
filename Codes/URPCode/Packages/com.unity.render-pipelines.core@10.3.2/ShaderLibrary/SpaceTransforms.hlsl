@@ -4,7 +4,7 @@
 // Caution: For HDRP, adding a function in this file requires adding the appropriate #define in PickingSpaceTransforms.hlsl
 
 // Return the PreTranslated ObjectToWorld Matrix (i.e matrix with _WorldSpaceCameraPos apply to it if we use camera relative rendering)
-// 阅
+// 1st
 float4x4 GetObjectToWorldMatrix()
 {
     return UNITY_MATRIX_M;
@@ -14,14 +14,14 @@ float4x4 GetWorldToObjectMatrix()
 {
     return UNITY_MATRIX_I_M;
 }
-// 阅
+// 1st
 float4x4 GetWorldToViewMatrix()
 {
     return UNITY_MATRIX_V;
 }
 
 // Transform to homogenous clip space 阅
-// 阅
+// 1st
 float4x4 GetWorldToHClipMatrix()
 {
     return UNITY_MATRIX_VP;
@@ -59,13 +59,13 @@ real GetOddNegativeScale()
     // we can revert back to the former implementation.
     return unity_WorldTransformParams.w >= 0.0 ? 1.0 : -1.0;
 }
-// 阅
+// 1st
 float3 TransformObjectToWorld(float3 positionOS)
 {
     #if defined(SHADER_STAGE_RAY_TRACING)
-    return mul(ObjectToWorld3x4(), float4(positionOS, 1.0)).xyz;
+        return mul(ObjectToWorld3x4(), float4(positionOS, 1.0)).xyz;
     #else
-    return mul(GetObjectToWorldMatrix(), float4(positionOS, 1.0)).xyz;
+        return mul(GetObjectToWorldMatrix(), float4(positionOS, 1.0)).xyz;
     #endif
 }
 
@@ -77,7 +77,7 @@ float3 TransformWorldToObject(float3 positionWS)
     return mul(GetWorldToObjectMatrix(), float4(positionWS, 1.0)).xyz;
     #endif
 }
-
+// 1st
 float3 TransformWorldToView(float3 positionWS)
 {
     return mul(GetWorldToViewMatrix(), float4(positionWS, 1.0)).xyz;
@@ -92,6 +92,7 @@ float4 TransformObjectToHClip(float3 positionOS)
 }
 
 // Tranforms position from world space to homogenous space
+// 1st
 float4 TransformWorldToHClip(float3 positionWS)
 {
     return mul(GetWorldToHClipMatrix(), float4(positionWS, 1.0));
@@ -104,7 +105,7 @@ float4 TransformWViewToHClip(float3 positionVS)
 }
 
 // Normalize to support uniform scaling
-// Done
+// 1st
 float3 TransformObjectToWorldDir(float3 dirOS, bool doNormalize = true)
 {
     #ifndef SHADER_STAGE_RAY_TRACING
@@ -153,17 +154,16 @@ real3 TransformWorldToHClipDir(real3 directionWS, bool doNormalize = false)
 }
 
 // Transforms normal from object to world space
-// Done
+// 1st
 float3 TransformObjectToWorldNormal(float3 normalOS, bool doNormalize = true)
 {
 #ifdef UNITY_ASSUME_UNIFORM_SCALING
     return TransformObjectToWorldDir(normalOS, doNormalize);
 #else
-    // Normal need to be multiply by inverse transpose
+    // Normal need to be multiply by inverse transpose 逆转置矩阵
     float3 normalWS = mul(normalOS, (float3x3)GetWorldToObjectMatrix());
     if (doNormalize)
         return SafeNormalize(normalWS);
-
     return normalWS;
 #endif
 }
@@ -191,7 +191,7 @@ real3x3 CreateTangentToWorld(real3 normal, real3 tangent, real flipSign)
 
     return real3x3(tangent, bitangent, normal);
 }
-// Perfect
+// 1st
 real3 TransformTangentToWorld(real3 dirTS, real3x3 tangentToWorld)
 {
     // Note matrix is in row major convention with left multiplication as it is build on the fly

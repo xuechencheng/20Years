@@ -1,6 +1,6 @@
 #ifndef UNITY_SHADER_VARIABLES_FUNCTIONS_INCLUDED
 #define UNITY_SHADER_VARIABLES_FUNCTIONS_INCLUDED
-// Perfect 初始化位置信息
+// 初始化位置信息 1st
 VertexPositionInputs GetVertexPositionInputs(float3 positionOS)
 {
     VertexPositionInputs input;
@@ -8,8 +8,8 @@ VertexPositionInputs GetVertexPositionInputs(float3 positionOS)
     input.positionVS = TransformWorldToView(input.positionWS);
     input.positionCS = TransformWorldToHClip(input.positionWS);
     float4 ndc = input.positionCS * 0.5f;// -0.5--0.5
-    input.positionNDC.xy = float2(ndc.x, ndc.y * _ProjectionParams.x) + ndc.w;
-    input.positionNDC.zw = input.positionCS.zw;//xy = 1/ 2 (xy  + w) zw = zw 将xy从[-1,1]变到[0,1]
+    input.positionNDC.xy = float2(ndc.x, ndc.y * _ProjectionParams.x) + ndc.w;//xy = 1 / 2 (xy  + w);将xy / w从[-1 , 1]变到[0 , 1]
+    input.positionNDC.zw = input.positionCS.zw;// zw = zw; 
     return input;
 }
 
@@ -22,7 +22,7 @@ VertexNormalInputs GetVertexNormalInputs(float3 normalOS)
     return tbn;
 }
 
-// Perfect 
+// Perfect 1st
 VertexNormalInputs GetVertexNormalInputs(float3 normalOS, float4 tangentOS)
 {
     VertexNormalInputs tbn;
@@ -40,31 +40,32 @@ float4 GetScaledScreenParams()
 }
 
 // Returns 'true' if the current view performs a perspective projection.
+// 1st
 bool IsPerspectiveProjection()
 {
     return (unity_OrthoParams.w == 0);
 }
-// Perfect
+// 1st
 float3 GetCameraPositionWS()
 {
     return _WorldSpaceCameraPos;
 }
 
-// Perfect
+// 1st
 float3 GetCurrentViewPosition()
 {
     return GetCameraPositionWS();
 }
 
 // Returns the forward (central) direction of the current view in the world space.
-// 阅
+// 1st
 float3 GetViewForwardDir()
 {
     float4x4 viewMat = GetWorldToViewMatrix();
     return -viewMat[2].xyz;
 }
 
-// Perfect 
+// 1st 
 // 从像素指向相机
 float3 GetWorldSpaceViewDir(float3 positionWS)
 {
@@ -136,7 +137,7 @@ real3 NormalizeNormalPerVertex(real3 normalWS)
         return normalize(normalWS);
     #endif
 }
-//Prefect 单位化法线
+//单位化法线 1st
 real3 NormalizeNormalPerPixel(real3 normalWS)
 {
     #if defined(SHADER_QUALITY_HIGH) || defined(_NORMALMAP)
@@ -155,7 +156,7 @@ float4 ComputeScreenPos(float4 positionCS)
     o.zw = positionCS.zw;
     return o;
 }
-// Prefect 根据深度值z计算雾的影响
+// 根据深度值z计算雾的影响 1st
 real ComputeFogFactor(float z)
 {
     float clipZ_01 = UNITY_Z_0_FAR_FROM_CLIPSPACE(z);
@@ -179,7 +180,7 @@ real ComputeFogIntensity(real fogFactor)
         #if defined(FOG_EXP)
             // factor = exp(-density*z)
             // fogFactor = density*z compute at vertex
-            fogIntensity = saturate(exp2(-fogFactor));
+            fogIntensity = saturate(exp2(-fogFactor));//exp2以2为底的指数函数
         #elif defined(FOG_EXP2)
             // factor = exp(-(density*z)^2)
             // fogFactor = density*z compute at vertex
@@ -208,7 +209,7 @@ half3 MixFog(real3 fragColor, real fogFactor)
 void TransformScreenUV(inout float2 uv, float screenHeight)
 {
     #if UNITY_UV_STARTS_AT_TOP
-    uv.y = screenHeight - (uv.y * _ScaleBiasRt.x + _ScaleBiasRt.y * screenHeight);
+        uv.y = screenHeight - (uv.y * _ScaleBiasRt.x + _ScaleBiasRt.y * screenHeight);
     #endif
 }
 
@@ -222,13 +223,13 @@ void TransformScreenUV(inout float2 uv)
 void TransformNormalizedScreenUV(inout float2 uv)
 {
     #if UNITY_UV_STARTS_AT_TOP
-    TransformScreenUV(uv, 1.0);
+        TransformScreenUV(uv, 1.0);
     #endif
 }
-
+// 1st
 float2 GetNormalizedScreenSpaceUV(float2 positionCS)
 {
-    float2 normalizedScreenSpaceUV = positionCS.xy * rcp(GetScaledScreenParams().xy);
+    float2 normalizedScreenSpaceUV = positionCS.xy * rcp(GetScaledScreenParams().xy); //rcp 近似的倒数
     TransformNormalizedScreenUV(normalizedScreenSpaceUV);
     return normalizedScreenSpaceUV;
 }

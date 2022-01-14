@@ -53,7 +53,7 @@ struct Varyings
     UNITY_VERTEX_INPUT_INSTANCE_ID
     UNITY_VERTEX_OUTPUT_STEREO
 };
-
+// 1st
 void InitializeInputData(Varyings input, half3 normalTS, out InputData inputData)
 {
     inputData = (InputData)0;
@@ -88,7 +88,7 @@ void InitializeInputData(Varyings input, half3 normalTS, out InputData inputData
 //                  Vertex and Fragment functions                            //
 ///////////////////////////////////////////////////////////////////////////////
 
-// Prefect
+// 1st
 Varyings LitPassVertex(Attributes input)
 {
     Varyings output = (Varyings)0;
@@ -98,7 +98,7 @@ Varyings LitPassVertex(Attributes input)
     VertexPositionInputs vertexInput = GetVertexPositionInputs(input.positionOS.xyz);
     VertexNormalInputs normalInput = GetVertexNormalInputs(input.normalOS, input.tangentOS);
     half3 viewDirWS = GetWorldSpaceViewDir(vertexInput.positionWS);
-    half3 vertexLight = VertexLighting(vertexInput.positionWS, normalInput.normalWS); // ???
+    half3 vertexLight = VertexLighting(vertexInput.positionWS, normalInput.normalWS); 
     half fogFactor = ComputeFogFactor(vertexInput.positionCS.z);
     output.uv = TRANSFORM_TEX(input.texcoord, _BaseMap);
     // already normalized from normal transform to WS.

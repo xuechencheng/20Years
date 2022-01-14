@@ -76,13 +76,13 @@ TEXTURE2D(_MetallicGlossMap);   SAMPLER(sampler_MetallicGlossMap);
 TEXTURE2D(_SpecGlossMap);       SAMPLER(sampler_SpecGlossMap);
 TEXTURE2D(_ClearCoatMap);       SAMPLER(sampler_ClearCoatMap);
 
-#ifdef _SPECULAR_SETUP//采高亮图或者金属图
+#ifdef _SPECULAR_SETUP//1st 采高亮图或者金属图
     #define SAMPLE_METALLICSPECULAR(uv) SAMPLE_TEXTURE2D(_SpecGlossMap, sampler_SpecGlossMap, uv)
 #else
     #define SAMPLE_METALLICSPECULAR(uv) SAMPLE_TEXTURE2D(_MetallicGlossMap, sampler_MetallicGlossMap, uv)
 #endif
 
-// Prefect 获取金属度和光滑度
+// 获取金属度和光滑度 1st
 half4 SampleMetallicSpecGloss(float2 uv, half albedoAlpha)
 {
     half4 specGloss;
@@ -107,7 +107,7 @@ half4 SampleMetallicSpecGloss(float2 uv, half albedoAlpha)
 #endif
     return specGloss;
 }
-//Prefect 采样AO贴图
+//采样AO贴图 1st
 half SampleOcclusion(float2 uv)
 {
 #ifdef _OCCLUSIONMAP
@@ -196,7 +196,7 @@ half3 ApplyDetailNormal(float2 detailUv, half3 normalTS, half detailMask)
 #endif
 }
 
-// Prefect
+// 1st
 inline void InitializeStandardLitSurfaceData(float2 uv, out SurfaceData outSurfaceData)
 {
     half4 albedoAlpha = SampleAlbedoAlpha(uv, TEXTURE2D_ARGS(_BaseMap, sampler_BaseMap));

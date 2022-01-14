@@ -2,7 +2,7 @@
 #define UNIVERSAL_PARALLAX_MAPPING_INCLUDED
 
 // Return view direction in tangent space, make sure tangentWS.w is already multiplied by GetOddNegativeScale()
-// Prefect 获取切线空间的视野方向
+// 1st 获取切线空间的视野方向
 half3 GetViewDirectionTangentSpace(half4 tangentWS, half3 normalWS, half3 viewDirWS)
 {
     // must use interpolated tangent, bitangent and normal before they are normalized in the pixel shader.

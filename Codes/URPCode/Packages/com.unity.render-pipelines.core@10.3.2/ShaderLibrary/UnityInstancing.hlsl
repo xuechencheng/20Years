@@ -84,7 +84,7 @@
         #define UNITY_GET_INSTANCE_ID(input)    _GETINSTANCEID(input)
     #else
         #define DEFAULT_UNITY_VERTEX_INPUT_INSTANCE_ID uint instanceID : SV_InstanceID;
-        #define UNITY_GET_INSTANCE_ID(input)    input.instanceID // 获取input.instanceID
+        #define UNITY_GET_INSTANCE_ID(input)    input.instanceID // 获取input.instanceID 1st
     #endif 
 
 #else
@@ -203,16 +203,16 @@
             #define DEFAULT_UNITY_SETUP_INSTANCE_ID(input)      { UnitySetupInstanceID(UNITY_GET_INSTANCE_ID(input)); UNITY_INSTANCING_PROCEDURAL_FUNC();}
         #endif
     #else
-        #define DEFAULT_UNITY_SETUP_INSTANCE_ID(input)          { UnitySetupInstanceID(UNITY_GET_INSTANCE_ID(input));}
+        #define DEFAULT_UNITY_SETUP_INSTANCE_ID(input)          { UnitySetupInstanceID(UNITY_GET_INSTANCE_ID(input));}//1st
     #endif
-    #define UNITY_TRANSFER_INSTANCE_ID(input, output)   output.instanceID = UNITY_GET_INSTANCE_ID(input)
+    #define UNITY_TRANSFER_INSTANCE_ID(input, output)   output.instanceID = UNITY_GET_INSTANCE_ID(input) // 1st
 #else
     #define DEFAULT_UNITY_SETUP_INSTANCE_ID(input)
     #define UNITY_TRANSFER_INSTANCE_ID(input, output)
 #endif
 
 #if !defined(UNITY_SETUP_INSTANCE_ID)//Set unity_InstanceID
-#   define UNITY_SETUP_INSTANCE_ID(input) DEFAULT_UNITY_SETUP_INSTANCE_ID(input)
+#   define UNITY_SETUP_INSTANCE_ID(input) DEFAULT_UNITY_SETUP_INSTANCE_ID(input) // 1st
 #endif //阅
 
 ////////////////////////////////////////////////////////

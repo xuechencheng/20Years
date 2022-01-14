@@ -31,7 +31,7 @@
 #define SHADOWMASK_SAMPLER_NAME samplerunity_ShadowMask
 #define SHADOWMASK_SAMPLE_EXTRA_ARGS
 #endif
-// 采样烘焙阴影
+// 采样烘焙阴影 1st
 #if defined(SHADOWS_SHADOWMASK) && defined(LIGHTMAP_ON)
     #define SAMPLE_SHADOWMASK(uv) SAMPLE_TEXTURE2D_LIGHTMAP(SHADOWMASK_NAME, SHADOWMASK_SAMPLER_NAME, uv SHADOWMASK_SAMPLE_EXTRA_ARGS);
 #elif !defined (LIGHTMAP_ON)
@@ -119,7 +119,7 @@ struct ShadowSamplingData
 ShadowSamplingData GetMainLightShadowSamplingData()
 {
     ShadowSamplingData shadowSamplingData;
-    shadowSamplingData.shadowOffset0 = _MainLightShadowOffset0;
+    shadowSamplingData.shadowOffset0 = _MainLightShadowOffset0;//周围的4个点
     shadowSamplingData.shadowOffset1 = _MainLightShadowOffset1;
     shadowSamplingData.shadowOffset2 = _MainLightShadowOffset2;
     shadowSamplingData.shadowOffset3 = _MainLightShadowOffset3;
@@ -138,9 +138,8 @@ ShadowSamplingData GetAdditionalLightShadowSamplingData()
     return shadowSamplingData;
 }
 
-// ShadowParams
-// x: ShadowStrength
-// y: 1.0 if shadow is soft, 0.0 otherwise
+// (x: shadowStrength, y: 1.0 if soft shadows, 0.0 otherwise, z: oneOverFadeDist, w: minusStartFade)
+// 1st
 half4 GetMainLightShadowParams()
 {
     return _MainLightShadowParams;
@@ -174,7 +173,7 @@ half SampleScreenSpaceShadowmap(float4 shadowCoord)
 
     return attenuation;
 }
-// Perfect
+// 1st
 real SampleShadowmapFiltered(TEXTURE2D_SHADOW_PARAM(ShadowMap, sampler_ShadowMap), float4 shadowCoord, ShadowSamplingData samplingData)
 {
     real attenuation;
@@ -205,7 +204,7 @@ real SampleShadowmapFiltered(TEXTURE2D_SHADOW_PARAM(ShadowMap, sampler_ShadowMap
 
     return attenuation;
 }
-// Perfect
+// 1st
 real SampleShadowmap(TEXTURE2D_SHADOW_PARAM(ShadowMap, sampler_ShadowMap), float4 shadowCoord, ShadowSamplingData samplingData, half4 shadowParams, bool isPerspectiveProjection = true)
 {
     // Compiler will optimize this branch away as long as isPerspectiveProjection is known at compile time
@@ -225,7 +224,7 @@ real SampleShadowmap(TEXTURE2D_SHADOW_PARAM(ShadowMap, sampler_ShadowMap), float
     // TODO: We could use branch here to save some perf on some platforms.
     return BEYOND_SHADOW_FAR(shadowCoord) ? 1.0 : attenuation;
 }
-//Prefect 计算级联索引
+// 计算级联索引 1st 
 half ComputeCascadeIndex(float3 positionWS)
 {
     float3 fromCenter0 = positionWS - _CascadeShadowSplitSpheres0.xyz;
@@ -237,7 +236,7 @@ half ComputeCascadeIndex(float3 positionWS)
     weights.yzw = saturate(weights.yzw - weights.xyz);//处理一个点同时在两个球上的情况
     return 4 - dot(weights, half4(4, 3, 2, 1));
 }
-// Prefect 从世界坐标转换到级联阴影贴图的坐标
+// 从世界坐标转换到级联阴影贴图的坐标 1st 
 float4 TransformWorldToShadowCoord(float3 positionWS)
 {
 #ifdef _MAIN_LIGHT_SHADOWS_CASCADE
@@ -249,7 +248,7 @@ float4 TransformWorldToShadowCoord(float3 positionWS)
     return float4(shadowCoord.xyz, cascadeIndex);
 }
 
-// Perfect 主光源的ShadowrMap
+// 主光源的ShadowrMap 1st
 half MainLightRealtimeShadow(float4 shadowCoord)
 {
 #if !defined(MAIN_LIGHT_CALCULATE_SHADOWS)
@@ -285,7 +284,7 @@ half AdditionalLightRealtimeShadow(int lightIndex, float3 positionWS)
     half4 shadowParams = GetAdditionalLightShadowParams(lightIndex);
     return SampleShadowmap(TEXTURE2D_ARGS(_AdditionalLightsShadowmapTexture, sampler_AdditionalLightsShadowmapTexture), shadowCoord, shadowSamplingData, shadowParams, true);
 }
-//阴影过渡
+//阴影过渡 1st
 half GetShadowFade(float3 positionWS)
 {
     float3 camToPixel = positionWS - _WorldSpaceCameraPos;
@@ -294,7 +293,7 @@ half GetShadowFade(float3 positionWS)
     half fade = saturate(distanceCamToPixel2 * _MainLightShadowParams.z + _MainLightShadowParams.w);
     return fade * fade;
 }
-//混合实时阴影和烘焙阴影 shadowFade越小，越接近实时阴影 shadowFade为1的时候就是烘焙阴影
+//混合实时阴影和烘焙阴影 shadowFade越小，越接近实时阴影 shadowFade为1的时候就是烘焙阴影 1st
 half MixRealtimeAndBakedShadows(half realtimeShadow, half bakedShadow, half shadowFade)
 {
 #if defined(LIGHTMAP_SHADOW_MIXING)
@@ -303,7 +302,7 @@ half MixRealtimeAndBakedShadows(half realtimeShadow, half bakedShadow, half shad
     return lerp(realtimeShadow, bakedShadow, shadowFade);
 #endif
 }
-
+// 1st
 half BakedShadow(half4 shadowMask, half4 occlusionProbeChannels)
 {
     // Here occlusionProbeChannels used as mask selector to select shadows in shadowMask
@@ -314,7 +313,7 @@ half BakedShadow(half4 shadowMask, half4 occlusionProbeChannels)
     return bakedShadow;
 }
 
-//主光源阴影，混合实时阴影和烘焙阴影
+//主光源阴影，混合实时阴影和烘焙阴影 1st
 half MainLightShadow(float4 shadowCoord, float3 positionWS, half4 shadowMask, half4 occlusionProbeChannels)
 {
     half realtimeShadow = MainLightRealtimeShadow(shadowCoord);
