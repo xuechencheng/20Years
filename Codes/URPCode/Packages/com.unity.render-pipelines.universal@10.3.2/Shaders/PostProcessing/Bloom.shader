@@ -48,7 +48,7 @@ Shader "Hidden/Universal Render Pipeline/Bloom"
             return color.xyz;
         #endif
         }
-        //对像素进行模糊操作
+        //取周围像素对像素进行模糊操作
         half4 FragPrefilter(Varyings input) : SV_Target
         {
             UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
@@ -130,19 +130,18 @@ Shader "Hidden/Universal Render Pipeline/Bloom"
             return EncodeHDR(color);
         }
 
+        //lerp _SourceTex和_SourceTexLowMip
         half3 Upsample(float2 uv)
         {
             half3 highMip = DecodeHDR(SAMPLE_TEXTURE2D_X(_SourceTex, sampler_LinearClamp, uv));
-
         #if _BLOOM_HQ && !defined(SHADER_API_GLES)
             half3 lowMip = DecodeHDR(SampleTexture2DBicubic(TEXTURE2D_X_ARGS(_SourceTexLowMip, sampler_LinearClamp), uv, _SourceTexLowMip_TexelSize.zwxy, (1.0).xx, unity_StereoEyeIndex));
         #else
             half3 lowMip = DecodeHDR(SAMPLE_TEXTURE2D_X(_SourceTexLowMip, sampler_LinearClamp, uv));
         #endif
-
             return lerp(highMip, lowMip, Scatter);
         }
-
+        //lerp _SourceTex和_SourceTexLowMip
         half4 FragUpsample(Varyings input) : SV_Target
         {
             UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);

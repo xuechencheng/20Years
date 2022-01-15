@@ -17,7 +17,7 @@ struct ParticleParams
     float3 blendUv;
     float2 uv;
 };
-//Perfect
+//1st
 void InitParticleParams(VaryingsParticle input, out ParticleParams output)
 {
     output = (ParticleParams) 0;
@@ -31,7 +31,6 @@ void InitParticleParams(VaryingsParticle input, out ParticleParams output)
     #if !defined(PARTICLES_EDITOR_META_PASS)
         output.positionWS = input.positionWS;
         output.baseColor = _BaseColor;
-
         #if defined(_SOFTPARTICLES_ON) || defined(_FADING_ON) || defined(_DISTORTION_ON)
             output.projectedPosition = input.projectedPosition;
         #else
@@ -55,7 +54,7 @@ void InitParticleParams(VaryingsParticle input, out ParticleParams output)
     #define SOFT_PARTICLE_MUL_ALBEDO(albedo, val) albedo * half4(1.0h, 1.0h, 1.0h, val)
 #endif
 
-// Color blending fragment function
+// Color blending fragment function 1st
 float4 MixParticleColor(float4 baseColor, float4 particleColor, float4 colorAddSubDiff)
 {
 #if defined(_COLOROVERLAY_ON) // Overlay blend
@@ -94,6 +93,7 @@ float SoftParticles(float near, float far, float4 projection)
 }
 
 // Soft particles - returns alpha value for fading particles based on the depth to the background pixel
+// 1st
 float SoftParticles(float near, float far, ParticleParams params)
 {
     float fade = 1;
@@ -108,7 +108,7 @@ float SoftParticles(float near, float far, ParticleParams params)
 }
 
 // Camera fade - returns alpha value for fading particles based on camera distance
-// 靠近相机淡化
+// 靠近相机淡化 1st
 half CameraFade(float near, float far, float4 projection)
 {
     float thisZ = LinearEyeDepth(projection.z / projection.w, _ZBufferParams);
@@ -124,7 +124,7 @@ half3 AlphaModulate(half3 albedo, half alpha)
 #endif
     return albedo;
 }
-//扰动效果
+//扰动效果 1st
 half3 Distortion(float4 baseColor, float3 normal, half strength, half blend, float4 projection)
 {
     float2 screenUV = (projection.xy / projection.w) + normal.xy * strength * baseColor.a;
@@ -134,7 +134,7 @@ half3 Distortion(float4 baseColor, float3 normal, half strength, half blend, flo
 }
 
 // Sample a texture and do blending for texture sheet animation if needed
-//Perfect 混合纹理
+//混合纹理 1st
 half4 BlendTexture(TEXTURE2D_PARAM(_Texture, sampler_Texture), float2 uv, float3 blendUv)
 {
     half4 color = SAMPLE_TEXTURE2D(_Texture, sampler_Texture, uv);
@@ -160,7 +160,7 @@ half3 SampleNormalTS(float2 uv, float3 blendUv, TEXTURE2D_PARAM(bumpMap, sampler
     return half3(0.0h, 0.0h, 1.0h);
 #endif
 }
-// 粒子顶点色
+// 粒子顶点色 1st
 half4 GetParticleColor(half4 color)
 {
 #if defined(UNITY_PARTICLE_INSTANCING_ENABLED)
@@ -172,7 +172,7 @@ half4 GetParticleColor(half4 color)
 #endif
     return color;
 }
-
+// 1st 两套纹理
 void GetParticleTexcoords(out float2 outputTexcoord, out float3 outputTexcoord2AndBlend, in float4 inputTexcoords, in float inputBlend)
 {
 #if defined(UNITY_PARTICLE_INSTANCING_ENABLED)
@@ -211,7 +211,7 @@ void GetParticleTexcoords(out float2 outputTexcoord, out float3 outputTexcoord2A
         outputTexcoord = inputTexcoords.xy;
 #ifdef _FLIPBOOKBLENDING_ON
         outputTexcoord2AndBlend.xy = inputTexcoords.zw;
-        outputTexcoord2AndBlend.z = inputBlend;
+        outputTexcoord2AndBlend.z = inputBlend;//Here
 #endif
     }
 

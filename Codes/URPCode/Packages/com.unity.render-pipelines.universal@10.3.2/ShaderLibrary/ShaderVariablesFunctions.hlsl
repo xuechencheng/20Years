@@ -105,7 +105,7 @@ void GetLeftHandedViewSpaceMatrices(out float4x4 viewMatrix, out float4x4 projMa
     projMatrix = UNITY_MATRIX_P;
     projMatrix._13_23_33_43 = -projMatrix._13_23_33_43;
 }
-// Perfect
+// Perfect 1st
 void AlphaDiscard(real alpha, real cutoff, real offset = 0.0h)
 {
     #ifdef _ALPHATEST_ON
@@ -200,7 +200,7 @@ half3 MixFogColor(real3 fragColor, real3 fogColor, real fogFactor)
     #endif
     return fragColor;
 }
-
+// 1st
 half3 MixFog(real3 fragColor, real fogFactor)
 {
     return MixFogColor(fragColor, unity_FogColor.rgb, fogFactor);

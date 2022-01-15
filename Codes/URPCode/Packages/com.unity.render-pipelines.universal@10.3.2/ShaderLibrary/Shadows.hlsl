@@ -353,7 +353,7 @@ half AdditionalLightShadow(int lightIndex, float3 positionWS, half4 shadowMask, 
     return MixRealtimeAndBakedShadows(realtimeShadow, bakedShadow, shadowFade);
 }
 
-// Prefect 获取阴影坐标
+// 获取阴影坐标 1st
 float4 GetShadowCoord(VertexPositionInputs vertexInput)
 {
     return TransformWorldToShadowCoord(vertexInput.positionWS);

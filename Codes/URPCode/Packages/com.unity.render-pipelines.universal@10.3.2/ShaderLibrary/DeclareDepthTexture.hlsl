@@ -4,7 +4,7 @@
 
 TEXTURE2D_X_FLOAT(_CameraDepthTexture);
 SAMPLER(sampler_CameraDepthTexture);
-// 采样屏幕深度图
+// 采样屏幕深度图 1st
 float SampleSceneDepth(float2 uv)
 {
     return SAMPLE_TEXTURE2D_X(_CameraDepthTexture, sampler_CameraDepthTexture, UnityStereoTransformScreenSpaceTex(uv)).r;

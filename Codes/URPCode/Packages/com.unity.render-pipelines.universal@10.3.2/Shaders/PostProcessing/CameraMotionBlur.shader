@@ -30,7 +30,7 @@ Shader "Hidden/Universal Render Pipeline/CameraMotionBlur"
             float4 uv            : TEXCOORD0;
             UNITY_VERTEX_OUTPUT_STEREO
         };
-
+        // Done
         VaryingsCMB VertCMB(Attributes input)
         {
             VaryingsCMB output;
@@ -47,7 +47,7 @@ Shader "Hidden/Universal Render Pipeline/CameraMotionBlur"
             output.uv.zw = projPos.xy;
             return output;
         }
-
+        // 计算速度向量
         float2 ClampVelocity(float2 velocity, float maxVelocity)
         {
             float len = length(velocity);
@@ -55,7 +55,7 @@ Shader "Hidden/Universal Render Pipeline/CameraMotionBlur"
         }
 
         // Per-pixel camera velocity
-        //获取相机的运动速度
+        //获取运动向量
         float2 GetCameraVelocity(float4 uv)
         {
             float depth = SAMPLE_TEXTURE2D_X(_CameraDepthTexture, sampler_PointClamp, uv.xy).r;

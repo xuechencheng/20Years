@@ -3,30 +3,24 @@
 
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Particles.hlsl"
-
+//Flipbooks 相机附近淡化 软粒子 扰动
+// 1st
 void InitializeInputData(VaryingsParticle input, half3 normalTS, out InputData output)
 {
     output = (InputData)0;
-
     output.positionWS = input.positionWS.xyz;
-
 #ifdef _NORMALMAP
     half3 viewDirWS = half3(input.normalWS.w, input.tangentWS.w, input.bitangentWS.w);
-    output.normalWS = TransformTangentToWorld(normalTS,
-        half3x3(input.tangentWS.xyz, input.bitangentWS.xyz, input.normalWS.xyz));
+    output.normalWS = TransformTangentToWorld(normalTS, half3x3(input.tangentWS.xyz, input.bitangentWS.xyz, input.normalWS.xyz));
 #else
     half3 viewDirWS = input.viewDirWS;
     output.normalWS = input.normalWS;
 #endif
-
     output.normalWS = NormalizeNormalPerPixel(output.normalWS);
-
 #if SHADER_HINT_NICE_QUALITY
     viewDirWS = SafeNormalize(viewDirWS);
 #endif
-
     output.viewDirectionWS = viewDirWS;
-
 #if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR)
     output.shadowCoord = input.shadowCoord;
 #elif defined(MAIN_LIGHT_CALCULATE_SHADOWS)
@@ -34,7 +28,6 @@ void InitializeInputData(VaryingsParticle input, half3 normalTS, out InputData o
 #else
     output.shadowCoord = float4(0, 0, 0, 0);
 #endif
-
     output.fogCoord = (half)input.positionWS.w;
     output.vertexLighting = half3(0.0h, 0.0h, 0.0h);
     output.bakedGI = SampleSHPixel(input.vertexSH, output.normalWS);
@@ -45,7 +38,7 @@ void InitializeInputData(VaryingsParticle input, half3 normalTS, out InputData o
 ///////////////////////////////////////////////////////////////////////////////
 //                  Vertex and Fragment functions                            //
 ///////////////////////////////////////////////////////////////////////////////
-
+// 1st
 VaryingsParticle ParticlesLitVertex(AttributesParticle input)
 {
     VaryingsParticle output = (VaryingsParticle)0;
@@ -68,7 +61,6 @@ VaryingsParticle ParticlesLitVertex(AttributesParticle input)
     output.normalWS = normalInput.normalWS;
     output.viewDirWS = viewDirWS;
 #endif
-
     OUTPUT_SH(output.normalWS.xyz, output.vertexSH);
     output.positionWS.xyz = vertexInput.positionWS;
     output.positionWS.w = fogFactor;
