@@ -386,7 +386,7 @@ namespace UnityEngine.Rendering.Universal
             if (baseCameraAdditionalData != null && baseCameraAdditionalData.renderType == CameraRenderType.Overlay)
                 return;
             var renderer = baseCameraAdditionalData?.scriptableRenderer;
-            bool supportsCameraStacking = renderer != null && renderer.supportedRenderingFeatures.cameraStacking;
+            bool supportsCameraStacking = renderer != null && renderer.supportedRenderingFeatures.cameraStacking;// Always true
             List<Camera> cameraStack = (supportsCameraStacking) ? baseCameraAdditionalData?.cameraStack : null;
             bool anyPostProcessingEnabled = baseCameraAdditionalData != null && baseCameraAdditionalData.renderPostProcessing;
             int lastActiveOverlayCameraIndex = -1;//最后一个相机还要负责渲染到屏幕
@@ -586,7 +586,7 @@ namespace UnityEngine.Rendering.Universal
 #endif
         }
         /// <summary>
-        /// 初始化CameraData
+        /// 初始化CameraData Done
         /// </summary>
         static void InitializeCameraData(Camera camera, UniversalAdditionalCameraData additionalCameraData, bool resolveFinalTarget, out CameraData cameraData)
         {
@@ -933,7 +933,7 @@ namespace UnityEngine.Rendering.Universal
         }
 
         /// <summary>
-        /// 设置Shader环境常量
+        /// 设置Shader环境常量 Done
         /// </summary>
         static void SetupPerFrameShaderConstants()
         {

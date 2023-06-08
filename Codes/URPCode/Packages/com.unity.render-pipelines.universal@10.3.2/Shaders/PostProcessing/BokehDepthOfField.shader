@@ -31,7 +31,7 @@ Shader "Hidden/Universal Render Pipeline/BokehDepthOfField"
         #define MaxCoC          _CoCParams.y
         #define MaxRadius       _CoCParams.z
         #define RcpAspect       _CoCParams.w
-        //跟相机到物体距离有关的一个数值
+        //跟相机到物体距离有关的一个数值，0.5的时候FocusDist = linearEyeDepth
         half FragCoC(Varyings input) : SV_Target
         {
             UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);

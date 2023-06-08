@@ -218,7 +218,7 @@ namespace UnityEngine.Rendering.Universal
         }
 
         /// <summary>
-        /// 对于Base相机返回List<Camera>，对于Over相机返回camera组件
+        /// 对于Base相机返回List<Camera>，对于Over相机返回null Done
         /// </summary>
         public List<Camera> cameraStack
         {
@@ -240,7 +240,7 @@ namespace UnityEngine.Rendering.Universal
             }
         }
         /// <summary>
-        /// 更新相机栈，去掉空相机
+        /// 更新相机栈，去掉空相机 Done
         /// </summary>
         internal void UpdateCameraStack()
         {

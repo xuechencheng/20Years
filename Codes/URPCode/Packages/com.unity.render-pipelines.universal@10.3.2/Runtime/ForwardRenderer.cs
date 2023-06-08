@@ -710,7 +710,7 @@ namespace UnityEngine.Rendering.Universal
                    !isCompatibleBackbufferTextureDimension || isCapturing || cameraData.requireSrgbConversion;
         }
         /// <summary>
-        /// SupportsDepthCopy
+        /// massSamples = 0 && (supportsTextureCopy || supportsDepthTarget)
         /// </summary>
         /// <param name="cameraData"></param>
         /// <returns></returns>

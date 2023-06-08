@@ -64,12 +64,11 @@ Shader "Hidden/Universal Render Pipeline/GaussianDepthOfField"
         };
 
         #endif
-        //Perfect saturate((depth - FarStart) / (FarEnd - FarStart))
+        //计算深度值比例
         half FragCoC(Varyings input) : SV_Target
         {
             UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
             float2 uv = UnityStereoTransformScreenSpaceTex(input.uv);
-
             float depth = LOAD_TEXTURE2D_X(_CameraDepthTexture, _SourceSize.xy * uv).x;
             depth = LinearEyeDepth(depth, _ZBufferParams);
             half coc = (depth - FarStart) / (FarEnd - FarStart);
@@ -81,7 +80,7 @@ Shader "Hidden/Universal Render Pipeline/GaussianDepthOfField"
             half  coc   : SV_Target0;
             half3 color : SV_Target1;
         };
-        //coc是FullCoCTexture的采样值 color是_ColorTexture的采样值乘以coc
+        //coc * color
         PrefilterOutput FragPrefilter(Varyings input)
         {
             UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
@@ -124,7 +123,7 @@ Shader "Hidden/Universal Render Pipeline/GaussianDepthOfField"
             o.color = color;
             return o;
         }
-        // ???
+        // 模糊 ???
         half4 Blur(Varyings input, float2 dir, float premultiply)
         {
             UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
@@ -134,7 +133,7 @@ Shader "Hidden/Universal Render Pipeline/GaussianDepthOfField"
             int2 positionSS = int2(_SourceSize.xy * _DownSampleScaleFactor.xy * uv); //_DownSampleScaleFactor(1/2, 1/2, 2, 2)
             half samp0CoC = LOAD_TEXTURE2D_X(_HalfCoCTexture, positionSS).x;
 
-            float2 offset = _SourceSize.zw * _DownSampleScaleFactor.zw * dir * samp0CoC * MaxRadius;//偏移量和coc成正比
+            float2 offset = _SourceSize.zw * _DownSampleScaleFactor.zw * dir * samp0CoC * MaxRadius;//沿着某个方向偏移，偏移量和coc成正比
             //_SourceSize : new Vector4(width, height, 1.0f / width, 1.0f / height)
             half4 acc = 0.0;
 
@@ -182,11 +181,11 @@ Shader "Hidden/Universal Render Pipeline/GaussianDepthOfField"
             half dstAlpha = 1.0;
 
             UNITY_BRANCH
-            if (coc > 0.0)
+            if (coc > 0.0)//清晰的地方
             {
                 // Non-linear blend
                 // "CryEngine 3 Graphics Gems" [Sousa13]
-                half blend = sqrt(coc * TWO_PI);
+                half blend = sqrt(coc * TWO_PI);//coc越大越清晰
                 dstColor = farColor * saturate(blend);
                 dstAlpha = saturate(1.0 - blend);
             }
@@ -198,6 +197,7 @@ Shader "Hidden/Universal Render Pipeline/GaussianDepthOfField"
 
     SubShader
     {
+        //1，模糊；2，在特定深度范围，将模糊和颜色图进行混合
         Tags { "RenderPipeline" = "UniversalPipeline" }
         LOD 100
         ZTest Always ZWrite Off Cull Off

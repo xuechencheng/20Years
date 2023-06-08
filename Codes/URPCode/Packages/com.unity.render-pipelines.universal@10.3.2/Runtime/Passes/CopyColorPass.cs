@@ -21,8 +21,8 @@ namespace UnityEngine.Rendering.Universal.Internal
         }
         public void Setup(RenderTargetIdentifier source, RenderTargetHandle destination, Downsampling downsampling)
         {
-            this.source = source;
-            this.destination = destination;
+            this.source = source;//_CameraColorTexture
+            this.destination = destination;//cameraTarget
             m_DownsamplingMethod = downsampling;
         }
         public override void OnCameraSetup(CommandBuffer cmd, ref RenderingData renderingData)

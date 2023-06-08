@@ -64,7 +64,7 @@ namespace UnityEngine.Rendering
 #endif
         }
         /// <summary>
-        /// 创建CustomSampler，获取Recorder
+        /// 创建CustomSampler，获取Recorder Done
         /// </summary>
         public ProfilingSampler(string name)
         {
@@ -73,7 +73,7 @@ namespace UnityEngine.Rendering
 #else
             sampler = CustomSampler.Create($"Dummy_{name}");
 #endif
-            inlineSampler = CustomSampler.Create($"Inl_{name}"); // Profiles code "immediately"
+            inlineSampler = CustomSampler.Create($"Inl_{name}"); // Profiles code "immediately" $的作用类似于string.Format
             this.name = name;
 #if UNITY_USE_RECORDER
             m_Recorder = sampler.GetRecorder();
@@ -83,7 +83,7 @@ namespace UnityEngine.Rendering
 #endif
         }
         /// <summary>
-        /// BeginSample
+        /// BeginSample Done
         /// </summary>
         public void Begin(CommandBuffer cmd)
         {
@@ -99,7 +99,7 @@ namespace UnityEngine.Rendering
             inlineSampler?.Begin();
         }
         /// <summary>
-        /// EndSample
+        /// EndSample Done
         /// </summary>
         public void End(CommandBuffer cmd)
         {

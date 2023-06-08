@@ -15,7 +15,7 @@ namespace UnityEngine.Rendering.Universal.Internal
         string m_ProfilerTag;
         ProfilingSampler m_ProfilingSampler;
         bool m_IsOpaque;
-        static readonly int s_DrawObjectPassDataPropID = Shader.PropertyToID("_DrawObjectPassData");
+        static readonly int s_DrawObjectPassDataPropID = Shader.PropertyToID("_DrawObjectPassData");//Deprecated
         /// <summary>
         /// ¹¹Ôìº¯Êý
         /// </summary>

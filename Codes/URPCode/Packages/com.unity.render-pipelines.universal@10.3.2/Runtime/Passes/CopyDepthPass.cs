@@ -11,19 +11,22 @@ namespace UnityEngine.Rendering.Universal.Internal
         private RenderTargetHandle destination { get; set; }
         internal bool AllocateRT  { get; set; }
         Material m_CopyDepthMaterial;
+        // Done
         public CopyDepthPass(RenderPassEvent evt, Material copyDepthMaterial)
         {
             base.profilingSampler = new ProfilingSampler(nameof(CopyDepthPass));
             AllocateRT = true;
-            m_CopyDepthMaterial = copyDepthMaterial;
+            m_CopyDepthMaterial = copyDepthMaterial;//CopyDepth.shader
             renderPassEvent = evt;
         }
+        // Done
         public void Setup(RenderTargetHandle source, RenderTargetHandle destination)
         {
-            this.source = source;
+            this.source = source;//_CameraDepthAttachment
             this.destination = destination;//_CameraDepthTexture
             this.AllocateRT = AllocateRT && !destination.HasInternalRenderTargetId();
         }
+        // Done
         public override void OnCameraSetup(CommandBuffer cmd, ref RenderingData renderingData)
         {
             var descriptor = renderingData.cameraData.cameraTargetDescriptor;
